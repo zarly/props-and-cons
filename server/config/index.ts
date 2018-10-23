@@ -15,4 +15,9 @@ switch (process.env.NODE_ENV) {
         config = development;
 }
 
-export default config;
+export interface IConfig {
+    environment: string;
+    port: number;
+}
+
+export default <IConfig> config;

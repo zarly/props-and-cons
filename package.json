@@ -7,5 +7,7 @@
     "test:server": "cd server && npm test && cd -"
   },
   "author": "Alexander Abramov",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
 }
