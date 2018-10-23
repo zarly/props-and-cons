@@ -1,0 +1,10 @@
+{
+  "name": "props-and-cons",
+  "version": "0.0.1",
+  "description": "Props and cons",
+  "scripts": {
+    "test": "true"
+  },
+  "author": "Alexander Abramov",
+  "license": "MIT"
+}
