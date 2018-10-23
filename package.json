@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Props and cons",
   "scripts": {
-    "test": "true"
+    "test": "npm run test:server",
+    "test:server": "cd server && npm test && cd -"
   },
   "author": "Alexander Abramov",
   "license": "MIT"
