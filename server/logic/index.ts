@@ -1,5 +1,5 @@
 
-import Idea from './idea'
+import Idea from '../orm/idea'
 
 export default class Logic {
 	constructor () {

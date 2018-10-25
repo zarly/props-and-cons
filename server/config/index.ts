@@ -18,6 +18,7 @@ switch (process.env.NODE_ENV) {
 export interface IConfig {
     environment: string;
     port: number;
+    mongoose: string;
 }
 
 export default <IConfig> config;
