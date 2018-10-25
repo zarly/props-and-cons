@@ -1,4 +1,8 @@
 
 import * as mongoose from 'mongoose'
 
-export default {};
+export default class ORM {
+	constructor () {
+
+	}
+}
