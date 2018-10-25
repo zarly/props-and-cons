@@ -1,5 +1,5 @@
 
-import Idea from '../orm/idea'
+import {Idea} from '../orm/idea'
 
 export default class Logic {
 	constructor () {
@@ -21,7 +21,7 @@ export default class Logic {
 	 * @returns {Array<Idea>}
 	 */
 	getIdeasList () : Array<Idea> {
-
+		return [];
 	}
 
 	/**

@@ -1,4 +1,9 @@
+#!/usr/bin/env ts-node
 
-import yargs from 'yargs'
+import * as yargs from 'yargs'
 
-export default {};
+yargs
+    .usage('$0 <cmd> [args]')
+    .command('ideas', 'Ideas commands')
+    .help()
+    .argv;
