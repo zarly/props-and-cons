@@ -87,13 +87,21 @@ export class Idea extends Typegoose {
 	@staticMethod
 	static async readWithChildren (id: mongoose.Types.ObjectId, limit: number = 10) : Promise<any> {
 		const result = await IdeaModel.findById(id);
-		const commentsPromise = result.comments
+		result.ideasPlus = await IdeaModel.resolveIdeas(result.ideasPlus, limit);
+		result.ideasMinus = await IdeaModel.resolveIdeas(result.ideasMinus, limit);
+		result.alternatives = await IdeaModel.resolveIdeas(result.alternatives, limit);
+		result.comments = await IdeaModel.resolveIdeas(result.comments, limit);
+		return result;
+	}
+
+	@staticMethod
+	static async resolveIdeas (ids: Array<mongoose.Types.ObjectId>, limit: number = 10) : Promise<any> {
+		const commentsPromise = ids
 			.slice(0, limit)
 			.map((id: mongoose.Types.ObjectId) => {
 				return IdeaModel.findById(id);
 			});
-		result.comments = <any>(await Promise.all(<any>commentsPromise));
-		return result;
+		return <any>(await Promise.all(<any>commentsPromise));
 	}
 }
 

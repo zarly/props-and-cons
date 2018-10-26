@@ -42,19 +42,9 @@ describe('Idea', () => {
 	test('save child ideas', async () => {
 		expect(await Idea.countDocuments()).toBe(0);
 
-		const rootIdea = await Idea.createAndRegister({
-			title: 'Root idea title',
-		});
-
-		const idea1 = await Idea.createAndRegister({
-			title: 'Child idea 1',
-			parentIdea: rootIdea._id,
-		});
-
-		const idea2 = await Idea.createAndRegister({
-			title: 'Child idea 2',
-			parentIdea: rootIdea._id,
-		});
+		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
+		const idea1 = await Idea.createAndRegister({title: 'Child idea 1', parentIdea: rootIdea._id});
+		const idea2 = await Idea.createAndRegister({title: 'Child idea 2', parentIdea: rootIdea._id});
 
 		const actualRootIdea = await Idea.findById(rootIdea._id);
 
@@ -67,14 +57,9 @@ describe('Idea', () => {
 	test('readWithChildren read comments', async () => {
 		expect(await Idea.countDocuments()).toBe(0);
 
-		const rootIdea = await Idea.createAndRegister({
-			title: 'Root idea title',
-		});
+		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
 
-		await Idea.createAndRegister({
-			title: 'Child idea 1',
-			parentIdea: rootIdea._id,
-		});
+		await Idea.createAndRegister({title: 'Child idea 1', parentIdea: rootIdea._id});
 
 		const data = await Idea.readWithChildren(rootIdea._id);
 		expect(data.comments[0]).toBeInstanceOf(Idea);
@@ -83,9 +68,7 @@ describe('Idea', () => {
 	test('limit in readWithChildren works', async () => {
 		expect(await Idea.countDocuments()).toBe(0);
 
-		const rootIdea = await Idea.createAndRegister({
-			title: 'Root idea title',
-		});
+		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
 
 		await Idea.createAndRegister({title: 'Child idea', parentIdea: rootIdea._id});
 		await Idea.createAndRegister({title: 'Child idea', parentIdea: rootIdea._id});
@@ -94,11 +77,6 @@ describe('Idea', () => {
 		await Idea.createAndRegister({title: 'Child idea', parentIdea: rootIdea._id});
 
 		const data = await Idea.readWithChildren(rootIdea._id, 3);
-		expect(data.comments[0]).toBeInstanceOf(Idea);
-		expect(data.comments[1]).toBeInstanceOf(Idea);
-		expect(data.comments[2]).toBeInstanceOf(Idea);
-		expect(data.comments[3]).toBeFalsy();
 		expect(data.comments.length).toBe(3);
-
 	});
 });
