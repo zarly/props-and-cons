@@ -61,7 +61,9 @@ export class Idea extends Typegoose {
 	@instanceMethod
 	registerInParent () {
 		return new Promise((resolve, reject) => {
-			IdeaModel.update({
+			if (!this.parentIdea) return resolve(false);
+
+			IdeaModel.updateOne({
 				_id: this.parentIdea
 			}, {
 				$push: {
@@ -72,6 +74,26 @@ export class Idea extends Typegoose {
 				resolve(res.result);
 			});
 		});
+	}
+
+	@staticMethod
+	static async createAndRegister (json: any) {
+		const instance = new IdeaModel(json);
+		await instance.save();
+		await instance.registerInParent();
+		return instance;
+	}
+
+	@staticMethod
+	static async readWithChildren (id: mongoose.Types.ObjectId, limit: number = 10) : Promise<any> {
+		const result = await IdeaModel.findById(id);
+		const commentsPromise = result.comments
+			.slice(0, limit)
+			.map((id: mongoose.Types.ObjectId) => {
+				return IdeaModel.findById(id);
+			});
+		result.comments = <any>(await Promise.all(<any>commentsPromise));
+		return result;
 	}
 }
 

@@ -39,31 +39,22 @@ describe('Idea', () => {
         expect(await Idea.countDocuments()).toBe(1);
 	});
 
-	test('method addChildIdea', async () => {
-		expect(ORM.addChildIdea).toBeDefined();
+	test('save child ideas', async () => {
 		expect(await Idea.countDocuments()).toBe(0);
 
-		const rootIdea = new Idea({
+		const rootIdea = await Idea.createAndRegister({
 			title: 'Root idea title',
 		});
-		await rootIdea.save();
 
-		const idea1 = new Idea({
+		const idea1 = await Idea.createAndRegister({
 			title: 'Child idea 1',
 			parentIdea: rootIdea._id,
 		});
-		await idea1.save();
-		// await idea1.registerInParent();
 
-		const idea2 = new Idea({
+		const idea2 = await Idea.createAndRegister({
 			title: 'Child idea 2',
 			parentIdea: rootIdea._id,
 		});
-		await idea2.save();
-		// await idea2.registerInParent();
-
-		await ORM.addChildIdea(rootIdea._id, idea1);
-		await ORM.addChildIdea(rootIdea._id, idea2);
 
 		const actualRootIdea = await Idea.findById(rootIdea._id);
 
@@ -73,26 +64,41 @@ describe('Idea', () => {
 		expect(actualRootIdea.comments[1]).toEqual(idea2._id);
 	});
 
-	xtest('save child idea', async () => {
+	test('readWithChildren read comments', async () => {
 		expect(await Idea.countDocuments()).toBe(0);
 
-        const rootIdea = new Idea({
-            title: 'Root idea title',
-        });
-        await rootIdea.save();
+		const rootIdea = await Idea.createAndRegister({
+			title: 'Root idea title',
+		});
 
-        const idea = new Idea({
-            title: 'Child idea title',
-            parentIdea: rootIdea._id,
-        });
-        await idea.save();
-    
-        expect(await Idea.countDocuments()).toBe(2);
+		await Idea.createAndRegister({
+			title: 'Child idea 1',
+			parentIdea: rootIdea._id,
+		});
 
-        const actualRootIdea = await Idea.findById(rootIdea._id);
-        console.log(actualRootIdea);
+		const data = await Idea.readWithChildren(rootIdea._id);
+		expect(data.comments[0]).toBeInstanceOf(Idea);
+	});
 
-        expect(actualRootIdea.title).toBe(rootIdea.title);
-        expect(actualRootIdea.comments).toEqual([idea._id]);
-    });
+	test('limit in readWithChildren works', async () => {
+		expect(await Idea.countDocuments()).toBe(0);
+
+		const rootIdea = await Idea.createAndRegister({
+			title: 'Root idea title',
+		});
+
+		await Idea.createAndRegister({title: 'Child idea', parentIdea: rootIdea._id});
+		await Idea.createAndRegister({title: 'Child idea', parentIdea: rootIdea._id});
+		await Idea.createAndRegister({title: 'Child idea', parentIdea: rootIdea._id});
+		await Idea.createAndRegister({title: 'Child idea', parentIdea: rootIdea._id});
+		await Idea.createAndRegister({title: 'Child idea', parentIdea: rootIdea._id});
+
+		const data = await Idea.readWithChildren(rootIdea._id, 3);
+		expect(data.comments[0]).toBeInstanceOf(Idea);
+		expect(data.comments[1]).toBeInstanceOf(Idea);
+		expect(data.comments[2]).toBeInstanceOf(Idea);
+		expect(data.comments[3]).toBeFalsy();
+		expect(data.comments.length).toBe(3);
+
+	});
 });
