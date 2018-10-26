@@ -2,25 +2,19 @@
 import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
 
-// @pre<Idea>('save', function(next) { // or @pre(this: Car, 'save', ...
-//     console.log('Pre save', this.title, this.id, this.parentIdea, this.comments);
-//     if (this.parentIdea) {
-//         IdeaModel.update({
-//             _id: this.parentIdea
-//         }, {
-//             $push: {
-//                 comments: this._id
-//             }
-//         }, next);
-//     } else {
-//         next();
-//     }
-// })
+export enum IdeaTypes {
+	comment = 1,
+	alternative = 2,
+	plus = 3,
+	minus = 4,
+	implementation = 5,
+}
+
 export class Idea extends Typegoose {
 	_id: mongoose.Types.ObjectId;
 
-    @prop()
-    type: string;
+    @prop({'default': IdeaTypes.comment})
+    type: IdeaTypes;
     @prop()
     title: string;
     @prop()
@@ -56,18 +50,28 @@ export class Idea extends Typegoose {
 	@arrayProp({itemsRef: Idea})
     alternatives: Array<mongoose.Types.ObjectId>;
 	@arrayProp({itemsRef: Idea})
-    comments: Array<mongoose.Types.ObjectId>;
+	comments: Array<mongoose.Types.ObjectId>;
+	@arrayProp({itemsRef: Idea})
+	implementations: Array<mongoose.Types.ObjectId>;
 
 	@instanceMethod
 	registerInParent () {
+		const typeToArrayNameMap = {
+			[IdeaTypes.comment]: 'comments',
+			[IdeaTypes.alternative]: 'alternatives',
+			[IdeaTypes.plus]: 'ideasPlus',
+			[IdeaTypes.minus]: 'ideasMinus',
+			[IdeaTypes.implementation]: 'implementations',
+		};
 		return new Promise((resolve, reject) => {
 			if (!this.parentIdea) return resolve(false);
 
+			const arrayName = typeToArrayNameMap[this.type];
 			IdeaModel.updateOne({
 				_id: this.parentIdea
 			}, {
 				$push: {
-					comments: this._id
+					[arrayName]: this._id
 				}
 			}, (err: any, res: any) => {
 				if (err) reject(err);

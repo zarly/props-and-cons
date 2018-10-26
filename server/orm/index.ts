@@ -1,11 +1,11 @@
 
-import { prop, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
-import Idea from './idea'
+import Idea, {IdeaTypes} from './idea'
 
 export default class ORM {
 	private credentials: string;
 	static Idea = Idea;
+	static IdeaTypes = IdeaTypes;
 
 	constructor (credentials: string) {
 		this.credentials = credentials;
