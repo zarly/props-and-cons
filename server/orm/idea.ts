@@ -1,23 +1,23 @@
 
-import { prop, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
+import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
 
-@pre<Idea>('save', function(next) { // or @pre(this: Car, 'save', ...
-    console.log('Pre save', this.title, this.id, this.parentIdea, this.comments);
-    if (this.parentIdea) {
-        IdeaModel.update({
-            _id: this.parentIdea
-        }, {
-            $push: {
-                comments: this._id
-            }
-        }, next);
-    } else {
-        next();
-    }
-})
+// @pre<Idea>('save', function(next) { // or @pre(this: Car, 'save', ...
+//     console.log('Pre save', this.title, this.id, this.parentIdea, this.comments);
+//     if (this.parentIdea) {
+//         IdeaModel.update({
+//             _id: this.parentIdea
+//         }, {
+//             $push: {
+//                 comments: this._id
+//             }
+//         }, next);
+//     } else {
+//         next();
+//     }
+// })
 export class Idea extends Typegoose {
-    id: any;
+	_id: mongoose.Types.ObjectId;
 
     @prop()
     type: string;
@@ -40,23 +40,39 @@ export class Idea extends Typegoose {
     @prop()
     availableActions: Array<string>;
 
-    @prop()
-    votesPlus: Array<string>;
-    @prop()
-    votesMinus: Array<string>;
-    @prop()
-    skips: Array<string>;
-    @prop()
-    views: Array<string>;
+    @arrayProp({items: mongoose.Types.ObjectId})
+    votesPlus: Array<mongoose.Types.ObjectId>;
+	@arrayProp({items: mongoose.Types.ObjectId})
+    votesMinus: Array<mongoose.Types.ObjectId>;
+	@arrayProp({items: mongoose.Types.ObjectId})
+    skips: Array<mongoose.Types.ObjectId>;
+	@arrayProp({items: mongoose.Types.ObjectId})
+    views: Array<mongoose.Types.ObjectId>;
 
-    @prop({ref: 'Idea', default: []})
+	@arrayProp({itemsRef: Idea})
     ideasPlus: Array<mongoose.Types.ObjectId>;
-    @prop({ref: 'Idea', default: []})
+	@arrayProp({itemsRef: Idea})
     ideasMinus: Array<mongoose.Types.ObjectId>;
-    @prop({ref: 'Idea', default: []})
+	@arrayProp({itemsRef: Idea})
     alternatives: Array<mongoose.Types.ObjectId>;
-    @prop({ref: 'Idea', default: []})
+	@arrayProp({itemsRef: Idea})
     comments: Array<mongoose.Types.ObjectId>;
+
+	@instanceMethod
+	registerInParent () {
+		return new Promise((resolve, reject) => {
+			IdeaModel.update({
+				_id: this.parentIdea
+			}, {
+				$push: {
+					comments: this._id
+				}
+			}, (err: any, res: any) => {
+				if (err) reject(err);
+				resolve(res.result);
+			});
+		});
+	}
 }
 
 const IdeaModel = new Idea().getModelForClass(Idea);
