@@ -1,11 +1,11 @@
 
 import * as mongoose from 'mongoose'
-import Idea, {IdeaTypes} from './idea'
+import Idea, {IdeaType} from './idea'
 
 export default class ORM {
 	private credentials: string;
 	static Idea = Idea;
-	static IdeaTypes = IdeaTypes;
+	static IdeaTypes = IdeaType;
 
 	constructor (credentials: string) {
 		this.credentials = credentials;

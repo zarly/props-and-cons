@@ -2,7 +2,7 @@
 import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
 
-export enum IdeaTypes {
+export enum IdeaType {
 	comment = 1,
 	alternative = 2,
 	plus = 3,
@@ -10,11 +10,19 @@ export enum IdeaTypes {
 	implementation = 5,
 }
 
+export enum VoteType {
+	view = 1,
+	skip = 2,
+	plus = 3,
+	minus = 4,
+	report = 5,
+}
+
 export class Idea extends Typegoose {
 	_id: mongoose.Types.ObjectId;
 
-    @prop({'default': IdeaTypes.comment})
-    type: IdeaTypes;
+    @prop({'default': IdeaType.comment})
+    type: IdeaType;
     @prop()
     title: string;
     @prop()
@@ -41,7 +49,9 @@ export class Idea extends Typegoose {
 	@arrayProp({items: mongoose.Types.ObjectId})
     skips: Array<mongoose.Types.ObjectId>;
 	@arrayProp({items: mongoose.Types.ObjectId})
-    views: Array<mongoose.Types.ObjectId>;
+	views: Array<mongoose.Types.ObjectId>;
+	@arrayProp({items: mongoose.Types.ObjectId})
+	reports: Array<mongoose.Types.ObjectId>;
 
 	@arrayProp({itemsRef: Idea})
     ideasPlus: Array<mongoose.Types.ObjectId>;
@@ -57,11 +67,11 @@ export class Idea extends Typegoose {
 	@instanceMethod
 	registerInParent () {
 		const typeToArrayNameMap = {
-			[IdeaTypes.comment]: 'comments',
-			[IdeaTypes.alternative]: 'alternatives',
-			[IdeaTypes.plus]: 'ideasPlus',
-			[IdeaTypes.minus]: 'ideasMinus',
-			[IdeaTypes.implementation]: 'implementations',
+			[IdeaType.comment]: 'comments',
+			[IdeaType.alternative]: 'alternatives',
+			[IdeaType.plus]: 'ideasPlus',
+			[IdeaType.minus]: 'ideasMinus',
+			[IdeaType.implementation]: 'implementations',
 		};
 		return new Promise((resolve, reject) => {
 			if (!this.parentIdea) return resolve(false);
@@ -107,6 +117,30 @@ export class Idea extends Typegoose {
 				return IdeaModel.findById(id);
 			});
 		return <any>(await Promise.all(<any>commentsPromise));
+	}
+
+	@staticMethod
+	static async vote (ideaId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId, voteType: VoteType) {
+		const typeToArrayNameMap = {
+			[VoteType.view]: 'views',
+			[VoteType.skip]: 'skips',
+			[VoteType.plus]: 'votesPlus',
+			[VoteType.minus]: 'votesMinus',
+			[VoteType.report]: 'reports',
+		};
+		return new Promise((resolve, reject) => {
+			const arrayName = typeToArrayNameMap[voteType];
+			IdeaModel.updateOne({
+				_id: ideaId
+			}, {
+				$push: {
+					[arrayName]: userId
+				}
+			}, (err: any, res: any) => {
+				if (err) reject(err);
+				resolve(res.result);
+			});
+		});
 	}
 }
 

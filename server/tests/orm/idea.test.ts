@@ -166,3 +166,9 @@ describe('method readWithChildren', () => {
 		expect(data.implementations[0]).toBeInstanceOf(Idea);
 	});
 });
+
+describe('method vote', () => {
+	test('limit works', async () => {
+		expect(await Idea.countDocuments()).toBe(0);
+	});
+});
