@@ -4,6 +4,18 @@ import * as mongoose from 'mongoose'
 
 export class Group extends Typegoose {
     _id: mongoose.Types.ObjectId;
+    
+    @prop()
+    realm: string;
+    @prop()
+    externalId: string;
+    @prop()
+    name: string;
+
+    @prop()
+    owner: mongoose.Types.ObjectId;
+    @arrayProp({items: mongoose.Types.ObjectId})
+    admins: Array<mongoose.Types.ObjectId>;
 }
 
 const Model = new Group().getModelForClass(Group);

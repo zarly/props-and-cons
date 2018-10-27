@@ -4,8 +4,9 @@ import ORM from '../../orm'
 import * as mongoose from 'mongoose'
 
 export async function clearDatabase () {
-	await ORM.Idea.remove({});
-	// await mongoose.connection.db.dropDatabase();
+	await ORM.User.deleteMany({});
+	await ORM.Group.deleteMany({});
+	await ORM.Idea.deleteMany({});
 }
 
 export async function registerRootIdeaWithChildren () {
