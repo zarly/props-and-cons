@@ -1,17 +1,22 @@
 
 import * as express from 'express'
-import {Express} from "express-serve-static-core"
+import {Express} from 'express-serve-static-core'
+import api from './api'
 
 export default class Server {
     app: Express;
 
-    constructor (port?: number) {
+    constructor () {
         const app = this.app = express();
 
-        app.get('/ping', (req, res) => {
+        app.get('/telemetry/healthcheck', (req, res) => {
             res.send({pong: true});
         });
 
-        if (port) app.listen(port);
+        app.use('/api', api);
+    }
+
+    listen (port?: number) {
+        this.app.listen(port);
     }
 }
