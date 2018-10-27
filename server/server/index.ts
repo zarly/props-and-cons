@@ -1,19 +1,27 @@
 
 import * as express from 'express'
 import {Express} from 'express-serve-static-core'
-import api from './api'
+import ORM from '../orm'
 
 export default class Server {
     app: Express;
+    orm: ORM;
 
-    constructor () {
+    constructor (orm: ORM) {
+        this.orm = orm;
         const app = this.app = express();
 
         app.get('/telemetry/healthcheck', (req, res) => {
+            res.send({healthy: true});
+        });
+
+        app.get('/api/ping', (req, res) => {
             res.send({pong: true});
         });
 
-        app.use('/api', api);
+        app.get('/api/ideas', async (req, res) => {
+            res.send('Not implemented yet');
+        });
     }
 
     listen (port?: number) {

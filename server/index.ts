@@ -6,6 +6,6 @@ import Server from './server'
 
 const logic = new Logic();
 const orm = new ORM(config.mongoose);
-const server = new Server();
+const server = new Server(orm);
 
 server.listen(config.port);
