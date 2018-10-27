@@ -17,13 +17,11 @@ afterAll(async () => {
 	await orm.disconnect();
 });
 
-test('GET /api/ideas', () => {
-    return request(server.app)
+test('GET /api/ideas', async () => {
+    const response = await request(server.app)
         .get('/api/ideas')
-        .expect(200)
-        .then(response => {
-            expect(response.body).toBeDefined();
-            expect(response.body.count).toBe(0);
-            expect(response.body.rows).toEqual([]);
-        });
+        .expect(200);
+	expect(response.body).toBeDefined();
+	expect(response.body.count).toBe(0);
+	expect(response.body.rows).toEqual([]);
 });

@@ -11,26 +11,22 @@ test('404', () => {
         .expect(404);
 });
 
-test('telemetry healthcheck', () => {
+test('telemetry healthcheck', async () => {
     const ormMock = <ORM>{};
     const server = new Server(ormMock);
-    return request(server.app)
+    const response = await request(server.app)
         .get('/telemetry/healthcheck')
-        .expect(200)
-        .then(response => {
-            expect(response.body).toEqual({healthy: true});
-        });
+        .expect(200);
+	expect(response.body).toEqual({healthy: true});
 });
 
-test('ping', () => {
+test('ping', async () => {
     const ormMock = <ORM>{};
     const server = new Server(ormMock);
-    return request(server.app)
+	const response = await request(server.app)
         .get('/api/ping')
-        .expect(200)
-        .then(response => {
-            expect(response.body).toEqual({pong: true});
-        });
+        .expect(200);
+	expect(response.body).toEqual({pong: true});
 });
 
 // TODO: тесты на сам механизм сервера, без ORM

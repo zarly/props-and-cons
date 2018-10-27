@@ -35,6 +35,8 @@ describe('save children', () => {
 		const idea1 = await Idea.createAndRegister({title: 'Child idea 1', parentIdea: rootIdea._id});
 		const idea2 = await Idea.createAndRegister({title: 'Child idea 2', parentIdea: rootIdea._id});
 
+		expect(await Idea.countDocuments()).toBe(3);
+
 		const actualRootIdea = await Idea.findById(rootIdea._id);
 
 		expect(actualRootIdea.title).toBe(rootIdea.title);
