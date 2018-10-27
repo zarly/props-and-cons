@@ -1,5 +1,4 @@
 
-
 import config from '../../config'
 import ORM from '../../orm'
 import {clearDatabase} from './helper'
