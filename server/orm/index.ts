@@ -14,4 +14,8 @@ export default class ORM {
 	async connect () {
 		return await mongoose.connect(this.credentials, {useNewUrlParser: true});
 	}
+
+	async disconnect () {
+		await mongoose.connection.close();
+	}
 }
