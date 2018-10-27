@@ -2,7 +2,7 @@
 
 import config from '../../config'
 import ORM from '../../orm'
-import {dropDatabase} from './helper'
+import {clearDatabase} from './helper'
 
 const Idea = ORM.Idea;
 let orm: ORM;
@@ -12,7 +12,7 @@ beforeAll(async () => {
 	await orm.connect();
 });
 
-beforeEach(dropDatabase);
+beforeEach(clearDatabase);
 
 afterAll(async () => {
 	await orm.disconnect();

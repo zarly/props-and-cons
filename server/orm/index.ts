@@ -1,9 +1,13 @@
 
 import * as mongoose from 'mongoose'
+import User from './user'
+import Group from './group'
 import Idea, {IdeaType} from './idea'
 
 export default class ORM {
 	private credentials: string;
+	static User = User;
+	static Group = Group;
 	static Idea = Idea;
 	static IdeaTypes = IdeaType;
 

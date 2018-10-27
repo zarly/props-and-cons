@@ -77,7 +77,7 @@ export class Idea extends Typegoose {
 			if (!this.parentIdea) return resolve(false);
 
 			const arrayName = typeToArrayNameMap[this.type];
-			IdeaModel.updateOne({
+			Model.updateOne({
 				_id: this.parentIdea
 			}, {
 				$push: {
@@ -92,7 +92,7 @@ export class Idea extends Typegoose {
 
 	@staticMethod
 	static async createAndRegister (json: any) {
-		const instance = new IdeaModel(json);
+		const instance = new Model(json);
 		await instance.save();
 		await instance.registerInParent();
 		return instance;
@@ -100,12 +100,12 @@ export class Idea extends Typegoose {
 
 	@staticMethod
 	static async readWithChildren (id: mongoose.Types.ObjectId, limit: number = 10) : Promise<any> {
-		const result = await IdeaModel.findById(id);
-		result.comments = await IdeaModel.resolveIdeas(result.comments, limit);
-		result.alternatives = await IdeaModel.resolveIdeas(result.alternatives, limit);
-		result.ideasPlus = await IdeaModel.resolveIdeas(result.ideasPlus, limit);
-		result.ideasMinus = await IdeaModel.resolveIdeas(result.ideasMinus, limit);
-		result.implementations = await IdeaModel.resolveIdeas(result.implementations, limit);
+		const result = await Model.findById(id);
+		result.comments = await Model.resolveIdeas(result.comments, limit);
+		result.alternatives = await Model.resolveIdeas(result.alternatives, limit);
+		result.ideasPlus = await Model.resolveIdeas(result.ideasPlus, limit);
+		result.ideasMinus = await Model.resolveIdeas(result.ideasMinus, limit);
+		result.implementations = await Model.resolveIdeas(result.implementations, limit);
 		return result;
 	}
 
@@ -114,7 +114,7 @@ export class Idea extends Typegoose {
 		const commentsPromise = ids
 			.slice(0, limit)
 			.map((id: mongoose.Types.ObjectId) => {
-				return IdeaModel.findById(id);
+				return Model.findById(id);
 			});
 		return <any>(await Promise.all(<any>commentsPromise));
 	}
@@ -130,7 +130,7 @@ export class Idea extends Typegoose {
 		};
 		return new Promise((resolve, reject) => {
 			const arrayName = typeToArrayNameMap[voteType];
-			IdeaModel.updateOne({
+			Model.updateOne({
 				_id: ideaId
 			}, {
 				$push: {
@@ -144,6 +144,6 @@ export class Idea extends Typegoose {
 	}
 }
 
-const IdeaModel = new Idea().getModelForClass(Idea);
+const Model = new Idea().getModelForClass(Idea);
 
-export default IdeaModel;
+export default Model;
