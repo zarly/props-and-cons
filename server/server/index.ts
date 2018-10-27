@@ -20,7 +20,8 @@ export default class Server {
         });
 
         app.get('/api/ideas', async (req, res) => {
-            res.send('Not implemented yet');
+            const ideas = await this.orm.getIdeasList();
+            res.send(ideas);
         });
     }
 

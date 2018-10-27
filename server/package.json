@@ -12,7 +12,6 @@
   "author": "Alexander Abramov",
   "license": "MIT",
   "dependencies": {
-    "@types/supertest": "^2.0.6",
     "express": "^4.16.4",
     "lodash": "^4.17.11",
     "mongoose": "^5.3.6",
@@ -25,6 +24,7 @@
     "@types/lodash": "^4.14.117",
     "@types/mongoose": "^5.2.19",
     "@types/node": "^10.12.0",
+    "@types/supertest": "^2.0.6",
     "@types/yargs": "^12.0.1",
     "jest": "^23.6.0",
     "supertest": "^3.3.0",

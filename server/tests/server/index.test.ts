@@ -32,3 +32,5 @@ test('ping', () => {
             expect(response.body).toEqual({pong: true});
         });
 });
+
+// TODO: тесты на сам механизм сервера, без ORM
