@@ -5,7 +5,7 @@ import {Express} from 'express-serve-static-core'
 import * as passport from 'passport'
 import * as customStrategy from 'passport-custom'
 import * as crypto from 'crypto'
-import UserModel, {User} from '../orm/user'
+import ORM from '../orm'
 
 const VK_APP_SECRET: string = process.env.VK_APP_SECRET;
 
@@ -37,7 +37,7 @@ export default class Auth {
             const isAuth = checkAuthKey(params);
             if (isAuth) {
                 const {viewer_id} = params;
-				const user = await UserModel.loginOrRegisterVk(viewer_id);
+				const user = await ORM.User.loginOrRegisterVk(viewer_id);
                 done(null, user);
             } else {
                 done(null, false);

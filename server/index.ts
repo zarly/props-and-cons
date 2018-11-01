@@ -8,4 +8,5 @@ const orm = new ORM(config.mongoose);
 const logic = new Logic(orm);
 const server = new Server(orm, logic);
 
+orm.connect();
 server.listen(config.port);

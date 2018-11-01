@@ -5,7 +5,7 @@ import * as mongoose from 'mongoose'
 export class User extends Typegoose {
     _id: mongoose.Types.ObjectId;
 
-    @prop({ unique: true })
+    @prop({ index: true })
     login: string;
     @prop()
     name: string;
@@ -18,7 +18,7 @@ export class User extends Typegoose {
     @prop()
     isBanned: boolean;
 
-	@prop({ unique: true })
+	@prop({ index: true })
 	vk_uid: string;
 
     @prop()
