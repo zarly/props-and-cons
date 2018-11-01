@@ -4,8 +4,8 @@ import Logic from './logic'
 import ORM from './orm'
 import Server from './server'
 
-const logic = new Logic();
 const orm = new ORM(config.mongoose);
-const server = new Server(orm);
+const logic = new Logic(orm);
+const server = new Server(orm, logic);
 
 server.listen(config.port);

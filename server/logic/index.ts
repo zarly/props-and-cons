@@ -1,9 +1,12 @@
 
 import {Idea} from '../orm/idea'
+import ORM from '../orm'
 
 export default class Logic {
-	constructor () {
+    orm: ORM;
 
+    constructor (orm: ORM) {
+        this.orm = orm;
 	}
 
 	/**
