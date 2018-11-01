@@ -3,14 +3,17 @@ import config from '../../config'
 import * as request from 'supertest'
 import Server from '../../server'
 import ORM from '../../orm'
+import Logic from '../../logic'
 
 let orm: ORM;
+let logic: Logic;
 let server: Server;
 
 beforeAll(async () => {
 	orm = new ORM(config.mongoose);
+	logic = new Logic(orm);
 	await orm.connect();
-    server = new Server(orm);
+    server = new Server(orm, logic);
 });
 
 afterAll(async () => {

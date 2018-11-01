@@ -5,18 +5,21 @@ import * as mongoose from 'mongoose'
 export class User extends Typegoose {
     _id: mongoose.Types.ObjectId;
 
-    @prop()
+    @prop({ unique: true })
     login: string;
     @prop()
     name: string;
     @prop()
     passwordHash: string;
-    @arrayProp({items: String})
+    @arrayProp({ items: String })
     roles: Array<string>;
     @prop()
     salt: string;
     @prop()
     isBanned: boolean;
+
+	@prop({ unique: true })
+	vk_uid: string;
 
     @prop()
     invitedBy: mongoose.Types.ObjectId;
@@ -34,6 +37,20 @@ export class User extends Typegoose {
     friends: Array<mongoose.Types.ObjectId>;
     @arrayProp({items: mongoose.Types.ObjectId})
     similarUsers: Array<mongoose.Types.ObjectId>;
+
+	@staticMethod
+	static async loginOrRegisterVk (vk_uid: string) : Promise<any> {
+		let instance: any|null = await Model.findOne({vk_uid: `${vk_uid}`});
+
+		if (!instance) {
+			instance = new Model({
+				vk_uid: `${vk_uid}`
+			});
+			await instance.save();
+		}
+
+		return instance;
+	}
 }
 
 const Model = new User().getModelForClass(User);
