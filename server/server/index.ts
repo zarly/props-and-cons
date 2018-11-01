@@ -25,10 +25,14 @@ export default class Server {
             res.send({pong: true});
         });
 
-        app.get('/api/ideas', async (req, res) => {
-            const ideas = await this.orm.getIdeasList();
-            res.send(ideas);
-        });
+		app.get('/api/ideas', async (req, res) => {
+			const ideas = await this.orm.getIdeasList();
+			res.send(ideas);
+		});
+
+		app.get('/api/users/me', this.auth.vk_app_md5, async (req, res) => {
+			res.send(req.user);
+		});
     }
 
     listen (port?: number) {

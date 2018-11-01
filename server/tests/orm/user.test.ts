@@ -28,14 +28,14 @@ test('save user', async () => {
 });
 
 describe('vk auth', () => {
-	test('find by vk_uid', async () => {
-		const result = await User.findOne({vk_uid: 'unexisted'});
+	test('find by vkUid', async () => {
+		const result = await User.findOne({vkUid: 'unexisted'});
 		expect(result).toBeFalsy();
 	});
 
 	test('loginOrRegisterVk', async () => {
 		const user = await User.loginOrRegisterVk('some_id');
 		expect(user).toBeInstanceOf(User);
-		expect(user.vk_uid).toBe('some_id');
+		expect(user.vkUid).toBe('some_id');
 	});
 });

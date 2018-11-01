@@ -11,6 +11,7 @@ const VK_APP_SECRET: string = process.env.VK_APP_SECRET;
 
 export default class Auth {
     app: Express;
+    vk_app_md5: any;
 
     constructor (app: Express) {
         function getUrlHash (urlString: string) : any {
@@ -36,15 +37,17 @@ export default class Auth {
             
             const isAuth = checkAuthKey(params);
             if (isAuth) {
-                const {viewer_id} = params;
-				const user = await ORM.User.loginOrRegisterVk(viewer_id);
+                const {viewer_id, access_token} = params;
+				const user = await ORM.User.loginOrRegisterVk(viewer_id, access_token);
                 done(null, user);
             } else {
                 done(null, false);
             }
         }));
 
-        app.get('/api/auth/vkapp', passport.authenticate('vk_app_md5', { session: false }), (req, res) => {
+        this.vk_app_md5 = passport.authenticate('vk_app_md5', { session: false });
+
+        app.get('/api/auth/vkapp', this.vk_app_md5, (req, res) => {
             res.send({auth: true, user: req.user});
         });
     }

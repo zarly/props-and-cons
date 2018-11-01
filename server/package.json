@@ -12,6 +12,7 @@
   "author": "Alexander Abramov",
   "license": "MIT",
   "dependencies": {
+    "cross-fetch": "^2.2.3",
     "express": "^4.16.4",
     "lodash": "^4.17.11",
     "mongoose": "^5.3.6",
