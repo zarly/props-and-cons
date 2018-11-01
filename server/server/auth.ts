@@ -7,7 +7,7 @@ import * as localStrategy from 'passport-local'
 import * as customStrategy from 'passport-custom'
 import * as crypto from 'crypto'
 
-const VK_APP_SECRET: string = process.env.VK_APP_KEY;
+const VK_APP_SECRET: string = process.env.VK_APP_SECRET;
 
 export default class Auth {
     app: Express;
