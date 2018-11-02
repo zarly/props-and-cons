@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "ts-node index.ts",
     "start": "node dist/index.js",
-    "build": "tsc",
+    "build": "rm -Rf dist && tsc",
     "test": "NODE_ENV=testing jest"
   },
   "author": "Alexander Abramov",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^2.4.1",
     "cross-fetch": "^2.2.3",
     "express": "^4.16.4",
     "lodash": "^4.17.11",

@@ -11,7 +11,6 @@ export default class Page extends React.Component {
     }
 
     async componentDidMount () {
-        await fetch('/api/ping');
         const res = await fetch('/api/users/me');
         const me = await res.json();
         this.setState({me});

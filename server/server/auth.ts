@@ -11,7 +11,7 @@ export default class Auth {
 
     constructor (app: Express) {
 		passport.use('vk_app_auth_key', new vkAppAuthKeyStrategy.Strategy(async (uid: string, params: any, done: Function) => {
-			const user = await ORM.User.loginOrRegisterVk(uid, params.access_token);
+			const user = await ORM.User.loginOrRegisterVk(uid, params);
 			done(null, user);
 		}));
 

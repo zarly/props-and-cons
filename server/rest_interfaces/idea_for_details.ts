@@ -7,7 +7,7 @@ export interface IdeaForDetails {
 	description: string;
 
 	author: string;
-	parentIdeas: Array;
+	parentIdeas: Array<String>;
 
 	votesPlus: number;
 	votesMinus: number;
