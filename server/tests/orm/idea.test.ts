@@ -114,6 +114,7 @@ describe('method readWithChildren', () => {
 		await Idea.createAndRegister({title: 'Child idea', parentIdea: rootIdea._id});
 
 		const data = await Idea.readWithChildren(rootIdea._id, 3);
+		expect(data).toBeDefined();
 		expect(data.comments.length).toBe(3);
 	});
 

@@ -8,6 +8,8 @@
   },
   "author": "Alexander Abramov",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "chalk": "^2.4.1"
+  },
   "devDependencies": {}
 }

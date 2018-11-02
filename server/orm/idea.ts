@@ -101,11 +101,14 @@ export class Idea extends Typegoose {
 	@staticMethod
 	static async readWithChildren (id: mongoose.Types.ObjectId, limit: number = 10) : Promise<any> {
 		const result = await Model.findById(id);
+		if (!result) return null;
+
 		result.comments = await Model.resolveIdeas(result.comments, limit);
 		result.alternatives = await Model.resolveIdeas(result.alternatives, limit);
 		result.ideasPlus = await Model.resolveIdeas(result.ideasPlus, limit);
 		result.ideasMinus = await Model.resolveIdeas(result.ideasMinus, limit);
 		result.implementations = await Model.resolveIdeas(result.implementations, limit);
+		
 		return result;
 	}
 
