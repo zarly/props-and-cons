@@ -3,13 +3,12 @@
   "version": "0.0.1",
   "description": "Props and cons",
   "scripts": {
-    "test": "npm run test:server",
-    "test:server": "cd server && npm test && cd -"
+    "test": "npm run test:server && npm run test:frontend",
+    "test:server": "cd server && npm test && cd -",
+    "test:frontend": "cd frontend && npm test && cd -"
   },
   "author": "Alexander Abramov",
   "license": "MIT",
-  "dependencies": {
-    "chalk": "^2.4.1"
-  },
+  "dependencies": {},
   "devDependencies": {}
 }
