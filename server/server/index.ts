@@ -30,7 +30,7 @@ export default class Server {
 			res.send(ideas);
 		});
 
-		app.get('/api/users/me', this.auth.vk_app_md5, async (req, res) => {
+		app.get('/api/users/me', this.auth.vk_app_auth_key, async (req, res) => {
 			res.send(req.user);
 		});
     }
