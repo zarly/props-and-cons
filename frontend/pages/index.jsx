@@ -1,7 +1,8 @@
 
+import Page from '../components/page'
+
 export default () => (
-    <div>
+    <Page>
         <a href="https://vk.com/app6210627">Версия для ВКонтакте</a>
-        <script src="/static/yandex-metrika.js"></script>
-    </div>
+    </Page>
 );

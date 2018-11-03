@@ -13,6 +13,7 @@
   "author": "Alexander Abramov",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "chalk": "^2.4.1",
     "cross-fetch": "^2.2.3",
     "dotenv": "^6.1.0",
