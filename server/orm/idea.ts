@@ -106,6 +106,8 @@ export class Idea extends Typegoose {
 		const result = await Model.findById(id);
 		if (!result) return null;
 
+		result.parentIdea = <any>(await Model.findById(result.parentIdea, ['title']));
+
 		result.comments = await Model.resolveIdeas(result.comments, limit);
 		result.alternatives = await Model.resolveIdeas(result.alternatives, limit);
 		result.ideasPlus = await Model.resolveIdeas(result.ideasPlus, limit);
