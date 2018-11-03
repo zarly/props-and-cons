@@ -53,9 +53,9 @@ export default class Screen extends React.Component {
                         </div>
                         <br />
                         <div>
-                            <button>Голосовать За</button>
-                            <button>Голосовать Против</button>
-                            <button>Пропустить</button>
+                            <button onClick={this.vote.bind(this, idea._id, 3)}>Голосовать За</button>
+                            <button onClick={this.vote.bind(this, idea._id, 4)}>Голосовать Против</button>
+                            <button onClick={this.vote.bind(this, idea._id, 2)}>Пропустить</button>
                         </div>
                         <br />
                         <div>
@@ -108,5 +108,20 @@ export default class Screen extends React.Component {
                 )}
             </Page>
         );
+    }
+
+    async vote (ideaId, voteType) {
+        const query = {ideaId, voteType};
+        const res = await gate.ask('/vote', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(query),
+        });
+
+        const idea = await gate.ask('/ideas/' + this.idea_id);
+        this.setState({idea});
     }
 }

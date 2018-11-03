@@ -3,6 +3,7 @@ import {IdeaForList} from './idea_for_list';
 
 export interface IdeaForDetails {
 	_id: string;
+	type: number;
 	title: string;
 	description: string;
 

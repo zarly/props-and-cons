@@ -34,7 +34,7 @@ export default class Server {
 			res.send(ideas);
         });
         
-		app.get('/api/ideas/:id', async (req, res) => {
+		app.get('/api/ideas/:id', this.auth.vk_app_auth_key, async (req, res) => {
             const result = await this.logic.getIdeaById(req.params.id);
             res.send(result);
         });
@@ -44,16 +44,18 @@ export default class Server {
 			res.send(result);
 		});
         
-		app.patch('/api/ideas/:id', async (req, res) => {
+		app.patch('/api/ideas/:id', this.auth.vk_app_auth_key, async (req, res) => {
 			res.send({result: 'Idea edited'});
 		});
         
-		app.delete('/api/ideas/:id', async (req, res) => {
+		app.delete('/api/ideas/:id', this.auth.vk_app_auth_key, async (req, res) => {
 			res.send({result: 'Idea deleted'});
 		});
         
-		app.post('/api/vote', async (req, res) => {
-			res.send({result: 'Voted'});
+		app.post('/api/vote', this.auth.vk_app_auth_key, async (req, res) => {
+            const result = await this.logic.vote(req.user, req.body.ideaId, req.body.voteType);
+            console.log('result', result);
+			res.send(result);
 		});
 
 		app.get('/api/users/me', this.auth.vk_app_auth_key, async (req, res) => {

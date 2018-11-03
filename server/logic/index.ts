@@ -43,16 +43,45 @@ export default class Logic {
 
 	async getIdeaById (id: string) {
 		const idea = await ORM.Idea.readWithChildren(id);
-		return idea;
+		return {
+			_id: idea._id,
+			type: idea.type,
+			title: idea.title,
+			description: idea.description,
+
+			author: idea.author,
+			parentIdeas: [idea.parentIdea].filter(o => o),
+
+			votesPlus: idea.votesPlus && idea.votesPlus.length || 0,
+			votesMinus: idea.votesMinus && idea.votesMinus.length || 0,
+			skips: idea.skips && idea.skips.length || 0,
+			views: idea.views && idea.views.length || 0,
+			reports: idea.reports && idea.reports.length || 0,
+
+			ideasPlusCount: idea.votesPlus && idea.ideasPlus.length || 0,
+			ideasMinusCount: idea.ideasMinus && idea.ideasMinus.length || 0,
+			commentsCount: idea.comments && idea.comments.length || 0,
+			alternativesCount: idea.alternatives && idea.alternatives.length || 0,
+			implementationsCount: idea.implementations && idea.implementations.length || 0,
+
+			ideasPlus: idea.ideasPlus,
+			ideasMinus: idea.ideasMinus,
+			comments: idea.comments,
+			alternatives: idea.alternatives,
+			implementations: idea.implementations,
+
+			createdAt: idea.createdAt,
+		};
 	}
 
 	/**
 	 * Сохраняет голос за идею
 	 *
+	 * @param {User} user
 	 * @param {string} ideaId
 	 * @param {number} voteType
 	 */
-	vote (ideaId: string, voteType: number) {
-
+	async vote (user: User, ideaId: string, voteType: number) {
+		return await ORM.Idea.vote(ObjectId(ideaId), user._id, voteType);
 	}
 }

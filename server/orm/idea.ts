@@ -126,7 +126,7 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async vote (ideaId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId, voteType: VoteType) {
+	static vote (ideaId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId, voteType: VoteType) {
 		const typeToArrayNameMap = {
 			[VoteType.view]: 'views',
 			[VoteType.skip]: 'skips',
@@ -144,7 +144,7 @@ export class Idea extends Typegoose {
 				}
 			}, (err: any, res: any) => {
 				if (err) reject(err);
-				resolve(res.result);
+				resolve(res);
 			});
 		});
 	}
