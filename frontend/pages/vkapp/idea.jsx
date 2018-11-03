@@ -41,7 +41,7 @@ export default class Screen extends React.Component {
                     <div>
                         <div>
                             <br />
-                            {idea.parentIdeas.map((o, n) => (
+                            {idea.parentIdeas && idea.parentIdeas.map((o, n) => (
                                 <a key={n} href={'/vkapp/idea' + search + '&idea_id=' + o._id}> {o.title} -> </a>
                             ))}
                         </div>
@@ -49,7 +49,7 @@ export default class Screen extends React.Component {
                         <p>{idea.description}</p>
                         <div>
                             Автор: {idea.author}<br />
-                            Дата содания: {(new Date(idea.createdAt)).toISOString()}<br />
+                            Дата содания: {(new Date(idea.createdAt || 0)).toISOString()}<br />
                         </div>
                         <br />
                         <div>
@@ -66,7 +66,7 @@ export default class Screen extends React.Component {
                         </div>
                         
                         <h3>Аргументы за ({idea.ideasPlusCount})</h3>
-                        {idea.ideasPlus.map((o, n) => (
+                        {idea.ideasPlus && idea.ideasPlus.map((o, n) => (
                             <div key={n}>
                                 <a href={'/vkapp/idea' + search + '&idea_id=' + o._id}>{o.title}</a>
                             </div>
@@ -74,7 +74,7 @@ export default class Screen extends React.Component {
                         <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=3`}>[добавить]</a><br />
                         
                         <h3>Аргументы против ({idea.ideasMinusCount})</h3>
-                        {idea.ideasMinus.map((o, n) => (
+                        {idea.ideasMinus && idea.ideasMinus.map((o, n) => (
                             <div key={n}>
                                 <a href={'/vkapp/idea' + search + '&idea_id=' + o._id}>{o.title}</a>
                             </div>
@@ -82,7 +82,7 @@ export default class Screen extends React.Component {
                         <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=4`}>[добавить]</a><br />
                         
                         <h3>Комментарии ({idea.commentsCount})</h3>
-                        {idea.comments.map((o, n) => (
+                        {idea.comments && idea.comments.map((o, n) => (
                             <div key={n}>
                                 <a href={'/vkapp/idea' + search + '&idea_id=' + o._id}>{o.title}</a>
                             </div>
@@ -90,7 +90,7 @@ export default class Screen extends React.Component {
                         <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=1`}>[добавить]</a><br />
                         
                         <h3>Альтернативы ({idea.alternativesCount})</h3>
-                        {idea.alternatives.map((o, n) => (
+                        {idea.alternatives && idea.alternatives.map((o, n) => (
                             <div key={n}>
                                 <a href={'/vkapp/idea' + search + '&idea_id=' + o._id}>{o.title}</a>
                             </div>
@@ -98,7 +98,7 @@ export default class Screen extends React.Component {
                         <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=2`}>[добавить]</a><br />
                         
                         <h3>Планы реализации ({idea.implementationsCount})</h3>
-                        {idea.implementations.map((o, n) => (
+                        {idea.implementations && idea.implementations.map((o, n) => (
                             <div key={n}>
                                 <a href={'/vkapp/idea' + search + '&idea_id=' + o._id}>{o.title}</a>
                             </div>

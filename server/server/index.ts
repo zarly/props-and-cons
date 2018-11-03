@@ -29,30 +29,23 @@ export default class Server {
             res.send({pong: true});
         });
 
-		app.get('/api/ideas', async (req, res) => {
-			// const ideas = await this.orm.getIdeasList();
-			// res.send(ideas);
-			res.send({
-                rows: [{
-                    _id: '1',
-                    title: 'Idea 1',
-                }, {
-                    _id: '2',
-                    title: 'Idea 2',
-                }, {
-                    _id: '3',
-                    title: 'Idea 3',
-                }],
-                count: 25
-            });
+		app.get('/api/ideas', this.auth.vk_app_auth_key, async (req, res) => {
+			const ideas = await this.logic.getIdeasList(req.user);
+			res.send(ideas);
         });
         
 		app.get('/api/ideas/:id', async (req, res) => {
-			res.send(ideaMock);
+            if (Math.random() < 0.5) {
+                res.send(ideaMock);
+            } else {
+                const result = await this.logic.getIdeaById(req.params.id);
+                res.send(result);
+            }
         });
         
-		app.post('/api/ideas', async (req, res) => {
-			res.send({result: 'Idea created'});
+		app.post('/api/ideas', this.auth.vk_app_auth_key, async (req, res) => {
+            const result = await this.logic.publishIdea(req.user, req.body);
+			res.send(result);
 		});
         
 		app.patch('/api/ideas/:id', async (req, res) => {

@@ -64,6 +64,9 @@ export class Idea extends Typegoose {
 	@arrayProp({itemsRef: Idea})
 	implementations: Array<mongoose.Types.ObjectId>;
 
+    @prop({required: true, 'default': Date.now})
+	createdAt: number;
+
 	@instanceMethod
 	registerInParent () {
 		const typeToArrayNameMap = {
@@ -99,7 +102,7 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async readWithChildren (id: mongoose.Types.ObjectId, limit: number = 10) : Promise<any> {
+	static async readWithChildren (id: string|mongoose.Types.ObjectId, limit: number = 10) : Promise<any> {
 		const result = await Model.findById(id);
 		if (!result) return null;
 
