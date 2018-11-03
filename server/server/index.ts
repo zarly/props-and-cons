@@ -35,12 +35,8 @@ export default class Server {
         });
         
 		app.get('/api/ideas/:id', async (req, res) => {
-            if (Math.random() < 0.5) {
-                res.send(ideaMock);
-            } else {
-                const result = await this.logic.getIdeaById(req.params.id);
-                res.send(result);
-            }
+            const result = await this.logic.getIdeaById(req.params.id);
+            res.send(result);
         });
         
 		app.post('/api/ideas', this.auth.vk_app_auth_key, async (req, res) => {

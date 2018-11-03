@@ -11,6 +11,7 @@
     "build": "next build",
     "export": "next export",
     "start": "next start",
+    "deploy": "ssh app@alex-abramov.com 'rm -Rf /apps/pac-static' && scp -r out app@alex-abramov.com:/apps/pac-static",
     "test": "true"
   },
   "license": "MIT",

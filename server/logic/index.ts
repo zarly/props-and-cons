@@ -22,7 +22,7 @@ export default class Logic {
 			description: raw.description,
 
 			author: user._id,
-			parentIdea: ObjectId(<any>raw.parentIdea),
+			parentIdea: raw.parentIdea ? ObjectId(<any>raw.parentIdea) : null,
 		});
 		return idea;
 	}
@@ -32,10 +32,12 @@ export default class Logic {
 	 *
 	 * @returns {Array<Idea>}
 	 */
-	async getIdeasList (user?: User, limit: number = 10, shift: number = 0) : Promise<{count: number, rows: Idea[]}> {
-		const filter = {};
-		const count = await ORM.Idea.count(filter);
-		const rows = await ORM.Idea.find(filter);
+	async getIdeasList (user?: User, limit: number = 10, skip: number = 0) : Promise<{count: number, rows: Idea[]}> {
+		const filter : any = {
+			parentIdea: null,
+		};
+		const count = await ORM.Idea.countDocuments(filter);
+		const rows = await ORM.Idea.find(filter).sort([['createdAt', -1]]).skip(skip).limit(limit);
 		return {count, rows};
 	}
 

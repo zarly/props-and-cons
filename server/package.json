@@ -8,7 +8,7 @@
     "start": "node dist/index.js",
     "build": "rm -Rf dist && tsc && cp package.json dist && cp .env dist",
     "test": "NODE_ENV=testing jest",
-    "deploy": "ssh root@alex-abramov.com 'rm -Rf /apps/pac-node' && scp -r dist root@alex-abramov.com:/apps/pac-node"
+    "deploy": "ssh app@alex-abramov.com 'rm -Rf /apps/pac-node' && scp -r dist app@alex-abramov.com:/apps/pac-node"
   },
   "author": "Alexander Abramov",
   "license": "MIT",
