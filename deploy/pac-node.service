@@ -1,0 +1,18 @@
+# HOWTO: https://stackoverflow.com/questions/4681067/how-do-i-run-a-node-js-application-as-its-own-process/28542093#28542093
+
+[Unit]
+Description=Props and cons /etc/systemd/system config
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node index.js 2>&1 > /apps/node.log
+Restart=always
+User=nobody
+# Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
+Group=nogroup
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/apps/pac-node
+
+[Install]
+WantedBy=multi-user.target
