@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node index.ts",
     "start": "node dist/index.js",
-    "build": "rm -Rf dist && tsc && cp package.json dist && cp .env dist",
+    "build": "rm -Rf dist ; tsc && cp package.json dist && cp .env dist",
     "test": "NODE_ENV=testing jest",
     "deploy": "ssh app@alex-abramov.com 'rm -Rf /apps/pac-node' && scp -r dist app@alex-abramov.com:/apps/pac-node && ssh app@alex-abramov.com 'cd /apps/pac-node && npm install'"
   },

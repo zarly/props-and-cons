@@ -2,6 +2,13 @@
 import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
 
+export enum RootIdeaType {
+	information = 1, // правда-ложь
+	action = 2,		 // за-против
+	question = 3,	 // актуально или нет, варианты ответов
+	category = 4,
+}
+
 export enum IdeaType {
 	comment = 1,
 	alternative = 2,

@@ -1,9 +1,28 @@
 
-import React from 'react'
+import {pd, mg, ft, cl} from '../../style/theme'
+import Component from '../../components/component'
 import Page from '../../components/page'
+import Argument from '../../components/argument'
 import gate from '../../modules/gate'
+import ideaMock from '../../../server/dist/mocks/idea'
 
-export default class Screen extends React.Component {
+const argsBlockCSS = {
+	background: cl.lt,
+	border: `1px solid ${cl.mn}`,
+	marginBottom: mg.m,
+	padding: pd.m,
+};
+
+
+const ArgsTitle = (p) => <span style={{fontSize: ft.l, fontWeight: 'bold', color: cl.dk}}>{p.children}</span>;
+const Row = (p) => <div style={{display: 'flex'}}>{p.children}</div>;
+const PseudoIcon = () => <div style={{display: 'inline-block', width: '20px', height: '20px', background: cl.ct}} />;
+const StatsIcon = (p) => <div style={{border: '1px solid #aaa', padding: pd.xs, margin: mg.xs}}>
+		<PseudoIcon/>{p.value}
+		<div style={{fontSize: ft.s}}>{p.label}</div>
+	</div>;
+
+export default class Screen extends Component {
     constructor () {
         super();
         this.state = {
@@ -19,11 +38,12 @@ export default class Screen extends React.Component {
     }
 
     async componentDidMount () {
-        const me = await gate.ask('/users/me');
-        this.setState({me});
-
-        const idea = await gate.ask('/ideas/' + this.idea_id);
-        this.setState({idea});
+	    // const me = await gate.ask('/users/me');
+	    // this.setState({me});
+	    //
+	    // const idea = await gate.ask('/ideas/' + this.idea_id);
+	    // this.setState({idea});
+	    this.setState({idea: ideaMock});
 
         if ('undefined' !== typeof window) {
             this.setState({search: window.location.search.split('&hash=')[0] + '&hash='});
@@ -31,8 +51,7 @@ export default class Screen extends React.Component {
     }
 
     render () {
-        const {me, idea, search} = this.state;
-        const vkInfo = me && me.vkInfo || {};
+        const {idea, search} = this.state;
 
         return (
             <Page>
@@ -58,52 +77,52 @@ export default class Screen extends React.Component {
                             <button onClick={this.vote.bind(this, idea._id, 2)}>Пропустить</button>
                         </div>
                         <br />
-                        <div>
-                            За: {idea.votesPlus}<br />
-                            Против: {idea.votesMinus}<br />
-                            Воздержались: {idea.skips}<br />
-                            Всего просмотров: {idea.views}<br />
-                        </div>
-                        
-                        <h3>Аргументы за ({idea.ideasPlusCount})</h3>
-                        {idea.ideasPlus && idea.ideasPlus.map((o, n) => (
-                            <div key={n}>
-                                <a href={'/vkapp/idea' + search + '&idea_id=' + o._id}>{o.title}</a>
-                            </div>
-                        ))}
-                        <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=3`}>[добавить]</a><br />
-                        
-                        <h3>Аргументы против ({idea.ideasMinusCount})</h3>
-                        {idea.ideasMinus && idea.ideasMinus.map((o, n) => (
-                            <div key={n}>
-                                <a href={'/vkapp/idea' + search + '&idea_id=' + o._id}>{o.title}</a>
-                            </div>
-                        ))}
-                        <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=4`}>[добавить]</a><br />
-                        
-                        <h3>Комментарии ({idea.commentsCount})</h3>
-                        {idea.comments && idea.comments.map((o, n) => (
-                            <div key={n}>
-                                <a href={'/vkapp/idea' + search + '&idea_id=' + o._id}>{o.title}</a>
-                            </div>
-                        ))}
-                        <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=1`}>[добавить]</a><br />
-                        
-                        <h3>Альтернативы ({idea.alternativesCount})</h3>
-                        {idea.alternatives && idea.alternatives.map((o, n) => (
-                            <div key={n}>
-                                <a href={'/vkapp/idea' + search + '&idea_id=' + o._id}>{o.title}</a>
-                            </div>
-                        ))}
-                        <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=2`}>[добавить]</a><br />
-                        
-                        <h3>Планы реализации ({idea.implementationsCount})</h3>
-                        {idea.implementations && idea.implementations.map((o, n) => (
-                            <div key={n}>
-                                <a href={'/vkapp/idea' + search + '&idea_id=' + o._id}>{o.title}</a>
-                            </div>
-                        ))}
-                        <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=5`}>[добавить]</a><br />
+                        <Row>
+	                        <StatsIcon label={'одобряют'}   value={idea.votesPlus} />
+	                        <StatsIcon label={'возражают'}  value={idea.votesMinus} />
+	                        <StatsIcon label={'пропустили'} value={idea.skips} />
+			                <StatsIcon label={'увидели'}    value={idea.views} />
+                        </Row>
+
+	                    <div style={argsBlockCSS}>
+		                    <ArgsTitle>Аргументы за ({idea.ideasPlusCount})</ArgsTitle>
+		                    {idea.ideasPlus && idea.ideasPlus.map((o, n) => (
+			                    <Argument key={n} idea={o} index={n + 1} linkSearch={search} />
+		                    ))}
+		                    <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=3`}>[добавить]</a>
+	                    </div>
+
+	                    <div style={argsBlockCSS}>
+		                    <ArgsTitle>Аргументы против ({idea.ideasMinusCount})</ArgsTitle>
+		                    {idea.ideasMinus && idea.ideasMinus.map((o, n) => (
+			                    <Argument key={n} idea={o} index={n + 1} linkSearch={search} />
+		                    ))}
+		                    <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=4`}>[добавить]</a>
+	                    </div>
+
+	                    <div style={argsBlockCSS}>
+		                    <ArgsTitle>Альтернативы ({idea.alternativesCount})</ArgsTitle>
+		                    {idea.alternatives && idea.alternatives.map((o, n) => (
+			                    <Argument key={n} idea={o} index={n + 1} linkSearch={search} />
+		                    ))}
+		                    <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=2`}>[добавить]</a>
+	                    </div>
+
+	                    <div style={argsBlockCSS}>
+		                    <ArgsTitle>Планы реализации ({idea.implementationsCount})</ArgsTitle>
+		                    {idea.implementations && idea.implementations.map((o, n) => (
+			                    <Argument key={n} idea={o} index={n + 1} linkSearch={search} />
+		                    ))}
+		                    <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=5`}>[добавить]</a>
+	                    </div>
+
+	                    <div style={argsBlockCSS}>
+		                    <ArgsTitle>Комментарии ({idea.commentsCount})</ArgsTitle>
+		                    {idea.comments && idea.comments.map((o, n) => (
+			                    <Argument key={n} idea={o} index={n + 1} linkSearch={search} />
+		                    ))}
+		                    <a href={'/vkapp/idea-add' + search + `&parent_idea_id=${idea._id}&idea_type=1`}>[добавить]</a>
+	                    </div>
                     </div>
                 )}
             </Page>

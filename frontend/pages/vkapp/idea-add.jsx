@@ -1,9 +1,9 @@
 
-import React from 'react'
+import Component from '../../components/component'
 import Page from '../../components/page'
 import gate from '../../modules/gate'
 
-export default class Screen extends React.Component {
+export default class Screen extends Component {
     constructor () {
         super();
         this.state = {

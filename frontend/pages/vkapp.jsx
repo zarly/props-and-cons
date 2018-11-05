@@ -1,12 +1,12 @@
 
-import React from 'react'
+import Component from '../components/component'
 import Page from '../components/page'
 import pages from '.';
 import gate from '../modules/gate'
 
 const IDEAS_PER_PAGE_LIMIT = 10;
 
-export default class Screen extends React.Component {
+export default class Screen extends Component {
     constructor () {
         super();
         this.state = {
