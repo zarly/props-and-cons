@@ -17,9 +17,9 @@ const argsBlockCSS = {
 const ArgsTitle = (p) => <span style={{fontSize: ft.l, fontWeight: 'bold', color: cl.dk}}>{p.children}</span>;
 const Row = (p) => <div style={{display: 'flex'}}>{p.children}</div>;
 const PseudoIcon = () => <div style={{display: 'inline-block', width: '20px', height: '20px', background: cl.ct}} />;
-const StatsIcon = (p) => <div style={{border: '1px solid #aaa', padding: pd.xs, margin: mg.xs}}>
-		<PseudoIcon/>{p.value}
-		<div style={{fontSize: ft.s}}>{p.label}</div>
+const StatsIcon = (p) => <div style={{border: '1px solid #aaa', padding: pd.xs, margin: mg.xs, width: '100px', textAlign: 'center'}}>
+		<PseudoIcon/><span style={{fontSize: ft.l}}>{p.value}</span>
+		<div style={{fontSize: ft.xs}}>{p.label}</div>
 	</div>;
 
 export default class Screen extends Component {
