@@ -1,5 +1,6 @@
 
 import './declarations'
+import config from '../config'
 import {Express} from 'express-serve-static-core'
 import * as passport from 'passport'
 import * as vkAppAuthKeyStrategy from '../logic/passport-vk-app-auth-key'
@@ -10,7 +11,12 @@ export default class Auth {
 	vk_app_auth_key: any;
 
     constructor (app: Express) {
-		passport.use('vk_app_auth_key', new vkAppAuthKeyStrategy.Strategy(async (uid: string, params: any, done: Function) => {
+    	this.app = app;
+
+		passport.use('vk_app_auth_key', new vkAppAuthKeyStrategy.Strategy({
+			secret: config.auth.vkapp.secret,
+			disableVerification: config.auth.vkapp.disableVerification,
+		}, async (uid: string, params: any, done: Function) => {
 			const user = await ORM.User.loginOrRegisterVk(uid, params);
 			done(null, user);
 		}));

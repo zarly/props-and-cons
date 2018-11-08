@@ -5,6 +5,7 @@ import Logic from './logic'
 import ORM from './orm'
 import Server from './server'
 
+console.log(`environment = ${config.environment}`);
 dotenv.config();
 
 const orm = new ORM(config.mongoose);

@@ -19,6 +19,13 @@ export interface IConfig {
     environment: string;
     port: number;
     mongoose: string;
+
+    auth: {
+    	vkapp: {
+    		secret: string;
+			disableVerification: boolean;
+		}
+	};
 }
 
 export default <IConfig> config;
