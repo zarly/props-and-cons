@@ -1,4 +1,5 @@
 
+import '../style/_common.less'
 import {pd, mg, ft, cl} from '../style/theme'
 import React from 'react'
 import {init as initMetrika} from '../modules/yandex-metrika'

@@ -1,4 +1,5 @@
 
+import '../style/vkapp.less'
 import Component from '../components/component'
 import Page from '../components/page'
 import pages from '.';
