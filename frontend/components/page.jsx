@@ -12,8 +12,9 @@ export default class Page extends React.Component {
     }
 
     render () {
+        const {className, style} = this.props;
         return (
-            <div style={{fontFamily: 'Tahoma,Verdana,Arial', fontSize: ft.m, color: cl.dk, ...this.props.style}}>
+            <div className={className} style={{fontFamily: 'Tahoma,Verdana,Arial', fontSize: ft.m, color: cl.dk, ...style}}>
                 {this.props.children}
             </div>
         );

@@ -41,11 +41,19 @@ export default class Screen extends Component {
     render () {
         const {ideas, search} = this.state;
         const pages = this.getPageIndexes();
+        const groupName = 'Название группы в которую добавили приложение';
 
         return (
-            <Page>
-                <a href={'/vkapp/profile' + search}>профиль пользователя</a><br />
-                <a href={'/vkapp/idea-add' + search}>добавить идею</a><br />
+            <Page className="IdeasPage">
+                <div className="row">
+                    <div>
+                        <span className="anch crumb">{groupName}</span>
+                    </div>
+                    <div className="header-right">
+                        <button className="btn-add-new" onClick={this.navigateAddIdea.bind(this)}>Добавить тему</button>
+                    </div>
+                </div>
+                <a href={'/vkapp/profile' + search}>профиль пользователя</a>
                 <h1>Идеи</h1>
                 <table>
                     <tbody>
@@ -72,5 +80,9 @@ export default class Screen extends Component {
             pages.push(Math.floor(i / IDEAS_PER_PAGE_LIMIT) + 1);
         }
         return pages;
+    }
+
+    navigateAddIdea () {
+        location.href = '/vkapp/idea-add' + this.state.search;
     }
 }
