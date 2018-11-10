@@ -8,7 +8,8 @@
     "start": "npm run dev",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "test": "npm run unit",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "deploy": "ssh app@alex-abramov.com 'rm -Rf /apps/pac-static/v2' && scp -r dist app@alex-abramov.com:/apps/pac-static/v2"
   },
   "dependencies": {
     "vue": "^2.5.2",
