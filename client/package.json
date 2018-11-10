@@ -12,6 +12,7 @@
     "deploy": "ssh app@alex-abramov.com 'rm -Rf /apps/pac-static/v2' && scp -r dist app@alex-abramov.com:/apps/pac-static/v2"
   },
   "dependencies": {
+    "@sentry/browser": "^4.3.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
