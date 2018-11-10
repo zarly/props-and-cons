@@ -3,7 +3,7 @@
     <div class="anch" @click="$router.push('/ideas')">к списку тем</div>
     <div v-if="idea">
       <h2 v-text="idea.title"></h2>
-      <p v-text="idea.details"></p>
+      <p v-text="idea.description"></p>
     </div>
   </div>
 </template>
