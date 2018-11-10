@@ -68,3 +68,4 @@ typings/
 .next
 frontend/out
 server/dist
+client/dist
