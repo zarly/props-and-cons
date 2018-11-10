@@ -1,17 +1,24 @@
 <template>
-  <div class="HomePage">
+  <div class="IdeasPage">
     Home page
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import IdeaItem from '@/components/idea_item.vue';
 
 @Component({
   components: {
-    HelloWorld,
+    IdeaItem,
   },
 })
-export default class Home extends Vue {}
+export default class Page extends Vue {}
 </script>
+
+<style scoped lang="less">
+  .IdeasPage {
+    background-color: #fafbfc;
+    padding: 10px;
+  }
+</style>
