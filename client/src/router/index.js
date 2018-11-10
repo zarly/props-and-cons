@@ -13,9 +13,15 @@ export default new Router({
       component: Ideas
     },
     {
-      path: '/idea',
+      path: '/ideas',
+      name: 'ideas',
+      component: Ideas
+    },
+    {
+      path: '/idea/:id',
       name: 'idea',
-      component: Idea
+      component: Idea,
+      props: true
     },
     {
       path: '/idea-add',

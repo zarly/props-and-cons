@@ -9,9 +9,6 @@
         </div>
     </div>
     <div>
-      <div v-for="idea in ideas" :key="idea._id" v-text="idea"></div>
-    </div>
-    <div>
       <IdeaItem v-for="idea in ideas" :key="idea._id" :idea="idea" />
     </div>
   </div>
