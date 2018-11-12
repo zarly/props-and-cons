@@ -1,5 +1,6 @@
 <template>
 	<div class="IdeaAddPage VkPage">
+		<div class="anch" @click="$router.go(-1)">вернуться назад</div>
 		<form @submit.prevent="onSubmit">
 			<div class="fields-row">
 				<div class="label">Заголовок</div>
