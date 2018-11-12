@@ -9,7 +9,8 @@
 			</div>
 		</div>
 		<div v-if="ideas && ideas.length">
-			<IdeaItem v-for="idea in ideas" :key="idea._id" :idea="idea" />
+			<div class="filter"></div>
+			<IdeaItem v-for="idea in ideas" :key="idea._id" :idea="idea" class="idea" />
 		</div>
 		<div v-else>
 			<div class="hint no-content">В сообществе ещё нет тем.</div>
@@ -28,7 +29,7 @@
 		data () {
 			return {
 				initPromise: this.fetch(),
-				groupName: 'Название группы',
+//				groupName: 'Название группы',
 				ideas: [],
 				totalCount: 0,
 			};
@@ -44,7 +45,7 @@
 </script>
 
 <style scoped lang="less">
-	@import-once "../styles/variables";
+	@import "../styles/variables";
 
 	.IdeasPage {
 		.header-right {
@@ -52,14 +53,20 @@
 			flex-direction: column;
 			align-items: flex-end;
 			justify-content: flex-start;
-
-			.btn-add-new {
-				margin-top: 12px;
-			}
 		}
 
-		.items {
-			margin-top: 16px;
+		.filter {
+			border-bottom: @grey-border;
+			margin: 15px -@page-margin 5px;
+			padding: 0 @page-margin;
+		}
+
+		.idea {
+			border-bottom: @grey-border;
+
+			&:last-child {
+				border-bottom: 0;
+			}
 		}
 
 		.no-content {
