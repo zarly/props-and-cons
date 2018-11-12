@@ -44,41 +44,8 @@ export default class Logic {
 	 * @returns {Promise<ItemList<IdeaForList>>}
 	 */
 	async getIdeasList (realm: string, user: User, limit: number = 10, skip: number = 0, parentId: string = null) : Promise<ItemList<IdeaForList>> {
-		limit = Math.min(limit, 100);
-
-		const filter : any = {
-			realm: realm,
-			parentIdea: parentId ? ObjectId(parentId) : null,
-		};
-		const count = await ORM.Idea.countDocuments(filter);
-		const rows = await ORM.Idea.aggregate([{
-			$match: filter
-		}, {
-			$project: {
-				title: 1,
-				description: 1,
-
-				votesPlus: {$size: '$votesPlus'},
-				votesMinus: {$size: '$votesMinus'},
-				skips: {$size: '$skips'},
-				views: {$size: '$views'},
-				reports: {$size: '$reports'},
-
-				ideasPlusCount: {$size: '$ideasPlus'},
-				ideasMinusCount: {$size: '$ideasMinus'},
-				commentsCount: {$size: '$comments'},
-				alternativesCount: {$size: '$alternatives'},
-				implementationsCount: {$size: '$implementations'},
-
-				createdAt: 1,
-			}
-		}, {
-			$sort: {createdAt: -1}
-		}]).skip(skip).limit(limit);
-		return {
-			count,
-			rows: <IdeaForList[]>rows,
-		};
+		limit = Math.min(limit, 100); // TODO: вынести в сервер и установить такие проверки везде
+		return await ORM.Idea.getIdeasList(realm, user._id, limit, skip, parentId);
 	}
 
 	/**

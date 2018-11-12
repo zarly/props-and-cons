@@ -93,6 +93,43 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
+	static async getIdeasList (realm: string, userId: MongoIdType, limit: number = 10, skip: number = 0, parentId: string = null) {
+		const filter : any = {
+			realm: realm,
+			parentIdea: parentId ? mongoose.Types.ObjectId(parentId) : null,
+		};
+		const count = await Model.countDocuments(filter);
+		const rows = await Model.aggregate([{
+			$match: filter
+		}, {
+			$project: {
+				title: 1,
+				description: 1,
+
+				votesPlus: {$size: '$votesPlus'},
+				votesMinus: {$size: '$votesMinus'},
+				skips: {$size: '$skips'},
+				views: {$size: '$views'},
+				reports: {$size: '$reports'},
+
+				ideasPlusCount: {$size: '$ideasPlus'},
+				ideasMinusCount: {$size: '$ideasMinus'},
+				commentsCount: {$size: '$comments'},
+				alternativesCount: {$size: '$alternatives'},
+				implementationsCount: {$size: '$implementations'},
+
+				createdAt: 1,
+			}
+		}, {
+			$sort: {createdAt: -1}
+		}]).skip(skip).limit(limit);
+		return {
+			count,
+			rows: <IdeaForList[]>rows,
+		};
+	}
+
+	@staticMethod
 	static async readWithChildren (userId: MongoIdType, ideaId: MongoIdType, childrenLimit: number = 30) : Promise<any> { // TODO: отображение аргументов выходящих за лимит (вероятно отдельным запросом)
 		const rows = await Model.aggregate([{
 			$match: {
