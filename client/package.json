@@ -2,7 +2,8 @@
   "name": "props-and-cons-client",
   "version": "1.0.0",
   "description": "Props and cons client",
-  "private": true,
+  "author": "Alexander Abramov",
+  "license": "MIT",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",

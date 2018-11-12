@@ -1,4 +1,6 @@
 
+@import "./variables";
+
 body {
     font-family: -apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif;
     font-weight: 400;
@@ -6,7 +8,7 @@ body {
     -moz-osx-font-smoothing: auto;
     line-height: 1.154;
     color: #000;
-    background: #fafbfc;
+    background: @cl-white;
     font-size: 13px;
 }
 
@@ -47,7 +49,7 @@ button {
 
 .anch {
     display: inline;
-    color: #285473;
+    color: @cl-blue;
     font-weight: bold;
     cursor: pointer;
     text-decoration: none;
@@ -58,7 +60,7 @@ button {
 }
 
 .hint {
-    color: #828282;
+    color: @cl-grey;
 }
 
 .crumb {
