@@ -45,12 +45,12 @@
 				<div class="row">
 					<div class="half-area">
 						<h2>Аргументы За</h2>
-						<div v-for="child in idea.ideasPlus" @click="$router.push(`/idea/${child._id}`)" class="anch">{{child.title}}</div>
+						<ArgumentInDetails v-for="child in idea.ideasPlus" :idea="child" :key="child._id"></ArgumentInDetails>
 						<button @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Добавить</button>
 					</div>
 					<div class="half-area">
 						<h2>Аргументы Против</h2>
-						<div v-for="child in idea.ideasMinus" @click="$router.push(`/idea/${child._id}`)" class="anch">{{child.title}}</div>
+						<ArgumentInDetails v-for="child in idea.ideasMinus" :idea="child" :key="child._id"></ArgumentInDetails>
 						<button @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Добавить</button>
 					</div>
 				</div>
@@ -60,12 +60,12 @@
 				<div class="row">
 					<div class="half-area">
 						<h2>Дополнения</h2>
-						<div v-for="child in idea.implementations" @click="$router.push(`/idea/${child._id}`)" class="anch">{{child.title}}</div>
+						<ArgumentInDetails v-for="child in idea.implementations" :idea="child" :key="child._id"></ArgumentInDetails>
 						<button @click="$router.push(`/idea-add?type=5&parent=${idea._id}`)">Добавить</button>
 					</div>
 					<div class="half-area">
 						<h2>Альтернативы</h2>
-						<div v-for="child in idea.alternatives" @click="$router.push(`/idea/${child._id}`)" class="anch">{{child.title}}</div>
+						<ArgumentInDetails v-for="child in idea.alternatives" :idea="child" :key="child._id"></ArgumentInDetails>
 						<button @click="$router.push(`/idea-add?type=2&parent=${idea._id}`)">Добавить</button>
 					</div>
 				</div>
@@ -73,7 +73,7 @@
 			</section>
 			<section class="comments-area">
 				<h2>Комментарии</h2>
-				<div v-for="child in idea.comments" @click="$router.push(`/idea/${child._id}`)" class="anch">{{child.title}}</div>
+				<CommentInDetails v-for="child in idea.comments" :idea="child" :key="child._id"></CommentInDetails>
 				<button @click="$router.push(`/idea-add?type=1&parent=${idea._id}`)">Добавить</button>
 			</section>
 			<!--<div v-text="idea"></div>-->
@@ -84,8 +84,14 @@
 <script>
 	import gate from '../modules/gate'
 	import {renderDatetime} from '../modules/decorators'
+	import ArgumentInDetails from '@/components/argument_in_details.vue';
+	import CommentInDetails from '@/components/comment_in_details.vue';
 
 	export default {
+		components: {
+			ArgumentInDetails,
+			CommentInDetails,
+		},
 		props: ['id'],
 		data () {
 			return {
