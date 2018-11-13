@@ -43,13 +43,14 @@ export default class Logic {
 
 	async getIdeaById (id: string) {
 		const idea = await ORM.Idea.readWithChildren(id);
+		const author = await ORM.User.publicInfo(idea.author);
 		return {
 			_id: idea._id,
 			type: idea.type,
 			title: idea.title,
 			description: idea.description,
 
-			author: idea.author,
+			author: author,
 			parentIdeas: [idea.parentIdea].filter(o => o),
 
 			votesPlus: idea.votesPlus && idea.votesPlus.length || 0,

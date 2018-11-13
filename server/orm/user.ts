@@ -3,7 +3,10 @@ import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelTyp
 import * as mongoose from 'mongoose'
 import fetch from 'cross-fetch'
 
+const ObjectId = mongoose.Types.ObjectId;
 const VK_APP_TOKEN = process.env.VK_APP_TOKEN;
+
+type UserId = string | typeof ObjectId;
 
 export class User extends Typegoose {
     _id: mongoose.Types.ObjectId;
@@ -24,7 +27,7 @@ export class User extends Typegoose {
 	@prop({ index: true })
 	vkUid: string;
 	@prop()
-	vkInfo: object;
+	vkInfo: any;
 
     @prop()
     invitedBy: mongoose.Types.ObjectId;
@@ -58,6 +61,16 @@ export class User extends Typegoose {
 		}
 
 		return instance;
+	}
+
+	@staticMethod
+	static async publicInfo (id: UserId) {
+		const user = await Model.findById(id);
+		return {
+			_id: user._id,
+			name: user.name || (user.vkInfo && (user.vkInfo.first_name + ' ' + user.vkInfo.last_name)) || 'noname',
+			vkUid: user.vkUid,
+		};
 	}
 }
 
