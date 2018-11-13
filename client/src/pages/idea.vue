@@ -21,23 +21,23 @@
 			</div>
 			<div class="stats row">
 				<div class="stat-box">
-					<span class="count" v-text="idea.votesPlus"></span>
+					<div class="count" v-text="idea.votesPlus"></div>
 					<div class="label">поддержали</div>
 				</div>
 				<div class="stat-box">
-					<span class="count" v-text="idea.votesMinus"></span>
+					<div class="count" v-text="idea.votesMinus"></div>
 					<div class="label">возразили</div>
 				</div>
 				<div class="stat-box">
-					<span class="count" v-text="idea.skips"></span>
+					<div class="count" v-text="idea.skips"></div>
 					<div class="label">пропустили</div>
 				</div>
 				<div class="stat-box">
-					<span class="count" v-text="acceptance"></span>
+					<div class="count" v-text="acceptance"></div>
 					<div class="label">одобрение</div>
 				</div>
 				<div class="stat-box">
-					<span class="count" v-text="relevance"></span>
+					<div class="count" v-text="relevance"></div>
 					<div class="label">актуальность</div>
 				</div>
 			</div>
@@ -147,10 +147,11 @@
 			.stat-box {
 				width: 100px;
 				height: 100px;
+				text-align: center;
 
 				.count {
-					font-size: 30px;
-					text-align: right;
+					font-size: 40px;
+					color: #222;
 				}
 			}
 		}
