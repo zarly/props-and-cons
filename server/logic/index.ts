@@ -2,6 +2,7 @@
 import {Idea} from '../orm/idea'
 import {User} from '../orm/user'
 import ORM, {ObjectId} from '../orm'
+import { stringify } from 'querystring';
 
 export default class Logic {
     orm: ORM;
@@ -15,14 +16,17 @@ export default class Logic {
 	 *
 	 * @param {Idea} idea
 	 */
-	async publishIdea (user: User, raw: Idea) : Promise<Idea> {
+	async publishIdea (realm: string, user: User, raw: Idea) : Promise<Idea> {
 		const idea = ORM.Idea.createAndRegister({
 			type: raw.type,
 			title: raw.title,
 			description: raw.description,
 
+			realm: realm,
 			author: user._id,
 			parentIdea: raw.parentIdea ? ObjectId(<any>raw.parentIdea) : null,
+
+			votesPlus: [user._id],
 		});
 		return idea;
 	}
@@ -32,8 +36,9 @@ export default class Logic {
 	 *
 	 * @returns {Array<Idea>}
 	 */
-	async getIdeasList (user?: User, limit: number = 10, skip: number = 0) : Promise<{count: number, rows: Idea[]}> {
+	async getIdeasList (realm: string, user?: User, limit: number = 10, skip: number = 0) : Promise<{count: number, rows: Idea[]}> {
 		const filter : any = {
+			realm: realm,
 			parentIdea: null,
 		};
 		const count = await ORM.Idea.countDocuments(filter);

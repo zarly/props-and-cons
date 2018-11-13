@@ -39,6 +39,8 @@ export class Strategy extends BaseStrategy {
 		if (isAuth) {
 			const {viewer_id} = params;
 			this.done(viewer_id, params, (error: any, user: any) => {
+				(req as any).vkParams = params;
+				(req as any).realm = `vk:${params.group_id}`;
 				this.success(user);
 			});
 		} else {

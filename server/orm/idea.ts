@@ -2,6 +2,8 @@
 import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
 
+type ObjectId = mongoose.Types.ObjectId;
+
 export enum RootIdeaType {
 	information = 1, // правда-ложь
 	action = 2,		 // за-против
@@ -26,7 +28,7 @@ export enum VoteType {
 }
 
 export class Idea extends Typegoose {
-	_id: mongoose.Types.ObjectId;
+	_id: ObjectId;
 
     @prop({'default': IdeaType.comment})
     type: IdeaType;
@@ -40,9 +42,11 @@ export class Idea extends Typegoose {
     attachements: Array<Object>;
 
     @prop({})
-    author: mongoose.Types.ObjectId;
+    realm: string;
+    @prop({})
+    author: ObjectId;
     @prop({ref: 'Idea'})
-    parentIdea: mongoose.Types.ObjectId;
+    parentIdea: ObjectId;
 
     @prop()
     voteType: string;

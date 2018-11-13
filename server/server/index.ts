@@ -30,7 +30,7 @@ export default class Server {
         });
 
 		app.get('/api/ideas', this.auth.vk_app_auth_key, async (req, res) => {
-			const ideas = await this.logic.getIdeasList(req.user);
+			const ideas = await this.logic.getIdeasList((req as any).realm, req.user);
 			res.send(ideas);
         });
         
@@ -40,7 +40,7 @@ export default class Server {
         });
         
 		app.post('/api/ideas', this.auth.vk_app_auth_key, async (req, res) => {
-            const result = await this.logic.publishIdea(req.user, req.body);
+            const result = await this.logic.publishIdea((req as any).realm, req.user, req.body);
 			res.send(result);
 		});
         
