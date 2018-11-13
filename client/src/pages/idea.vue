@@ -41,6 +41,41 @@
 					<div class="label">актуальность</div>
 				</div>
 			</div>
+			<section>
+				<div class="row">
+					<div class="half-area">
+						<h2>Аргументы За</h2>
+						<div v-for="child in idea.ideasPlus" @click="$router.push(`/idea/${child._id}`)" class="anch">{{child.title}}</div>
+						<button @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Добавить</button>
+					</div>
+					<div class="half-area">
+						<h2>Аргументы Против</h2>
+						<div v-for="child in idea.ideasMinus" @click="$router.push(`/idea/${child._id}`)" class="anch">{{child.title}}</div>
+						<button @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Добавить</button>
+					</div>
+				</div>
+				<!--<div class="anch">загрузить ещё...</div>-->
+			</section>
+			<section>
+				<div class="row">
+					<div class="half-area">
+						<h2>Дополнения</h2>
+						<div v-for="child in idea.implementations" @click="$router.push(`/idea/${child._id}`)" class="anch">{{child.title}}</div>
+						<button @click="$router.push(`/idea-add?type=5&parent=${idea._id}`)">Добавить</button>
+					</div>
+					<div class="half-area">
+						<h2>Альтернативы</h2>
+						<div v-for="child in idea.alternatives" @click="$router.push(`/idea/${child._id}`)" class="anch">{{child.title}}</div>
+						<button @click="$router.push(`/idea-add?type=2&parent=${idea._id}`)">Добавить</button>
+					</div>
+				</div>
+				<!--<div class="anch">загрузить ещё...</div>-->
+			</section>
+			<section class="comments-area">
+				<h2>Комментарии</h2>
+				<div v-for="child in idea.comments" @click="$router.push(`/idea/${child._id}`)" class="anch">{{child.title}}</div>
+				<button @click="$router.push(`/idea-add?type=1&parent=${idea._id}`)">Добавить</button>
+			</section>
 			<!--<div v-text="idea"></div>-->
 		</div>
 	</div>
@@ -153,6 +188,20 @@
 					font-size: 40px;
 					color: #222;
 				}
+			}
+		}
+
+		.half-area {
+			width: 50%;
+
+			.anch {
+				display: block;
+			}
+		}
+
+		.comments-area {
+			.anch {
+				display: block;
 			}
 		}
 	}

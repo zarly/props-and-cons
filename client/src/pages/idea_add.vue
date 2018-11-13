@@ -2,6 +2,8 @@
 	<div class="IdeaAddPage VkPage">
 		<div class="anch" @click="$router.go(-1)">вернуться назад</div>
 		<form @submit.prevent="onSubmit">
+			<div v-text="type"></div>
+			<div v-text="parent"></div>
 			<div class="fields-row">
 				<div class="label">Заголовок</div>
 				<input v-model="title" class="title-field" />
@@ -23,6 +25,8 @@
 	export default {
 		data () {
 			return {
+				type: parseInt(this.$route.query.type, 10) || 1,
+				parent: this.$route.query.parent || null,
 				title: '',
 				text: '',
 			};
@@ -32,8 +36,8 @@
 				const query = {
 					title: this.title,
 					description: this.text,
-					parentIdea: null,
-					type: 1,
+					parentIdea: this.parent,
+					type: this.type,
 				};
 
 				const result = await gate.ask('/ideas', {
