@@ -3,13 +3,29 @@ import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelTyp
 import * as mongoose from 'mongoose'
 import fetch from 'cross-fetch'
 
-const ObjectId = mongoose.Types.ObjectId;
+type ObjectId = mongoose.Types.ObjectId;
 const VK_APP_TOKEN = process.env.VK_APP_TOKEN;
 
-type UserId = string | typeof ObjectId;
+type UserId = string | ObjectId;
+
+interface vkUserInfo {
+	id: number;
+	first_name: string;
+	last_name: string;
+	deactivated?: string;
+	verified: number;
+	sex: number;
+	photo_100: string;
+}
+
+interface AuthorInfo {
+	_id: string | ObjectId;
+	name: string;
+	vkUid: string;
+}
 
 export class User extends Typegoose {
-    _id: mongoose.Types.ObjectId;
+    _id: ObjectId;
 
     @prop({ index: true })
     login: string;
@@ -64,24 +80,14 @@ export class User extends Typegoose {
 	}
 
 	@staticMethod
-	static async publicInfo (id: UserId) {
-		const user = await Model.findById(id);
+	static async publicInfo (id: UserId) : Promise<AuthorInfo> {
+		const user = await Model.findById(id, {name: true, vkInfo: true, vkUid: true});
 		return {
 			_id: user._id,
 			name: user.name || (user.vkInfo && (user.vkInfo.first_name + ' ' + user.vkInfo.last_name)) || 'noname',
 			vkUid: user.vkUid,
 		};
 	}
-}
-
-interface vkUserInfo {
-	id: number;
-	first_name: string;
-	last_name: string;
-	deactivated?: string;
-	verified: number;
-	sex: number;
-	photo_100: string;
 }
 
 async function getUserVkInfo (vkUid: string) : Promise<vkUserInfo|any> {
