@@ -35,7 +35,7 @@ export default class Server {
         });
         
 		app.get('/api/ideas/:id', this.auth.vk_app_auth_key, async (req, res) => {
-            const result = await this.logic.getIdeaById(req.params.id);
+            const result = await this.logic.getIdeaById((req as any).realm, req.user, req.params.id);
             res.send(result);
         });
         

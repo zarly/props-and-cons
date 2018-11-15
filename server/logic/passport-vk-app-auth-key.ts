@@ -33,7 +33,7 @@ export class Strategy extends BaseStrategy {
 
 	authenticate (req: Request, options?: any): void {
 		const vkUrl = req.get('referrer');
-		const params = Strategy.getUrlHash(vkUrl);
+		const params = vkUrl ? Strategy.getUrlHash(vkUrl) : {};
 
 		const isAuth = this.disableVerification || this.verifyAuthKey(params);
 		if (isAuth) {

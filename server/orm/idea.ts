@@ -54,26 +54,26 @@ export class Idea extends Typegoose {
     availableActions: Array<string>;
 
     @arrayProp({items: mongoose.Types.ObjectId})
-    votesPlus: Array<mongoose.Types.ObjectId>;
+    votesPlus: Array<ObjectId>;
 	@arrayProp({items: mongoose.Types.ObjectId})
-    votesMinus: Array<mongoose.Types.ObjectId>;
+    votesMinus: Array<ObjectId>;
 	@arrayProp({items: mongoose.Types.ObjectId})
-    skips: Array<mongoose.Types.ObjectId>;
+    skips: Array<ObjectId>;
 	@arrayProp({items: mongoose.Types.ObjectId})
-	views: Array<mongoose.Types.ObjectId>;
+	views: Array<ObjectId>;
 	@arrayProp({items: mongoose.Types.ObjectId})
-	reports: Array<mongoose.Types.ObjectId>;
+	reports: Array<ObjectId>;
 
 	@arrayProp({itemsRef: Idea})
-    ideasPlus: Array<mongoose.Types.ObjectId>;
+    ideasPlus: Array<ObjectId>;
 	@arrayProp({itemsRef: Idea})
-    ideasMinus: Array<mongoose.Types.ObjectId>;
+    ideasMinus: Array<ObjectId>;
 	@arrayProp({itemsRef: Idea})
-    alternatives: Array<mongoose.Types.ObjectId>;
+    alternatives: Array<ObjectId>;
 	@arrayProp({itemsRef: Idea})
-	comments: Array<mongoose.Types.ObjectId>;
+	comments: Array<ObjectId>;
 	@arrayProp({itemsRef: Idea})
-	implementations: Array<mongoose.Types.ObjectId>;
+	implementations: Array<ObjectId>;
 
     @prop({required: true, 'default': Date.now})
 	createdAt: number;
@@ -113,7 +113,7 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async readWithChildren (id: string|mongoose.Types.ObjectId, limit: number = 10) : Promise<any> {
+	static async readWithChildren (id: string|ObjectId, limit: number = 10) : Promise<any> {
 		const result = await Model.findById(id);
 		if (!result) return null;
 
@@ -129,17 +129,17 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async resolveIdeas (ids: Array<mongoose.Types.ObjectId>, limit: number = 10) : Promise<any> {
+	static async resolveIdeas (ids: Array<ObjectId>, limit: number = 10) : Promise<any> {
 		const commentsPromise = ids
 			.slice(0, limit)
-			.map((id: mongoose.Types.ObjectId) => {
+			.map((id: ObjectId) => {
 				return Model.findById(id);
 			});
 		return <any>(await Promise.all(<any>commentsPromise));
 	}
 
 	@staticMethod
-	static vote (ideaId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId, voteType: VoteType) {
+	static vote (ideaId: ObjectId, userId: ObjectId, voteType: VoteType) {
 		const typeToArrayNameMap = {
 			[VoteType.view]: 'views',
 			[VoteType.skip]: 'skips',

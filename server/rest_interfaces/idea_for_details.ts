@@ -7,13 +7,16 @@ export interface IdeaForDetails {
 	title: string;
 	description: string;
 
-	author: string;
+	author: any;
 	parentIdeas: Array<String>;
 
 	votesPlus: number;
 	votesMinus: number;
 	skips: number;
 	views: number;
+	reports: number;
+
+	myVote?: number;
 
 	ideasPlusCount: number;
 	ideasMinusCount: number;

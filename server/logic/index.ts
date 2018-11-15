@@ -2,7 +2,7 @@
 import {Idea} from '../orm/idea'
 import {User} from '../orm/user'
 import ORM, {ObjectId} from '../orm'
-import { stringify } from 'querystring';
+import {IdeaForDetails} from '../rest_interfaces/idea_for_details'
 
 export default class Logic {
     orm: ORM;
@@ -14,7 +14,9 @@ export default class Logic {
 	/**
 	 * Добавляет новую идею
 	 *
-	 * @param {Idea} idea
+	 * @param {String} realm
+	 * @param {User} user
+	 * @param {Idea} raw
 	 */
 	async publishIdea (realm: string, user: User, raw: Idea) : Promise<Idea> {
 		const idea = ORM.Idea.createAndRegister({
@@ -34,6 +36,10 @@ export default class Logic {
 	/**
 	 * Возвращает список идей
 	 *
+	 * @param {String} realm
+	 * @param {User} user
+	 * @param {Number} limit
+	 * @param {Number} skip
 	 * @returns {Array<Idea>}
 	 */
 	async getIdeasList (realm: string, user?: User, limit: number = 10, skip: number = 0) : Promise<{count: number, rows: Idea[]}> {
@@ -46,9 +52,19 @@ export default class Logic {
 		return {count, rows};
 	}
 
-	async getIdeaById (id: string) {
+	/**
+	 * Возвращает информацию об идее по её id
+	 *
+	 * @param {String} realm
+	 * @param {User} user
+	 * @param {string} id
+	 * @returns {Promise<IdeaForDetails>}
+	 */
+	async getIdeaById (realm: string, user: User, id: string) : Promise<IdeaForDetails> {
 		const idea = await ORM.Idea.readWithChildren(id);
 		const author = await ORM.User.publicInfo(idea.author);
+		const myVote = await user.getVoteForIdea(id);
+
 		return {
 			_id: idea._id,
 			type: idea.type,

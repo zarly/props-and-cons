@@ -2,11 +2,12 @@
 import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
 import fetch from 'cross-fetch'
+import {VoteType} from './idea'
 
 type ObjectId = mongoose.Types.ObjectId;
 const VK_APP_TOKEN = process.env.VK_APP_TOKEN;
 
-type UserId = string | ObjectId;
+type MongoId = string | ObjectId;
 
 interface vkUserInfo {
 	id: number;
@@ -67,11 +68,11 @@ export class User extends Typegoose {
 		let instance: any|null = await Model.findOne({vkUid: `${vkUid}`});
 
 		if (!instance) {
-			const vkInfo = await getUserVkInfo(vkUid);
+			// const vkInfo = await getUserVkInfo(vkUid); // TODO: сделать через первый запрос к API
 
 			instance = new Model({
 				vkUid: `${vkUid}`,
-				vkInfo: vkInfo
+				// vkInfo: vkInfo,
 			});
 			await instance.save();
 		}
@@ -80,13 +81,34 @@ export class User extends Typegoose {
 	}
 
 	@staticMethod
-	static async publicInfo (id: UserId) : Promise<AuthorInfo> {
+	static async vote (ideaId: ObjectId, userId: ObjectId, voteType: VoteType) {
+		return new Promise((resolve, reject) => {
+			Model.updateOne({
+				_id: userId
+			}, {
+				$push: {
+					votes: {ideaId, voteType}
+				}
+			}, (err: any, res: any) => {
+				if (err) reject(err);
+				resolve(res);
+			});
+		});
+	}
+
+	@staticMethod
+	static async publicInfo (id: MongoId) : Promise<AuthorInfo> {
 		const user = await Model.findById(id, {name: true, vkInfo: true, vkUid: true});
 		return {
 			_id: user._id,
 			name: user.name || (user.vkInfo && (user.vkInfo.first_name + ' ' + user.vkInfo.last_name)) || 'noname',
 			vkUid: user.vkUid,
 		};
+	}
+
+	@instanceMethod
+	async getVoteForIdea (id: MongoId) {
+		return 1;
 	}
 }
 

@@ -33,7 +33,7 @@ describe('vk auth', () => {
 		expect(result).toBeFalsy();
 	});
 
-	test('loginOrRegisterVk', async () => {
+	xtest('loginOrRegisterVk', async () => {
 		const user = await User.loginOrRegisterVk('some_id');
 		expect(user).toBeInstanceOf(User);
 		expect(user.vkUid).toBe('some_id');
