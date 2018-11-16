@@ -227,7 +227,7 @@ describe('method readDetails', () => {
 		expect(details.votesPlusCount).toBe(1);
 
 		await Idea.vote(user2._id, idea._id, 3);
-		details = await Idea.readDetails(idea._id);
+		details = await Idea.readDetails(idea._id, user1._id);
 		expect(details.votesPlusCount).toBe(2);
 
 		await Idea.vote(user1._id, idea._id, 4);

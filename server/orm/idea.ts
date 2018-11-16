@@ -108,7 +108,7 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async readDetails (id: MongoIdType) : Promise<any> {
+	static async readDetails (id: MongoIdType, userId: MongoIdType = '222') : Promise<any> {
 		const records = await Model.aggregate([{
 			$match: {
 				_id: id,
@@ -120,6 +120,16 @@ export class Idea extends Typegoose {
 				skipsCount: {$size: "$skips"},
 				viewsCount: {$size: "$views"},
 				reportsCount: {$size: "$reports"},
+
+				isVotedPlus: {
+					$size: {
+						$filter: {
+							input: "$votesPlus",
+							as: "item",
+							cond: {$eq: ['$$item', userId]}
+						}
+					}
+				},
 			},
 		}]);
 		return records[0] || null;

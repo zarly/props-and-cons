@@ -48,7 +48,7 @@ export default class Logic {
 			parentIdea: null,
 		};
 		const count = await ORM.Idea.countDocuments(filter);
-		const rows = await ORM.Idea.find(filter).sort([['createdAt', -1]]).skip(skip).limit(limit);
+		const rows = await ORM.Idea.find(filter).sort([['createdAt', -1]]).skip(skip).limit(limit); // TODO: добавить оператор проекции
 		return {count, rows};
 	}
 
