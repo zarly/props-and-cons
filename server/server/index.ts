@@ -53,8 +53,7 @@ export default class Server {
 		});
         
 		app.post('/api/vote', this.auth.vk_app_auth_key, async (req, res) => {
-            const result = await this.logic.vote(req.user, req.body.ideaId, req.body.voteType);
-            console.log('result', result);
+            const result = await this.logic.vote(req.user._id, req.body.ideaId, req.body.voteType);
 			res.send(result);
 		});
 

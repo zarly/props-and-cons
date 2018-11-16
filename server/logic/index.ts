@@ -118,7 +118,7 @@ export default class Logic {
 			votes: true,
 		});
 
-		const vote = user.votes && user.votes[0];
+		const vote = user && user.votes && user.votes[0];
 		const voteType = vote && vote.voteType;
 		return voteType || 0;
 	}
