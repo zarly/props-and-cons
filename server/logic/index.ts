@@ -63,7 +63,7 @@ export default class Logic {
 	async getIdeaById (realm: string, user: User, id: string) : Promise<IdeaForDetails> {
 		const idea = await ORM.Idea.readWithChildren(id);
 		const author = await ORM.User.publicInfo(idea.author);
-		const myVote = await user.getVoteForIdea(id);
+		const myVote = await this.getUserVoteForIdea(user._id, id);
 
 		return {
 			_id: idea._id,
@@ -104,6 +104,22 @@ export default class Logic {
 	 * @param {number} voteType
 	 */
 	async vote (userId: MongoIdType, ideaId: MongoIdType, voteType: number) {
-		return await ORM.Idea.vote(ideaId, userId, voteType);
+		return await Promise.all([
+			ORM.Idea.vote(userId, ideaId, voteType),
+			ORM.User.vote(userId, ideaId, voteType)
+		]);
+	}
+
+	async getUserVoteForIdea (userId: MongoIdType, ideaId: MongoIdType) {
+		const user = await ORM.User.findOne({
+			_id: userId,
+			'votes.ideaId': ''+ideaId,
+		}, {
+			votes: true,
+		});
+
+		const vote = user.votes && user.votes[0];
+		const voteType = vote && vote.voteType;
+		return voteType || 0;
 	}
 }

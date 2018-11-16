@@ -4,5 +4,5 @@ import base from './default'
 
 export default merge({
     environment: 'testing',
-    mongoose: 'mongodb://localhost:27017/props-and-cons-tesing',
+    mongoose: 'mongodb://localhost:27017/props-and-cons-tesing-2',
 }, base);

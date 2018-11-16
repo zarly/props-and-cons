@@ -7,7 +7,7 @@ import {VoteType} from './_enums'
 type ObjectId = mongoose.Types.ObjectId;
 const VK_APP_TOKEN = process.env.VK_APP_TOKEN;
 
-type MongoId = string | ObjectId;
+type MongoIdType = string | ObjectId;
 
 interface vkUserInfo {
 	id: number;
@@ -51,8 +51,8 @@ export class User extends Typegoose {
     @prop()
     homeGroup: mongoose.Types.ObjectId;
 
-    @arrayProp({items: mongoose.Types.ObjectId})
-    votes: Array<mongoose.Types.ObjectId>;
+    @arrayProp({items: Object})
+    votes: Array<{ideaId: ObjectId, voteType: VoteType}>;
     @arrayProp({items: mongoose.Types.ObjectId})
     views: Array<mongoose.Types.ObjectId>;
     @arrayProp({items: mongoose.Types.ObjectId})
@@ -81,7 +81,7 @@ export class User extends Typegoose {
 	}
 
 	@staticMethod
-	static async vote (ideaId: ObjectId, userId: ObjectId, voteType: VoteType) {
+	static async vote (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) {
 		return new Promise((resolve, reject) => {
 			Model.updateOne({
 				_id: userId
@@ -97,7 +97,7 @@ export class User extends Typegoose {
 	}
 
 	@staticMethod
-	static async publicInfo (id: MongoId) : Promise<AuthorInfo> {
+	static async publicInfo (id: MongoIdType) : Promise<AuthorInfo> {
 		const user = await Model.findById(id, {name: true, vkInfo: true, vkUid: true});
 		return {
 			_id: user._id,
@@ -106,10 +106,15 @@ export class User extends Typegoose {
 		};
 	}
 
-	@instanceMethod
-	async getVoteForIdea (ideaId: MongoId) : Promise<number|null> {
-		return 0;
-	}
+	// @instanceMethod
+	// async getVoteForIdea (ideaId: MongoIdType) : Promise<any> {
+	// 	const user = await Model.findById(this._id, {
+	// 		votes: true,
+	// 	});
+	// 	const vote = user.votes && user.votes[0];
+	// 	const voteType = vote && vote.voteType;
+	// 	return voteType || 0;
+	// }
 }
 
 async function getUserVkInfo (vkUid: string) : Promise<vkUserInfo|any> {

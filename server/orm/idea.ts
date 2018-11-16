@@ -32,26 +32,26 @@ export class Idea extends Typegoose {
     @prop()
     availableActions: Array<string>;
 
-    @arrayProp({items: mongoose.Types.ObjectId})
+    @arrayProp({items: mongoose.Types.ObjectId, 'default': []})
     votesPlus: Array<ObjectId>;
-	@arrayProp({items: mongoose.Types.ObjectId})
+	@arrayProp({items: mongoose.Types.ObjectId, 'default': []})
     votesMinus: Array<ObjectId>;
-	@arrayProp({items: mongoose.Types.ObjectId})
+	@arrayProp({items: mongoose.Types.ObjectId, 'default': []})
     skips: Array<ObjectId>;
-	@arrayProp({items: mongoose.Types.ObjectId})
+	@arrayProp({items: mongoose.Types.ObjectId, 'default': []})
 	views: Array<ObjectId>;
-	@arrayProp({items: mongoose.Types.ObjectId})
+	@arrayProp({items: mongoose.Types.ObjectId, 'default': []})
 	reports: Array<ObjectId>;
 
-	@arrayProp({itemsRef: Idea})
+	@arrayProp({itemsRef: Idea, 'default': []})
     ideasPlus: Array<ObjectId>;
-	@arrayProp({itemsRef: Idea})
+	@arrayProp({itemsRef: Idea, 'default': []})
     ideasMinus: Array<ObjectId>;
-	@arrayProp({itemsRef: Idea})
+	@arrayProp({itemsRef: Idea, 'default': []})
     alternatives: Array<ObjectId>;
-	@arrayProp({itemsRef: Idea})
+	@arrayProp({itemsRef: Idea, 'default': []})
 	comments: Array<ObjectId>;
-	@arrayProp({itemsRef: Idea})
+	@arrayProp({itemsRef: Idea, 'default': []})
 	implementations: Array<ObjectId>;
 
     @prop({required: true, 'default': Date.now})
@@ -108,6 +108,24 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
+	static async readDetails (id: MongoIdType) : Promise<any> {
+		const records = await Model.aggregate([{
+			$match: {
+				_id: id,
+			}
+		}, {
+			$project: {
+				votesPlusCount: {$size: "$votesPlus"},
+				votesMinusCount: {$size: "$votesMinus"},
+				skipsCount: {$size: "$skips"},
+				viewsCount: {$size: "$views"},
+				reportsCount: {$size: "$reports"},
+			},
+		}]);
+		return records[0] || null;
+	}
+
+	@staticMethod
 	static async resolveIdeas (ids: Array<ObjectId>, limit: number = 10) : Promise<any> {
 		const commentsPromise = ids
 			.slice(0, limit)
@@ -118,7 +136,7 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static vote (ideaId: MongoIdType, userId: MongoIdType, voteType: VoteType) {
+	static vote (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) {
 		const typeToArrayNameMap: {[index:string]:keyof Idea} = {
 			[VoteType.view]: 'views',
 			[VoteType.skip]: 'skips',
@@ -126,14 +144,47 @@ export class Idea extends Typegoose {
 			[VoteType.minus]: 'votesMinus',
 			[VoteType.report]: 'reports',
 		};
+		const pullNameMap: {[index:string]:any} = {
+			[VoteType.view]: {
+				skips: userId,
+				votesPlus: userId,
+				votesMinus: userId,
+				reports: userId,
+			},
+			[VoteType.skip]:  {
+				views: userId,
+				votesPlus: userId,
+				votesMinus: userId,
+				reports: userId,
+			},
+			[VoteType.plus]:  {
+				views: userId,
+				skips: userId,
+				votesMinus: userId,
+				reports: userId,
+			},
+			[VoteType.minus]:  {
+				views: userId,
+				skips: userId,
+				votesPlus: userId,
+				reports: userId,
+			},
+			[VoteType.report]:  {
+				views: userId,
+				skips: userId,
+				votesPlus: userId,
+				votesMinus: userId,
+			},
+		};
 		return new Promise((resolve, reject) => {
 			const arrayName = typeToArrayNameMap[voteType];
 			Model.updateOne({
 				_id: ideaId
 			}, {
-				$push: {
+				$addToSet: {
 					[arrayName]: userId
-				}
+				},
+				$pull: pullNameMap[voteType],
 			}, (err: any, res: any) => {
 				if (err) reject(err);
 				resolve(res);

@@ -174,3 +174,65 @@ describe('method vote', () => {
 		expect(await Idea.countDocuments()).toBe(0);
 	});
 });
+
+describe('method readDetails', () => {
+	test('count votes', async () => {
+		const user = new ORM.User({name: 'name', login: 'login'});
+		await user.save();
+
+		const idea = new ORM.Idea({title: 'title'});
+		await idea.save();
+
+		let details = await Idea.readDetails(idea._id);
+		expect(details).toBeDefined();
+		expect(details.votesPlusCount).toBe(0);
+		expect(details.votesMinusCount).toBe(0);
+		expect(details.skipsCount).toBe(0);
+		expect(details.viewsCount).toBe(0);
+		expect(details.reportsCount).toBe(0);
+
+		await Idea.vote(user._id, idea._id, 3);
+		details = await Idea.readDetails(idea._id);
+		expect(details.votesPlusCount).toBe(1);
+
+		await Idea.vote(user._id, idea._id, 3);
+		details = await Idea.readDetails(idea._id);
+		expect(details.votesPlusCount).toBe(1);
+
+		await Idea.vote(user._id, idea._id, 4);
+		details = await Idea.readDetails(idea._id);
+		expect(details.votesMinusCount).toBe(1);
+		expect(details.votesPlusCount).toBe(0);
+	});
+
+	test('count votes for two users', async () => {
+		const user1 = new ORM.User({name: 'name', login: 'login_1', vkUid: '111'});
+		await user1.save();
+		const user2 = new ORM.User({name: 'name', login: 'login_2', vkUid: '222'});
+		await user2.save();
+
+		const idea = new ORM.Idea({title: 'title'});
+		await idea.save();
+
+		let details = await Idea.readDetails(idea._id);
+		expect(details).toBeDefined();
+		expect(details.votesPlusCount).toBe(0);
+		expect(details.votesMinusCount).toBe(0);
+		expect(details.skipsCount).toBe(0);
+		expect(details.viewsCount).toBe(0);
+		expect(details.reportsCount).toBe(0);
+
+		await Idea.vote(user1._id, idea._id, 3);
+		details = await Idea.readDetails(idea._id);
+		expect(details.votesPlusCount).toBe(1);
+
+		await Idea.vote(user2._id, idea._id, 3);
+		details = await Idea.readDetails(idea._id);
+		expect(details.votesPlusCount).toBe(2);
+
+		await Idea.vote(user1._id, idea._id, 4);
+		details = await Idea.readDetails(idea._id);
+		expect(details.votesMinusCount).toBe(1);
+		expect(details.votesPlusCount).toBe(1);
+	});
+});
