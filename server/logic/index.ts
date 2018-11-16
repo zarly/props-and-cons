@@ -3,6 +3,7 @@ import {Idea} from '../orm/idea'
 import {User} from '../orm/user'
 import ORM, {ObjectId, MongoIdType} from '../orm'
 import {IdeaForDetails} from '../rest_interfaces/idea_for_details'
+import {IdeaForList} from '../rest_interfaces/idea_for_list'
 
 export default class Logic {
     orm: ORM;
@@ -42,14 +43,40 @@ export default class Logic {
 	 * @param {Number} skip
 	 * @returns {Array<Idea>}
 	 */
-	async getIdeasList (realm: string, user?: User, limit: number = 10, skip: number = 0) : Promise<{count: number, rows: Idea[]}> {
+	async getIdeasList (realm: string, user?: User, limit: number = 10, skip: number = 0) : Promise<{count: number, rows: IdeaForList[]}> {
 		const filter : any = {
 			realm: realm,
 			parentIdea: null,
 		};
 		const count = await ORM.Idea.countDocuments(filter);
-		const rows = await ORM.Idea.find(filter).sort([['createdAt', -1]]).skip(skip).limit(limit); // TODO: добавить оператор проекции
-		return {count, rows};
+		const rows = await ORM.Idea.aggregate([{
+			$match: filter
+		}, {
+			$project: {
+				title: 1,
+				description: 1,
+
+				votesPlus: {$size: '$votesPlus'},
+				votesMinus: {$size: '$votesMinus'},
+				skips: {$size: '$skips'},
+				views: {$size: '$views'},
+				reports: {$size: '$reports'},
+
+				ideasPlusCount: {$size: '$ideasPlus'},
+				ideasMinusCount: {$size: '$ideasMinus'},
+				commentsCount: {$size: '$comments'},
+				alternativesCount: {$size: '$alternatives'},
+				implementationsCount: {$size: '$implementations'},
+
+				createdAt: 1,
+			}
+		}, {
+			$sort: {createdAt: -1}
+		}]).skip(skip).limit(limit); // TODO: добавить оператор проекции
+		return {
+			count,
+			rows: <any[]>rows,
+		};
 	}
 
 	/**

@@ -18,25 +18,10 @@
 				const date = new Date(this.idea.createdAt);
 				return renderDatetime(date);
 			},
-			responsesPlus () {
-				return this.idea.ideasPlus && this.idea.ideasPlus.length || 0;
-			},
-			responsesMinus () {
-				return this.idea.ideasMinus && this.idea.ideasMinus.length || 0;
-			},
-			responsesComment () {
-				return this.idea.comments && this.idea.comments.length || 0;
-			},
-			responsesAlt () {
-				return this.idea.alternatives && this.idea.alternatives.length || 0;
-			},
-			responsesImpl () {
-				return this.idea.implementations && this.idea.implementations.length || 0;
-			},
 			responsesTotal () {
-				return this.responsesComment
-					+ this.responsesPlus + this.responsesMinus
-					+ this.responsesAlt + this.responsesImpl;
+				return this.idea.commentsCount
+					+ this.idea.ideasPlusCount + this.idea.ideasMinusCount
+					+ this.idea.alternativesCount + this.idea.implementationsCount;
 			},
 			responses () {
 				const count = this.responsesTotal;
