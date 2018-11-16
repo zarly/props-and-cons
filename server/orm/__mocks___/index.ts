@@ -4,7 +4,7 @@ export default class ORM {
 	static User: any;
 	static Group: any;
 	static Idea: any;
-	static IdeaTypes: any;
+	static IdeaType: any;
 
 	constructor (credentials: string) {}
 

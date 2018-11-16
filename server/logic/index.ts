@@ -1,7 +1,7 @@
 
 import {Idea} from '../orm/idea'
 import {User} from '../orm/user'
-import ORM, {ObjectId} from '../orm'
+import ORM, {ObjectId, MongoIdType} from '../orm'
 import {IdeaForDetails} from '../rest_interfaces/idea_for_details'
 
 export default class Logic {
@@ -99,11 +99,11 @@ export default class Logic {
 	/**
 	 * Сохраняет голос за идею
 	 *
-	 * @param {User} user
-	 * @param {string} ideaId
+	 * @param {MongoIdType} userId
+	 * @param {MongoIdType} ideaId
 	 * @param {number} voteType
 	 */
-	async vote (user: User, ideaId: string, voteType: number) {
-		return await ORM.Idea.vote(ObjectId(ideaId), user._id, voteType);
+	async vote (userId: MongoIdType, ideaId: MongoIdType, voteType: number) {
+		return await ORM.Idea.vote(ideaId, userId, voteType);
 	}
 }

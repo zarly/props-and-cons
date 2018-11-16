@@ -2,7 +2,7 @@
 import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
 import fetch from 'cross-fetch'
-import {VoteType} from './idea'
+import {VoteType} from './_enums'
 
 type ObjectId = mongoose.Types.ObjectId;
 const VK_APP_TOKEN = process.env.VK_APP_TOKEN;
@@ -107,8 +107,8 @@ export class User extends Typegoose {
 	}
 
 	@instanceMethod
-	async getVoteForIdea (id: MongoId) {
-		return 1;
+	async getVoteForIdea (ideaId: MongoId) : Promise<number|null> {
+		return 0;
 	}
 }
 

@@ -18,16 +18,29 @@ afterAll(async () => {
 });
 
 test('save user', async () => {
-	const idea = new User({name: 'name', login: 'login'});
+	const user = new User({name: 'name', login: 'login'});
 
 	expect(await User.countDocuments()).toBe(0);
 
-	await idea.save();
+	await user.save();
 
 	expect(await User.countDocuments()).toBe(1);
 });
 
 describe('vk auth', () => {
+	test('find by vkUid', async () => {
+		const result = await User.findOne({vkUid: 'unexisted'});
+		expect(result).toBeFalsy();
+	});
+
+	xtest('loginOrRegisterVk', async () => {
+		const user = await User.loginOrRegisterVk('some_id');
+		expect(user).toBeInstanceOf(User);
+		expect(user.vkUid).toBe('some_id');
+	});
+});
+
+describe('vote', () => {
 	test('find by vkUid', async () => {
 		const result = await User.findOne({vkUid: 'unexisted'});
 		expect(result).toBeFalsy();

@@ -1,31 +1,10 @@
 
 import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
+import {RootIdeaType, IdeaType, VoteType} from './_enums'
 
 type ObjectId = mongoose.Types.ObjectId;
-
-export enum RootIdeaType {
-	information = 1, // правда-ложь
-	action = 2,		 // за-против
-	question = 3,	 // актуально или нет, варианты ответов
-	category = 4,
-}
-
-export enum IdeaType {
-	comment = 1,
-	alternative = 2,
-	plus = 3,
-	minus = 4,
-	implementation = 5,
-}
-
-export enum VoteType {
-	view = 1,
-	skip = 2,
-	plus = 3,
-	minus = 4,
-	report = 5,
-}
+export type MongoIdType = string | mongoose.Types.ObjectId;
 
 export class Idea extends Typegoose {
 	_id: ObjectId;
@@ -139,8 +118,8 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static vote (ideaId: ObjectId, userId: ObjectId, voteType: VoteType) {
-		const typeToArrayNameMap = {
+	static vote (ideaId: MongoIdType, userId: MongoIdType, voteType: VoteType) {
+		const typeToArrayNameMap: {[index:string]:keyof Idea} = {
 			[VoteType.view]: 'views',
 			[VoteType.skip]: 'skips',
 			[VoteType.plus]: 'votesPlus',
