@@ -7,6 +7,7 @@ import Logic from '../logic'
 import Auth from './auth'
 import chalk from 'chalk'
 import ideaMock from '../mocks/idea'
+import {unescape} from "querystring";
 
 const connected = chalk.cyan;
 
@@ -35,7 +36,14 @@ export default class Server {
         });
 
 		app.get('/api/ideas', this.auth.vk_app_auth_key, async (req, res) => {
-			const ideas = await this.logic.getIdeasList((req as any).realm, req.user);
+			const {limit, skip, parentId} = req.query;
+			const ideas = await this.logic.getIdeasList(
+				(req as any).realm, // TODO: расширить req в стратегии паспорта
+				req.user,
+				limit ? parseInt(limit, 10) : undefined,
+				skip ? parseInt(skip, 10) : undefined,
+				parentId ? `${parentId}` : undefined,
+			);
 			res.send(ideas);
         });
         
@@ -58,7 +66,7 @@ export default class Server {
 		});
         
 		app.post('/api/vote', this.auth.vk_app_auth_key, async (req, res) => {
-            const result = await this.logic.vote(req.user._id, req.body.ideaId, req.body.voteType);
+            const result = await this.logic.voteAndReturnNewValues(req.user._id, req.body.ideaId, req.body.voteType);
 			res.send(result);
 		});
 

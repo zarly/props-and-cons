@@ -2,7 +2,7 @@
 import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
 import {RootIdeaType, IdeaType, VoteType} from './_enums'
-import {IdeaForList} from '../rest_interfaces/idea_for_list'
+import {IdeaForList, VotesUpdate} from '../interfaces'
 
 type ObjectId = mongoose.Types.ObjectId;
 export type MongoIdType = string | mongoose.Types.ObjectId;
@@ -222,7 +222,7 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async getVotes (userId: MongoIdType, ideaId: MongoIdType) : Promise<any> {
+	static async getVotes (userId: MongoIdType, ideaId: MongoIdType) : Promise<VotesUpdate|null> {
 		const rows = await Model.aggregate([{
 			$match: {
 				_id: ('string' === typeof ideaId) ? mongoose.Types.ObjectId(<string>ideaId) : ideaId,
@@ -250,13 +250,7 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async voteAndReturnNewValues (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) {
-		await Idea.vote(userId, ideaId, voteType);
-		return await Idea.getVotes(userId, ideaId);
-	}
-
-	@staticMethod
-	static vote (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) {
+	static vote (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) : Promise<any> {
 		const typeToArrayNameMap: {[index:string]:keyof Idea} = {
 			[VoteType.view]: 'views',
 			[VoteType.skip]: 'skips',

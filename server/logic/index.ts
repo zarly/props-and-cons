@@ -2,8 +2,7 @@
 import {Idea} from '../orm/idea'
 import {User} from '../orm/user'
 import ORM, {ObjectId, MongoIdType} from '../orm'
-import {IdeaForDetails} from '../rest_interfaces/idea_for_details'
-import {IdeaForList} from '../rest_interfaces/idea_for_list'
+import {IdeaForDetails, IdeaForList, ItemList} from '../interfaces'
 
 export default class Logic {
     orm: ORM;
@@ -41,12 +40,15 @@ export default class Logic {
 	 * @param {User} user
 	 * @param {Number} limit
 	 * @param {Number} skip
-	 * @returns {Array<Idea>}
+	 * @param {String} parentId
+	 * @returns {Promise<ItemList<IdeaForList>>}
 	 */
-	async getIdeasList (realm: string, user?: User, limit: number = 10, skip: number = 0) : Promise<{count: number, rows: IdeaForList[]}> {
+	async getIdeasList (realm: string, user: User, limit: number = 10, skip: number = 0, parentId: string = null) : Promise<ItemList<IdeaForList>> {
+		limit = Math.min(limit, 100);
+
 		const filter : any = {
 			realm: realm,
-			parentIdea: null,
+			parentIdea: parentId ? ObjectId(parentId) : null,
 		};
 		const count = await ORM.Idea.countDocuments(filter);
 		const rows = await ORM.Idea.aggregate([{
@@ -75,7 +77,7 @@ export default class Logic {
 		}]).skip(skip).limit(limit);
 		return {
 			count,
-			rows: <any[]>rows,
+			rows: <IdeaForList[]>rows,
 		};
 	}
 
@@ -139,7 +141,8 @@ export default class Logic {
 	 * @param {MongoIdType} ideaId
 	 * @param {number} voteType
 	 */
-	async vote (userId: MongoIdType, ideaId: MongoIdType, voteType: number) {
-		return await ORM.Idea.voteAndReturnNewValues(userId, ideaId, voteType);
+	async voteAndReturnNewValues (userId: MongoIdType, ideaId: MongoIdType, voteType: number) {
+		await ORM.Idea.vote(userId, ideaId, voteType);
+		return await ORM.Idea.getVotes(userId, ideaId);
 	}
 }

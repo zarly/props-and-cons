@@ -11,18 +11,4 @@ export default class ORM {
 	async connect () {}
 
 	async disconnect () {}
-
-	async getFreshIdeas (user: any) : Promise<{count: number, rows: any[]}> {
-		return {
-			count: 0,
-			rows: [],
-		};
-    }
-
-	async getIdeasList (user?: any, limit: number = 10, shift: number = 0) : Promise<{count: number, rows: any[]}> {
-		return {
-			count: 0,
-			rows: [],
-		};
-	}
 }
