@@ -181,12 +181,78 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async resolveIdeas (ids: Array<ObjectId>) : Promise<IdeaForList[]> {
-		const commentsPromise = ids
-			.map((id: ObjectId) => {
-				return Model.findById(id);
-			});
-		return <any[]>(await Promise.all(<any[]>commentsPromise));
+	static async resolveIdeas (userId: MongoIdType, ids: Array<ObjectId>) : Promise<IdeaForList[]> {
+		const rows = await Model.aggregate([{
+			$match: {
+				_id: {$in: ids}
+			}
+		}, {
+			$project: {
+				title: 1,
+
+				votesPlus: {$size: '$votesPlus'},
+				votesMinus: {$size: '$votesMinus'},
+				skips: {$size: '$skips'},
+				views: {$size: '$views'},
+				reports: {$size: '$reports'},
+
+				ideasPlusCount: {$size: '$ideasPlus'},
+				ideasMinusCount: {$size: '$ideasMinus'},
+				commentsCount: {$size: '$comments'},
+				alternativesCount: {$size: '$alternatives'},
+				implementationsCount: {$size: '$implementations'},
+
+				myVote: {
+					$switch: {
+						branches: [
+							{'case': {$in: [userId, '$skips']}, then: VoteType.skip},
+							{'case': {$in: [userId, '$votesPlus']}, then: VoteType.plus},
+							{'case': {$in: [userId, '$votesMinus']}, then: VoteType.minus},
+						],
+						'default': 0
+					}
+				},
+
+				createdAt: 1,
+			}
+		}, {
+			$sort: {createdAt: -1}
+		}]);
+		return rows || [];
+	}
+
+	@staticMethod
+	static async getVotes (userId: MongoIdType, ideaId: MongoIdType) : Promise<any> {
+		const rows = await Model.aggregate([{
+			$match: {
+				_id: ('string' === typeof ideaId) ? mongoose.Types.ObjectId(<string>ideaId) : ideaId,
+			}
+		}, {
+			$project: {
+				_id: 0,
+				votesPlus: {$size: '$votesPlus'},
+				votesMinus: {$size: '$votesMinus'},
+				skips: {$size: '$skips'},
+
+				myVote: {
+					$switch: {
+						branches: [
+							{'case': {$in: [userId, '$skips']}, then: VoteType.skip},
+							{'case': {$in: [userId, '$votesPlus']}, then: VoteType.plus},
+							{'case': {$in: [userId, '$votesMinus']}, then: VoteType.minus},
+						],
+						'default': 0
+					}
+				},
+			}
+		}]);
+		return rows[0] || null;
+	}
+
+	@staticMethod
+	static async voteAndReturnNewValues (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) {
+		await Idea.vote(userId, ideaId, voteType);
+		return await Idea.getVotes(userId, ideaId);
 	}
 
 	@staticMethod

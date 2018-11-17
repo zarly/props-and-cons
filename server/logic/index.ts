@@ -93,11 +93,11 @@ export default class Logic {
 
 		const parentIdea = <any>(await ORM.Idea.findById(idea.parentIdea, ['title']));
 
-		const comments = await ORM.Idea.resolveIdeas(idea.comments);
-		const alternatives = await ORM.Idea.resolveIdeas(idea.alternatives);
-		const ideasPlus = await ORM.Idea.resolveIdeas(idea.ideasPlus);
-		const ideasMinus = await ORM.Idea.resolveIdeas(idea.ideasMinus);
-		const implementations = await ORM.Idea.resolveIdeas(idea.implementations);
+		const comments = await ORM.Idea.resolveIdeas(user._id, idea.comments);
+		const alternatives = await ORM.Idea.resolveIdeas(user._id, idea.alternatives);
+		const ideasPlus = await ORM.Idea.resolveIdeas(user._id, idea.ideasPlus);
+		const ideasMinus = await ORM.Idea.resolveIdeas(user._id, idea.ideasMinus);
+		const implementations = await ORM.Idea.resolveIdeas(user._id, idea.implementations);
 
 		return {
 			_id: idea._id,
@@ -140,6 +140,6 @@ export default class Logic {
 	 * @param {number} voteType
 	 */
 	async vote (userId: MongoIdType, ideaId: MongoIdType, voteType: number) {
-		return await ORM.Idea.vote(userId, ideaId, voteType);
+		return await ORM.Idea.voteAndReturnNewValues(userId, ideaId, voteType);
 	}
 }

@@ -1,9 +1,10 @@
 <template>
 	<div class="IdeaItem">
-		<div v-text="idea.title" class="anch" @click="navigateToDetails"></div>
+		<div v-text="idea.title" class="anch title" @click="navigateToDetails"></div>
 		<div class="hint">
-			<span v-text="datetime"></span>
-			<span v-if="responsesTotal">, {{responses}}</span>
+			<span class="datetime" v-text="datetime"></span>
+			<span class="votes-stats">{{idea.votesPlus}} &middot; {{idea.skips}} &middot; {{idea.votesMinus}}</span>
+			<span class="anch responses-stats" v-if="responsesTotal" @click="navigateToDetails">{{responses}}</span>
 		</div>
 	</div>
 </template>
@@ -44,8 +45,36 @@
 		padding: 15px 0;
 		margin: 0 20px;
 
+		.title {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: block;
+		}
+
 		.hint {
 			margin-top: 4px;
+		}
+
+		.datetime {
+			display: inline-block;
+			width: 150px;
+		}
+
+		.datetime {
+			display: inline-block;
+			width: 150px;
+		}
+
+		.votes-stats {
+			display: inline-block;
+			width: 100px;
+		}
+
+		.responses-stats {
+			display: inline-block;
+			width: 100px;
+			color: @cl-grey;
+			font-weight: normal;
 		}
 	}
 </style>
