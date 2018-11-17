@@ -25,7 +25,7 @@ test('vote for one idea', async () => {
 	const user = new ORM.User({name: 'name', login: 'login'});
 	await user.save();
 
-	const idea = new ORM.Idea({title: 'title'});
+	const idea = new ORM.Idea({title: 'title', author: user._id});
 	await idea.save();
 
 	const userVote1 = await logic.getIdeaById('my-realm', user, idea._id);
@@ -43,7 +43,7 @@ test('change vote', async () => {
 	const user = new ORM.User({name: 'name', login: 'login'});
 	await user.save();
 
-	const idea = new ORM.Idea({title: 'title'});
+	const idea = new ORM.Idea({title: 'title', author: user._id});
 	await idea.save();
 
 	const userVote1 = await logic.getIdeaById('my-realm', user, idea._id);
@@ -63,11 +63,11 @@ test('change vote', async () => {
 	expect(userVote3.myVote).toBe(4);
 });
 
-xtest('vote for two ideas', async () => {
+test('vote for two ideas', async () => {
 	const user = new ORM.User({name: 'name', login: 'login'});
 	await user.save();
 
-	const idea = new ORM.Idea({title: 'title'});
+	const idea = new ORM.Idea({title: 'title', author: user._id});
 	await idea.save();
 
 	const userVote1 = await logic.getIdeaById('my-realm', user, idea._id);

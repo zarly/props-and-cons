@@ -53,10 +53,11 @@ export default class ORM {
 	}
 
 	async connect () {
+		mongoose.set('useCreateIndex', true); // https://github.com/Automattic/mongoose/issues/6890
 		const connectPromise = mongoose.connect(this.credentials, {
 			keepAlive: 300000,
 			reconnectTries: 3,
-			useNewUrlParser: true
+			useNewUrlParser: true,
 		});
 		return await connectPromise;
 	}

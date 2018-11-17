@@ -33,20 +33,7 @@ describe('vk auth', () => {
 		expect(result).toBeFalsy();
 	});
 
-	xtest('loginOrRegisterVk', async () => {
-		const user = await User.loginOrRegisterVk('some_id');
-		expect(user).toBeInstanceOf(User);
-		expect(user.vkUid).toBe('some_id');
-	});
-});
-
-describe('vote', () => {
-	test('find by vkUid', async () => {
-		const result = await User.findOne({vkUid: 'unexisted'});
-		expect(result).toBeFalsy();
-	});
-
-	xtest('loginOrRegisterVk', async () => {
+	test('loginOrRegisterVk', async () => {
 		const user = await User.loginOrRegisterVk('some_id');
 		expect(user).toBeInstanceOf(User);
 		expect(user.vkUid).toBe('some_id');
