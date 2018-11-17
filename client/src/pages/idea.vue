@@ -2,33 +2,35 @@
 	<div class="IdeaPage VkPage">
 		<div class="anch" @click="$router.push('/ideas')">к списку тем</div>
 		<div v-if="idea">
+			<div class="parent" v-text="idea.parentIdeas"></div>
 			<div class="title" v-text="idea.title"></div>
 			<div class="description" v-text="idea.description"></div>
 			<div class="created-area">
 				<a v-text="idea.author.name" class="anch" :href="authorUrl" target="_blank"></a>,
 				<span v-text="datetime" class="hint"></span>
 			</div>
-			<div class="actions row">
-				<button @click="vote(3)" class="option">
+			<div class="actions row" v-if="!this.idea.myVote || this.revote">
+				<button @click="vote(3)" class="option" :class="{active: this.idea.myVote === 3}">
 					Голосовать За
 				</button>
-				<button @click="vote(4)" class="option">
+				<button @click="vote(4)" class="option" :class="{active: this.idea.myVote === 4}">
 					Голосовать Против
 				</button>
-				<button @click="vote(2)" class="option">
+				<button @click="vote(2)" class="option" :class="{active: this.idea.myVote === 2}">
 					Пропустить
 				</button>
 			</div>
-			<div class="stats row">
-				<div class="stat-box">
+			<div class="revote anch" v-if="this.idea.myVote && !this.revote" @click="onClickRevote">переголосовать</div>
+			<div class="stats row" v-if="this.idea.myVote">
+				<div class="stat-box" :class="{active: this.idea.myVote === 3}">
 					<div class="count" v-text="idea.votesPlusCount"></div>
 					<div class="label">поддержали</div>
 				</div>
-				<div class="stat-box">
+				<div class="stat-box" :class="{active: this.idea.myVote === 4}">
 					<div class="count" v-text="idea.votesMinusCount"></div>
 					<div class="label">возразили</div>
 				</div>
-				<div class="stat-box">
+				<div class="stat-box" :class="{active: this.idea.myVote === 2}">
 					<div class="count" v-text="idea.skipsCount"></div>
 					<div class="label">пропустили</div>
 				</div>
@@ -97,6 +99,8 @@
 			return {
 				initPromise: this.fetch(),
 				idea: null,
+
+				revote: false,
 			};
 		},
 		computed: {
@@ -144,6 +148,10 @@
 					body: JSON.stringify(query),
 				});
 				await this.fetch();
+				this.revote = false;
+			},
+			onClickRevote () {
+				this.revote = true;
 			},
 		},
 	};
@@ -179,7 +187,19 @@
 
 			.option {
 				width: 30%;
+
+				&.active {
+					opacity: 0.5;
+				}
 			}
+		}
+
+		.revote {
+			text-align: center;
+			display: block;
+			height: 15px;
+			margin-top: -15px;
+			font-weight: normal;
 		}
 
 		.stats {
@@ -189,6 +209,13 @@
 				width: 100px;
 				height: 100px;
 				text-align: center;
+				padding: 17px 0;
+				border-radius: 4px;
+				border: @grey-border;
+
+				&.active {
+					background: #f0f2f5;
+				}
 
 				.count {
 					font-size: 40px;
