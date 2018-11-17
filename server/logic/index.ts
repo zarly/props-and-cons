@@ -72,7 +72,7 @@ export default class Logic {
 			}
 		}, {
 			$sort: {createdAt: -1}
-		}]).skip(skip).limit(limit); // TODO: добавить оператор проекции
+		}]).skip(skip).limit(limit);
 		return {
 			count,
 			rows: <any[]>rows,
@@ -84,13 +84,20 @@ export default class Logic {
 	 *
 	 * @param {String} realm
 	 * @param {User} user
-	 * @param {string} id
+	 * @param {string} ideaId
 	 * @returns {Promise<IdeaForDetails>}
 	 */
-	async getIdeaById (realm: string, user: User, id: string) : Promise<IdeaForDetails> {
-		const idea = await ORM.Idea.readWithChildren(id);
+	async getIdeaById (realm: string, user: User, ideaId: string) : Promise<IdeaForDetails> {
+		const idea = await ORM.Idea.readWithChildren(user._id, ideaId);
 		const author = await ORM.User.publicInfo(idea.author);
-		const myVote = await this.getUserVoteForIdea(user._id, id);
+
+		const parentIdea = <any>(await ORM.Idea.findById(idea.parentIdea, ['title']));
+
+		const comments = await ORM.Idea.resolveIdeas(idea.comments);
+		const alternatives = await ORM.Idea.resolveIdeas(idea.alternatives);
+		const ideasPlus = await ORM.Idea.resolveIdeas(idea.ideasPlus);
+		const ideasMinus = await ORM.Idea.resolveIdeas(idea.ideasMinus);
+		const implementations = await ORM.Idea.resolveIdeas(idea.implementations);
 
 		return {
 			_id: idea._id,
@@ -99,25 +106,27 @@ export default class Logic {
 			description: idea.description,
 
 			author: author,
-			parentIdeas: [idea.parentIdea].filter(o => o),
+			parentIdeas: [parentIdea].filter(o => o),
 
-			votesPlus: idea.votesPlus && idea.votesPlus.length || 0,
-			votesMinus: idea.votesMinus && idea.votesMinus.length || 0,
-			skips: idea.skips && idea.skips.length || 0,
-			views: idea.views && idea.views.length || 0,
-			reports: idea.reports && idea.reports.length || 0,
+			votesPlusCount: idea.votesPlusCount,
+			votesMinusCount: idea.votesMinusCount,
+			skipsCount: idea.skipsCount,
+			viewsCount: idea.viewsCount,
+			reportsCount: idea.reportsCount,
 
-			ideasPlusCount: idea.votesPlus && idea.ideasPlus.length || 0,
-			ideasMinusCount: idea.ideasMinus && idea.ideasMinus.length || 0,
-			commentsCount: idea.comments && idea.comments.length || 0,
-			alternativesCount: idea.alternatives && idea.alternatives.length || 0,
-			implementationsCount: idea.implementations && idea.implementations.length || 0,
+			myVote: idea.myVote,
 
-			ideasPlus: idea.ideasPlus,
-			ideasMinus: idea.ideasMinus,
-			comments: idea.comments,
-			alternatives: idea.alternatives,
-			implementations: idea.implementations,
+			ideasPlusCount: idea.ideasPlusCount,
+			ideasMinusCount: idea.ideasMinusCount,
+			commentsCount: idea.commentsCount,
+			alternativesCount: idea.alternativesCount,
+			implementationsCount: idea.implementationsCount,
+
+			ideasPlus: ideasPlus,
+			ideasMinus: ideasMinus,
+			comments: comments,
+			alternatives: alternatives,
+			implementations: implementations,
 
 			createdAt: idea.createdAt,
 		};

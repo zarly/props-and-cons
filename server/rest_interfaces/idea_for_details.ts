@@ -10,13 +10,13 @@ export interface IdeaForDetails {
 	author: any;
 	parentIdeas: Array<String>;
 
-	votesPlus: number;
-	votesMinus: number;
-	skips: number;
-	views: number;
-	reports: number;
+	votesPlusCount: number;
+	votesMinusCount: number;
+	skipsCount: number;
+	viewsCount: number;
+	reportsCount: number;
 
-	myVote?: number;
+	myVote: number;
 
 	ideasPlusCount: number;
 	ideasMinusCount: number;

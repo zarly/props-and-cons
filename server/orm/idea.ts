@@ -2,6 +2,7 @@
 import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
 import {RootIdeaType, IdeaType, VoteType} from './_enums'
+import {IdeaForList} from '../rest_interfaces/idea_for_list'
 
 type ObjectId = mongoose.Types.ObjectId;
 export type MongoIdType = string | mongoose.Types.ObjectId;
@@ -92,19 +93,63 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async readWithChildren (id: string|ObjectId, limit: number = 10) : Promise<any> {
-		const result = await Model.findById(id);
-		if (!result) return null;
+	static async readWithChildren (userId: MongoIdType, ideaId: MongoIdType, childrenLimit: number = 10) : Promise<any> {
+		const rows = await Model.aggregate([{
+			$match: {
+				_id: ('string' === typeof ideaId) ? mongoose.Types.ObjectId(<string>ideaId) : ideaId,
+			}
+		}, {
+			$project: {
+				type: 1,
+				title: 1,
+				description: 1,
 
-		result.parentIdea = <any>(await Model.findById(result.parentIdea, ['title']));
+				author: 1,
+				parentIdeas: 1,
 
-		result.comments = await Model.resolveIdeas(result.comments, limit);
-		result.alternatives = await Model.resolveIdeas(result.alternatives, limit);
-		result.ideasPlus = await Model.resolveIdeas(result.ideasPlus, limit);
-		result.ideasMinus = await Model.resolveIdeas(result.ideasMinus, limit);
-		result.implementations = await Model.resolveIdeas(result.implementations, limit);
-		
-		return result;
+				votesPlusCount: {$size: "$votesPlus"},
+				votesMinusCount: {$size: "$votesMinus"},
+				skipsCount: {$size: "$skips"},
+				viewsCount: {$size: "$views"},
+				reportsCount: {$size: "$reports"},
+
+				myVote: {
+					$switch: {
+						branches: [
+							{'case': {$in: [userId, '$skips']}, then: VoteType.skip},
+							{'case': {$in: [userId, '$votesPlus']}, then: VoteType.plus},
+							{'case': {$in: [userId, '$votesMinus']}, then: VoteType.minus},
+						],
+						'default': 0
+					}
+				},
+
+				ideasPlus: {
+					$slice: ['$ideasPlus', 0, childrenLimit]
+				},
+				ideasMinus: {
+					$slice: ['$ideasMinus', 0, childrenLimit]
+				},
+				comments: {
+					$slice: ['$comments', 0, childrenLimit]
+				},
+				alternatives: {
+					$slice: ['$alternatives', 0, childrenLimit]
+				},
+				implementations: {
+					$slice: ['$implementations', 0, childrenLimit]
+				},
+
+				ideasPlusCount: {$size: "$ideasPlus"},
+				ideasMinusCount: {$size: "$ideasMinus"},
+				commentsCount: {$size: "$comments"},
+				alternativesCount: {$size: "$alternatives"},
+				implementationsCount: {$size: "$implementations"},
+
+				createdAt: 1,
+			}
+		}]);
+		return rows[0] || null;
 	}
 
 	@staticMethod
@@ -136,13 +181,12 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async resolveIdeas (ids: Array<ObjectId>, limit: number = 10) : Promise<any> {
+	static async resolveIdeas (ids: Array<ObjectId>) : Promise<IdeaForList[]> {
 		const commentsPromise = ids
-			.slice(0, limit)
 			.map((id: ObjectId) => {
 				return Model.findById(id);
 			});
-		return <any>(await Promise.all(<any>commentsPromise));
+		return <any[]>(await Promise.all(<any[]>commentsPromise));
 	}
 
 	@staticMethod

@@ -5,10 +5,14 @@ import {clearDatabase} from './helper'
 
 const Idea = ORM.Idea;
 let orm: ORM;
+let user: any;
 
 beforeAll(async () => {
 	orm = new ORM(config.mongoose);
 	await orm.connect();
+
+	user = new ORM.User({name: 'ttt', login: 'idea_test_login'});
+	user.save();
 });
 
 beforeEach(clearDatabase);
@@ -113,7 +117,7 @@ describe('method readWithChildren', () => {
 		await Idea.createAndRegister({title: 'Child idea', parentIdea: rootIdea._id});
 		await Idea.createAndRegister({title: 'Child idea', parentIdea: rootIdea._id});
 
-		const data = await Idea.readWithChildren(rootIdea._id, 3);
+		const data = await Idea.readWithChildren(user._id, rootIdea._id, 3);
 		expect(data).toBeDefined();
 		expect(data.comments.length).toBe(3);
 	});
@@ -124,7 +128,7 @@ describe('method readWithChildren', () => {
 		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.comment, parentIdea: rootIdea._id});
 
-		const data = await Idea.readWithChildren(rootIdea._id);
+		const data = await Idea.readWithChildren(user._id, rootIdea._id);
 		expect(data.comments[0]).toBeInstanceOf(Idea);
 	});
 
@@ -134,7 +138,7 @@ describe('method readWithChildren', () => {
 		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.alternative, parentIdea: rootIdea._id});
 
-		const data = await Idea.readWithChildren(rootIdea._id);
+		const data = await Idea.readWithChildren(user._id, rootIdea._id);
 		expect(data.alternatives[0]).toBeInstanceOf(Idea);
 	});
 
@@ -144,7 +148,7 @@ describe('method readWithChildren', () => {
 		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.plus, parentIdea: rootIdea._id});
 
-		const data = await Idea.readWithChildren(rootIdea._id);
+		const data = await Idea.readWithChildren(user._id, rootIdea._id);
 		expect(data.ideasPlus[0]).toBeInstanceOf(Idea);
 	});
 
@@ -154,7 +158,7 @@ describe('method readWithChildren', () => {
 		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.minus, parentIdea: rootIdea._id});
 
-		const data = await Idea.readWithChildren(rootIdea._id);
+		const data = await Idea.readWithChildren(user._id, rootIdea._id);
 		expect(data.ideasMinus[0]).toBeInstanceOf(Idea);
 	});
 
@@ -164,7 +168,7 @@ describe('method readWithChildren', () => {
 		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.implementation, parentIdea: rootIdea._id});
 
-		const data = await Idea.readWithChildren(rootIdea._id);
+		const data = await Idea.readWithChildren(user._id, rootIdea._id);
 		expect(data.implementations[0]).toBeInstanceOf(Idea);
 	});
 });

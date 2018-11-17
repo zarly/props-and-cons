@@ -21,15 +21,15 @@
 			</div>
 			<div class="stats row">
 				<div class="stat-box">
-					<div class="count" v-text="idea.votesPlus"></div>
+					<div class="count" v-text="idea.votesPlusCount"></div>
 					<div class="label">поддержали</div>
 				</div>
 				<div class="stat-box">
-					<div class="count" v-text="idea.votesMinus"></div>
+					<div class="count" v-text="idea.votesMinusCount"></div>
 					<div class="label">возразили</div>
 				</div>
 				<div class="stat-box">
-					<div class="count" v-text="idea.skips"></div>
+					<div class="count" v-text="idea.skipsCount"></div>
 					<div class="label">пропустили</div>
 				</div>
 				<div class="stat-box">
@@ -109,7 +109,7 @@
 			},
 			acceptance () {
 				const {idea} = this;
-				const val = idea.votesPlus / (idea.votesPlus + idea.votesMinus);
+				const val = idea.votesPlusCount / (idea.votesPlusCount + idea.votesMinusCount);
 				if (val >= 0) {
 					return Math.round(100 * val) + '%';
 				} else {
@@ -118,13 +118,13 @@
 			},
 			relevance () {
 				const {idea} = this;
-				const val = (idea.votesPlus + idea.votesMinus) / (idea.votesPlus + idea.votesMinus + idea.skips);
+				const val = (idea.votesPlusCount + idea.votesMinusCount) / (idea.votesPlusCount + idea.votesMinusCount + idea.skipsCount);
 				if (val >= 0) {
 					return Math.round(100 * val) + '%';
 				} else {
 					return '-';
 				}
-			}
+			},
 		},
 		methods: {
 			async fetch () {
