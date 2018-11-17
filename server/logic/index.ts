@@ -21,9 +21,9 @@ export default class Logic {
 	 */
 	async publishIdea (realm: string, user: User, raw: Idea) : Promise<Idea> {
 		const idea = ORM.Idea.createAndRegister({
-			type: raw.type,
-			title: raw.title,
-			description: raw.description,
+			type: raw.type || 1,
+			title: (raw.title || '').substr(0, 200),
+			description: (raw.description || '').substr(0, 2000),
 
 			realm: realm,
 			author: user._id,

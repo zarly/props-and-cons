@@ -5,7 +5,12 @@ import {Express} from 'express-serve-static-core'
 import ORM from '../orm'
 import Logic from '../logic'
 import Auth from './auth'
+import chalk from 'chalk'
 import ideaMock from '../mocks/idea'
+
+const connected = chalk.cyan;
+
+// TODO: CORS на POST
 
 export default class Server {
     app: Express;
@@ -64,6 +69,6 @@ export default class Server {
 
     listen (port?: number) {
         this.app.listen(port);
-        console.log(`Start listening at port ${port}`);
+        console.log(connected(`Start listening at port ${port}`));
     }
 }

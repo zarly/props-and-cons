@@ -6,10 +6,10 @@ import IdeaModel, {Idea} from './idea'
 import {RootIdeaType, IdeaType, VoteType} from './_enums'
 import chalk from 'chalk'
 
-const connected = chalk.bold.cyan;
-const error = chalk.bold.yellow;
-const disconnected = chalk.bold.red;
-const termination = chalk.bold.magenta;
+const connected = chalk.cyan;
+const error = chalk.yellow;
+const disconnected = chalk.red;
+const termination = chalk.magenta;
 
 export const ObjectId = mongoose.Types.ObjectId;
 export type MongoIdType = string | mongoose.Types.ObjectId;

@@ -93,7 +93,7 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async readWithChildren (userId: MongoIdType, ideaId: MongoIdType, childrenLimit: number = 10) : Promise<any> {
+	static async readWithChildren (userId: MongoIdType, ideaId: MongoIdType, childrenLimit: number = 30) : Promise<any> { // TODO: отображение аргументов выходящих за лимит (вероятно отдельным запросом)
 		const rows = await Model.aggregate([{
 			$match: {
 				_id: ('string' === typeof ideaId) ? mongoose.Types.ObjectId(<string>ideaId) : ideaId,
@@ -105,7 +105,7 @@ export class Idea extends Typegoose {
 				description: 1,
 
 				author: 1,
-				parentIdeas: 1,
+				parentIdea: 1,
 
 				votesPlusCount: {$size: "$votesPlus"},
 				votesMinusCount: {$size: "$votesMinus"},

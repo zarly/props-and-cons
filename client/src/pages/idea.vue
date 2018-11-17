@@ -1,8 +1,14 @@
 <template>
 	<div class="IdeaPage VkPage">
-		<div class="anch" @click="$router.push('/ideas')">к списку тем</div>
+		<div v-if="!idea" class="anch" @click="$router.push('/ideas')">список тем</div>
 		<div v-if="idea">
-			<div class="parent" v-text="idea.parentIdeas"></div>
+			<div class="breadcrumbs">
+				<span class="anch" @click="$router.push('/ideas')">список тем</span>
+				<template v-for="par in idea.parentIdeas">
+					&gt;
+					<span class="anch" v-text="par.title" @click="$router.push('/idea/' + par._id)"></span>
+				</template>
+			</div>
 			<div class="title" v-text="idea.title"></div>
 			<div class="description" v-text="idea.description"></div>
 			<div class="created-area">
@@ -46,12 +52,12 @@
 			<section>
 				<div class="row">
 					<div class="half-area">
-						<h2>Аргументы За</h2>
+						<h2>Аргументы За<span v-if="idea.ideasPlusCount" v-text="' (' +idea.ideasPlusCount + ')'"></span></h2>
 						<ArgumentInDetails v-for="child in idea.ideasPlus" :idea="child" :key="child._id"></ArgumentInDetails>
 						<button @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Добавить</button>
 					</div>
 					<div class="half-area">
-						<h2>Аргументы Против</h2>
+						<h2>Аргументы Против<span v-if="idea.ideasMinusCount" v-text="' (' +idea.ideasMinusCount + ')'"></span></h2>
 						<ArgumentInDetails v-for="child in idea.ideasMinus" :idea="child" :key="child._id"></ArgumentInDetails>
 						<button @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Добавить</button>
 					</div>
@@ -61,12 +67,12 @@
 			<section>
 				<div class="row">
 					<div class="half-area">
-						<h2>Дополнения</h2>
+						<h2>Дополнения<span v-if="idea.implementationsCount" v-text="' (' +idea.implementationsCount + ')'"></span></h2>
 						<ArgumentInDetails v-for="child in idea.implementations" :idea="child" :key="child._id"></ArgumentInDetails>
 						<button @click="$router.push(`/idea-add?type=5&parent=${idea._id}`)">Добавить</button>
 					</div>
 					<div class="half-area">
-						<h2>Альтернативы</h2>
+						<h2>Альтернативы<span v-if="idea.alternativesCount" v-text="' (' +idea.alternativesCount + ')'"></span></h2>
 						<ArgumentInDetails v-for="child in idea.alternatives" :idea="child" :key="child._id"></ArgumentInDetails>
 						<button @click="$router.push(`/idea-add?type=2&parent=${idea._id}`)">Добавить</button>
 					</div>
@@ -74,7 +80,7 @@
 				<!--<div class="anch">загрузить ещё...</div>-->
 			</section>
 			<section class="comments-area">
-				<h2>Комментарии</h2>
+				<h2>Комментарии<span v-if="idea.commentsCount" v-text="' (' +idea.commentsCount + ')'"></span></h2>
 				<CommentInDetails v-for="child in idea.comments" :idea="child" :key="child._id"></CommentInDetails>
 				<button @click="$router.push(`/idea-add?type=1&parent=${idea._id}`)">Добавить</button>
 			</section>
@@ -102,6 +108,11 @@
 
 				revote: false,
 			};
+		},
+		watch: {
+			id () {
+				this.initPromise = this.fetch();
+			}
 		},
 		computed: {
 			datetime () {
@@ -133,6 +144,7 @@
 		methods: {
 			async fetch () {
 				this.idea = await gate.ask(`/ideas/${this.id}`);
+				this.revote = false;
 			},
 			async vote (voteType) {
 				const query = {

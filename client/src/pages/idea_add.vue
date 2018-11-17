@@ -2,15 +2,18 @@
 	<div class="IdeaAddPage VkPage">
 		<div class="anch" @click="$router.go(-1)">вернуться назад</div>
 		<form @submit.prevent="onSubmit">
-			<div v-text="type"></div>
-			<div v-text="parent"></div>
+			<div class="parent-info" v-if="parentIdea">
+				<span class="type" v-text="typeText"></span> для
+				<span class="anch" v-text="parentIdea.title" @click="$router.push('/idea/' + parentIdea._id)"></span>
+				<p class="parent-description" v-if="parentIdea.description" v-text="parentIdea.description"></p>
+			</div>
 			<div class="fields-row">
 				<div class="label">Заголовок</div>
-				<input v-model="title" class="title-field" />
+				<input v-model="title" class="title-field" maxlength="200" />
 			</div>
 			<div class="fields-row">
 				<div class="label">Текст</div>
-				<textarea v-model="text" class="text-field"></textarea>
+				<textarea v-model="text" class="text-field" maxlength="2000"></textarea>
 			</div>
 			<div class="action-block">
 				<button type="submit">Создать тему</button>
@@ -24,19 +27,38 @@
 
 	export default {
 		data () {
+			const parentId = this.$route.query.parent;
 			return {
+				initPromise: this.fetchParentIdea(parentId),
 				type: parseInt(this.$route.query.type, 10) || 1,
-				parent: this.$route.query.parent || null,
+				parentId: parentId,
+				parentIdea: null,
 				title: '',
 				text: '',
 			};
 		},
+		computed: {
+			typeText () {
+				const dict = {
+					1: 'Комментарий',
+					2: 'Альтернатив',
+					3: 'Аргумент За',
+					4: 'Аргумент Против',
+					5: 'Дополнение',
+				};
+				return dict[this.type];
+			}
+		},
 		methods: {
+			async fetchParentIdea (parentId) {
+				if (!parentId) return null;
+				this.parentIdea = await gate.ask(`/ideas/${parentId}`);
+			},
 			async onSubmit () {
 				const query = {
 					title: this.title,
 					description: this.text,
-					parentIdea: this.parent,
+					parentIdea: this.parentId,
 					type: this.type,
 				};
 
@@ -66,6 +88,20 @@
 			margin: 18px 0 12px;
 			font-weight: 500;
 			color: #222;
+		}
+
+		.parent-info {
+			color: #222;
+			margin: 18px 0 12px;
+			font-weight: 500;
+
+			.parent-description {
+				background: #fff;
+				border-radius: 2px;
+				border: 1px solid #d3d9de;
+				padding: 5px 9px 7px;
+				color: #000;
+			}
 		}
 
 		.title-field,
