@@ -28,15 +28,15 @@ test('vote for one idea', async () => {
 	const idea = new ORM.Idea({title: 'title'});
 	await idea.save();
 
-	const userVote1 = await logic.getUserVoteForIdea(user._id, idea._id);
+	const userVote1 = await logic.getIdeaById('my-realm', user, idea._id);
 	expect(userVote1).toBeDefined();
-	expect(userVote1).toBe(0);
+	expect(userVote1.myVote).toBe(0);
 
 	await logic.vote(user._id, idea._id, 3);
 
-	const userVote2 = await logic.getUserVoteForIdea(user._id, idea._id);
+	const userVote2 = await logic.getIdeaById('my-realm', user, idea._id);
 	expect(userVote2).toBeDefined();
-	expect(userVote2).toBe(3);
+	expect(userVote2.myVote).toBe(3);
 });
 
 test('change vote', async () => {
@@ -46,21 +46,21 @@ test('change vote', async () => {
 	const idea = new ORM.Idea({title: 'title'});
 	await idea.save();
 
-	const userVote1 = await logic.getUserVoteForIdea(user._id, idea._id);
+	const userVote1 = await logic.getIdeaById('my-realm', user, idea._id);
 	expect(userVote1).toBeDefined();
-	expect(userVote1).toBe(0);
+	expect(userVote1.myVote).toBe(0);
 
 	await logic.vote(user._id, idea._id, 3);
 
-	const userVote2 = await logic.getUserVoteForIdea(user._id, idea._id);
+	const userVote2 = await logic.getIdeaById('my-realm', user, idea._id);
 	expect(userVote2).toBeDefined();
-	expect(userVote2).toBe(3);
+	expect(userVote2.myVote).toBe(3);
 
 	await logic.vote(user._id, idea._id, 4);
 
-	const userVote3 = await logic.getUserVoteForIdea(user._id, idea._id);
+	const userVote3 = await logic.getIdeaById('my-realm', user, idea._id);
 	expect(userVote3).toBeDefined();
-	expect(userVote3).toBe(4);
+	expect(userVote3.myVote).toBe(4);
 });
 
 xtest('vote for two ideas', async () => {
@@ -70,13 +70,13 @@ xtest('vote for two ideas', async () => {
 	const idea = new ORM.Idea({title: 'title'});
 	await idea.save();
 
-	const userVote1 = await logic.getUserVoteForIdea(user._id, idea._id);
+	const userVote1 = await logic.getIdeaById('my-realm', user, idea._id);
 	expect(userVote1).toBeDefined();
-	expect(userVote1).toBe(0);
+	expect(userVote1.myVote).toBe(0);
 
 	await logic.vote(user._id, idea._id, 3);
 
-	const userVote2 = await logic.getUserVoteForIdea(user._id, idea._id);
+	const userVote2 = await logic.getIdeaById('my-realm', user, idea._id);
 	expect(userVote2).toBeDefined();
-	expect(userVote2).toBe(3);
+	expect(userVote2.myVote).toBe(3);
 });

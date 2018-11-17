@@ -16,6 +16,7 @@ export type MongoIdType = string | mongoose.Types.ObjectId;
 
 export default class ORM {
 	private credentials: string;
+	private verbose: boolean;
 	private reconnect: boolean;
 	static User = UserModel;
 	static Group = GroupModel;
@@ -24,28 +25,29 @@ export default class ORM {
 	static IdeaType = IdeaType;
 	static VoteType = VoteType;
 
-	constructor (credentials: string) {
+	constructor (credentials: string, verbose: boolean = false) {
 		this.credentials = credentials;
+		this.verbose = verbose;
 		this.reconnect = true;
 
 		process.on('SIGINT', () => {
 			this.reconnect = false;
 			mongoose.connection.close(() => {
-				console.log(termination("Mongoose default connection is disconnected due to application termination"));
+				if (this.verbose) console.log(termination("Mongoose default connection is disconnected due to application termination"));
 				process.exit(0);
 			});
 		});
 
 		mongoose.connection.on('connected', () => {
-			console.log(connected("Mongoose default connection is open to", this.credentials));
+			if (this.verbose) console.log(connected("Mongoose default connection is open to", this.credentials));
 		});
 
 		mongoose.connection.on('error', (err) => {
-			console.log(error("Mongoose default connection has occured "+err+" error"));
+			if (this.verbose) console.log(error("Mongoose default connection has occured "+err+" error"));
 		});
 
 		mongoose.connection.on('disconnected', async () => {
-			console.log(disconnected("Mongoose default connection is disconnected"));
+			if (this.verbose) console.log(disconnected("Mongoose default connection is disconnected"));
 			await this.connect();
 		});
 	}

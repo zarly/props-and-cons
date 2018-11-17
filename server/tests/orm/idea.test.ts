@@ -1,6 +1,6 @@
 
 import config from '../../config'
-import ORM from '../../orm'
+import ORM, {ObjectId} from '../../orm'
 import {clearDatabase} from './helper'
 
 const Idea = ORM.Idea;
@@ -129,7 +129,7 @@ describe('method readWithChildren', () => {
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.comment, parentIdea: rootIdea._id});
 
 		const data = await Idea.readWithChildren(user._id, rootIdea._id);
-		expect(data.comments[0]).toBeInstanceOf(Idea);
+		expect(data.comments[0]).toBeInstanceOf(ObjectId);
 	});
 
 	test('resolve alternative', async () => {
@@ -139,7 +139,7 @@ describe('method readWithChildren', () => {
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.alternative, parentIdea: rootIdea._id});
 
 		const data = await Idea.readWithChildren(user._id, rootIdea._id);
-		expect(data.alternatives[0]).toBeInstanceOf(Idea);
+		expect(data.alternatives[0]).toBeInstanceOf(ObjectId);
 	});
 
 	test('resolve plus', async () => {
@@ -149,7 +149,7 @@ describe('method readWithChildren', () => {
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.plus, parentIdea: rootIdea._id});
 
 		const data = await Idea.readWithChildren(user._id, rootIdea._id);
-		expect(data.ideasPlus[0]).toBeInstanceOf(Idea);
+		expect(data.ideasPlus[0]).toBeInstanceOf(ObjectId);
 	});
 
 	test('resolve minus', async () => {
@@ -159,7 +159,7 @@ describe('method readWithChildren', () => {
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.minus, parentIdea: rootIdea._id});
 
 		const data = await Idea.readWithChildren(user._id, rootIdea._id);
-		expect(data.ideasMinus[0]).toBeInstanceOf(Idea);
+		expect(data.ideasMinus[0]).toBeInstanceOf(ObjectId);
 	});
 
 	test('resolve implementation', async () => {
@@ -169,7 +169,7 @@ describe('method readWithChildren', () => {
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.implementation, parentIdea: rootIdea._id});
 
 		const data = await Idea.readWithChildren(user._id, rootIdea._id);
-		expect(data.implementations[0]).toBeInstanceOf(Idea);
+		expect(data.implementations[0]).toBeInstanceOf(ObjectId);
 	});
 });
 

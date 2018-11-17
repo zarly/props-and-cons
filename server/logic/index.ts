@@ -140,22 +140,6 @@ export default class Logic {
 	 * @param {number} voteType
 	 */
 	async vote (userId: MongoIdType, ideaId: MongoIdType, voteType: number) {
-		return await Promise.all([
-			ORM.Idea.vote(userId, ideaId, voteType),
-			ORM.User.vote(userId, ideaId, voteType)
-		]);
-	}
-
-	async getUserVoteForIdea (userId: MongoIdType, ideaId: MongoIdType) {
-		const user = await ORM.User.findOne({
-			_id: userId,
-			'votes.ideaId': ''+ideaId,
-		}, {
-			votes: true,
-		});
-
-		const vote = user && user.votes && user.votes[0];
-		const voteType = vote && vote.voteType;
-		return voteType || 0;
+		return await ORM.Idea.vote(userId, ideaId, voteType);
 	}
 }

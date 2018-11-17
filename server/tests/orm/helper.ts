@@ -7,8 +7,11 @@ export async function clearDatabase () {
 	await ORM.User.deleteMany({});
 	await ORM.Group.deleteMany({});
 	await ORM.Idea.deleteMany({});
+	await delay(10);
 }
 
-export async function registerRootIdeaWithChildren () {
-
+export function delay (timeout: number) : Promise<undefined> {
+	return new Promise ((resolve) => {
+		setTimeout(resolve, timeout);
+	});
 }
