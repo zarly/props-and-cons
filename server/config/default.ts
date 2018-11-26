@@ -8,4 +8,8 @@ export default {
 			disableVerification: true,
 		}
 	},
+
+	logging: {
+    	morganFormat: 'dev',
+	},
 }

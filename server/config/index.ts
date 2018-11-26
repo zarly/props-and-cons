@@ -26,6 +26,10 @@ export interface IConfig {
 			disableVerification: boolean;
 		}
 	};
+
+	logging: {
+		morganFormat: string;
+	};
 }
 
 export default <IConfig> config;

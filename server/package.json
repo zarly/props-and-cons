@@ -13,6 +13,7 @@
   "author": "Alexander Abramov",
   "license": "MIT",
   "dependencies": {
+    "@types/morgan": "^1.7.35",
     "body-parser": "^1.18.3",
     "chalk": "^2.4.1",
     "cross-fetch": "^2.2.3",
@@ -20,6 +21,7 @@
     "express": "^4.16.4",
     "lodash": "^4.17.11",
     "mongoose": "^5.3.6",
+    "morgan": "^1.9.1",
     "passport": "^0.4.0",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
