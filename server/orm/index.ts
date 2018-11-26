@@ -33,22 +33,25 @@ export default class ORM {
 		process.on('SIGINT', () => {
 			this.reconnect = false;
 			mongoose.connection.close(() => {
-				if (this.verbose) console.log(termination("Mongoose default connection is disconnected due to application termination"));
+				if (this.verbose) console.log(termination('Mongoose default connection is disconnected due to application termination'));
 				process.exit(0);
 			});
 		});
 
 		mongoose.connection.on('connected', () => {
-			if (this.verbose) console.log(connected("Mongoose default connection is open to", this.credentials));
+			if (this.verbose) console.log(connected('Mongoose default connection is open to', this.credentials));
 		});
 
 		mongoose.connection.on('error', (err) => {
-			if (this.verbose) console.log(error("Mongoose default connection has occured "+err+" error"));
+			if (this.verbose) console.log(error(`Mongoose default connection has occured ${err} error`));
 		});
 
 		mongoose.connection.on('disconnected', async () => {
-			if (this.verbose) console.log(disconnected("Mongoose default connection is disconnected"));
-			await this.connect();
+			if (this.verbose) console.log(disconnected('Mongoose default connection is disconnected'));
+
+			if (this.reconnect) {
+				await this.connect();
+			}
 		});
 	}
 
