@@ -69,3 +69,6 @@ typings/
 frontend/out
 server/dist
 client/dist
+
+# db dumps
+*.dump

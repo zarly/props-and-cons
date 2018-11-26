@@ -8,7 +8,8 @@
     "start": "node dist/index.js",
     "build": "rm -Rf dist ; tsc && cp package.json dist",
     "test": "NODE_ENV=testing jest --maxWorkers=1",
-    "deploy": "ssh app@alex-abramov.com 'rm -Rf /apps/pac-node' && scp -r dist app@alex-abramov.com:/apps/pac-node && ssh app@alex-abramov.com 'cd /apps/pac-node && npm install'"
+    "deploy": "ssh app@alex-abramov.com 'rm -Rf /apps/pac-node' && scp -r dist app@alex-abramov.com:/apps/pac-node && ssh app@alex-abramov.com 'cd /apps/pac-node && npm install'",
+    "db:fetch": "ssh app@alex-abramov.com 'mongodump --db props-and-cons-production --archive > pac.dump' && scp app@alex-abramov.com:/apps/pac.dump pac.dump && mongorestore --archive pac.dump"
   },
   "author": "Alexander Abramov",
   "license": "MIT",
