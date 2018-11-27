@@ -11,4 +11,8 @@ export default merge({
 			disableVerification: false,
 		}
 	},
+
+	logging: {
+		morganFormat: 'combined',
+	},
 }, base);

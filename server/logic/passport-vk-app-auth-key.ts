@@ -1,3 +1,7 @@
+/*
+Первый запрос к API ВКонтакте:
+method=execute&code=var viewer = API.users.get({user_ids: [{viewer_id}], fields: "sex,photo_100"});var group = API.groups.getById({group_ids: [{group_id}]});return [viewer,group];&format=json&v=5.27
+ */
 
 import {Strategy as BaseStrategy} from 'passport-strategy'
 import {Request} from  'express'
@@ -9,6 +13,30 @@ interface IStrategyOptions {
 	verbose?: boolean;
 	logFunction?: Function;
 	name?: string;
+}
+
+interface IUser {
+	id: number;
+	first_name: string;
+	last_name: string;
+}
+
+interface IGroup {
+	id: number;
+	is_closed: number;
+	name: string;
+	photo_50: string;
+	photo_100: string;
+	photo_200: string;
+	screen_name: string;
+	type: string;
+}
+
+interface IApiResult {
+	response: [
+		[IUser],
+		[IGroup]
+	];
 }
 
 export class Strategy extends BaseStrategy {
@@ -38,13 +66,27 @@ export class Strategy extends BaseStrategy {
 		const isAuth = this.disableVerification || this.verifyAuthKey(params);
 		if (isAuth) {
 			const {viewer_id} = params;
-			this.done(viewer_id, params, (error: any, user: any) => {
+			const {userInfo, groupInfo} = Strategy.parseApiResult(params.api_result);
+			this.done(viewer_id, userInfo, (error: any, user: any) => {
 				(req as any).vkParams = params;
+				(req as any).vkUserInfo = userInfo;
+				(req as any).vkGroupInfo = groupInfo;
 				(req as any).realm = `vk:${params.group_id}`;
 				this.success(user);
 			});
 		} else {
 			this.fail(401);
+		}
+	}
+
+	static parseApiResult (apiResult: string) : {userInfo?: IUser, groupInfo?: IGroup} {
+		try {
+			const obj: IApiResult = JSON.parse(apiResult);
+			const userInfo = obj.response[0][0] || null;
+			const groupInfo = obj.response[1][0] || null;
+			return {userInfo, groupInfo};
+		} catch (e) {
+			return {userInfo: null, groupInfo: null};
 		}
 	}
 

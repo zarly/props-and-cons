@@ -16,6 +16,9 @@ export class Group extends Typegoose {
     owner: mongoose.Types.ObjectId;
     @arrayProp({items: mongoose.Types.ObjectId})
     admins: Array<mongoose.Types.ObjectId>;
+
+	@prop({required: true, 'default': Date.now})
+	createdAt: number;
 }
 
 const Model = new Group().getModelForClass(Group);

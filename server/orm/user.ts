@@ -22,6 +22,7 @@ interface vkUserInfo {
 interface AuthorInfo {
 	_id: string | ObjectId;
 	name: string;
+	photo?: string;
 	vkUid: string;
 }
 
@@ -63,16 +64,17 @@ export class User extends Typegoose {
     @arrayProp({items: mongoose.Types.ObjectId})
     similarUsers: Array<mongoose.Types.ObjectId>;
 
+	@prop({required: true, 'default': Date.now})
+	createdAt: number;
+
 	@staticMethod
-	static async loginOrRegisterVk (vkUid: string, params?: any) : Promise<any> {
+	static async loginOrRegisterVk (vkUid: string, userInfo?: any) : Promise<any> {
 		let instance: any|null = await Model.findOne({vkUid: `${vkUid}`});
 
 		if (!instance) {
-			// const vkInfo = await getUserVkInfo(vkUid); // TODO: сделать через первый запрос к API
-
 			instance = new Model({
 				vkUid: `${vkUid}`,
-				// vkInfo: vkInfo,
+				vkInfo: userInfo,
 			});
 			await instance.save();
 		}
@@ -102,36 +104,10 @@ export class User extends Typegoose {
 		return {
 			_id: user._id,
 			name: user.name || (user.vkInfo && (user.vkInfo.first_name + ' ' + user.vkInfo.last_name)) || 'noname',
+			photo: (user.vkInfo && user.vkInfo.photo_100) || null,
 			vkUid: user.vkUid,
 		};
 	}
-
-	// @instanceMethod
-	// async getVoteForIdea (ideaId: MongoIdType) : Promise<any> {
-	// 	const user = await Model.findById(this._id, {
-	// 		votes: true,
-	// 	});
-	// 	const vote = user.votes && user.votes[0];
-	// 	const voteType = vote && vote.voteType;
-	// 	return voteType || 0;
-	// }
-}
-
-async function getUserVkInfo (vkUid: string) : Promise<vkUserInfo|any> {
-	let url = new URL('https://api.vk.com/method/users.get');
-	url.searchParams.append('user_ids', vkUid);
-	url.searchParams.append('fields', 'verified,sex,photo_100');
-	url.searchParams.append('access_token', VK_APP_TOKEN);
-	url.searchParams.append('v', '5.87');
-
-	const response = await fetch(url.toString());
-	const vkInfo = await response.json();
-
-	if (!vkInfo.response) {
-		console.error(`Wrong response from VK`, vkInfo, url.toString());
-	}
-
-	return vkInfo.response[0];
 }
 
 const Model = new User().getModelForClass(User);

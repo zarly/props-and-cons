@@ -2,12 +2,14 @@
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
 import {Express} from 'express-serve-static-core'
+import * as morgan from 'morgan'
+import config from '../config'
 import ORM from '../orm'
 import Logic from '../logic'
 import Auth from './auth'
 import chalk from 'chalk'
 import ideaMock from '../mocks/idea'
-import {unescape} from "querystring";
+import {unescape} from 'querystring';
 
 const connected = chalk.cyan;
 
@@ -20,20 +22,38 @@ export default class Server {
     auth: Auth;
 
     constructor (orm: ORM, logic: Logic) {
-        this.orm = orm;
-        this.logic = logic;
-        const app = this.app = express();
-        this.auth = new Auth(app);
+		this.orm = orm;
+		this.logic = logic;
+		this.app = express();
+		this.auth = new Auth(this.app);
 
-        app.use('/api', bodyParser.json());
+		this.initMiddlewares();
+		this.initTechRoutes();
+		this.initAppRoutes();
+	}
 
-        app.get('/telemetry/healthcheck', (req, res) => {
-            res.send({healthy: true});
-        });
+	initMiddlewares () {
+		const app = this.app;
 
-        app.get('/api/ping', (req, res) => {
-            res.send({pong: true});
-        });
+		app.use(morgan(config.logging.morganFormat));
+	}
+
+	initTechRoutes () {
+		const app = this.app;
+
+		app.get('/telemetry/healthcheck', (req, res) => {
+			res.send({healthy: true});
+		});
+
+		app.get('/api/ping', (req, res) => {
+			res.send({pong: true});
+		});
+	}
+
+	initAppRoutes () {
+    	const app = this.app;
+
+		app.use('/api', bodyParser.json());
 
 		app.get('/api/ideas', this.auth.vk_app_auth_key, async (req, res) => {
 			const {limit, skip, parentId} = req.query;
@@ -72,6 +92,13 @@ export default class Server {
 
 		app.get('/api/users/me', this.auth.vk_app_auth_key, async (req, res) => {
 			res.send(req.user);
+		});
+
+		app.get('/api/settings', this.auth.vk_app_auth_key, async (req, res) => {
+			res.send({
+				me: req.user,
+				group: {realm: (req as any).realm},
+			});
 		});
     }
 
