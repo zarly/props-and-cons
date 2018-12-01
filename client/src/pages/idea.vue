@@ -62,6 +62,7 @@
 							<button class="add-btn" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Добавить</button>
 						</div>
 						<ArgumentInDetails v-for="child in idea.ideasPlus" :idea="child" :key="child._id" @update="fetch"></ArgumentInDetails>
+						<AddItemCompact class="add-item-compact" @send="onSendComment" :parent="idea" :type="3"></AddItemCompact>
 					</div>
 					<div class="vr main" />
 					<div class="half-area minus">
@@ -71,16 +72,11 @@
 							<button class="add-btn" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Добавить</button>
 						</div>
 						<ArgumentInDetails v-for="child in idea.ideasMinus" :idea="child" :key="child._id" @update="fetch"></ArgumentInDetails>
+						<AddItemCompact class="add-item-compact" @send="onSendComment" :parent="idea" :type="4"></AddItemCompact>
 					</div>
 				</div>
 				<!--<div class="anch">загрузить ещё...</div>-->
 			</section>
-			<!--section class="comments-area">
-				<div class="h1">Комментарии<span v-if="idea.commentsCount" v-text="' (' +idea.commentsCount + ')'"></span></div>
-				<CommentInDetails v-for="child in idea.comments" :idea="child" :key="child._id"></CommentInDetails>
-				<button @click="$router.push(`/idea-add?type=1&parent=${idea._id}`)">Добавить</button>
-			</section-->
-			<!--<div v-text="idea"></div>-->
 		</div>
 	</div>
 </template>
@@ -89,12 +85,12 @@
 	import gate from '../modules/gate'
 	import {renderDatetime} from '../modules/decorators'
 	import ArgumentInDetails from '@/components/argument_in_details.vue';
-	import CommentInDetails from '@/components/comment_in_details.vue';
+	import AddItemCompact from '@/components/add_item_compact.vue';
 
 	export default {
 		components: {
 			ArgumentInDetails,
-			CommentInDetails,
+			AddItemCompact,
 		},
 		props: ['id'],
 		data () {
@@ -161,6 +157,9 @@
 			onClickRevote () {
 				this.revote = true;
 			},
+			onSendComment (data, a, b) {
+				console.log(data, a, b);
+			}
 		},
 	};
 </script>

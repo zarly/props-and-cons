@@ -1,11 +1,25 @@
 <template>
 	<div class="DemoPage">
-		<iframe src="#/" />
+		<form>
+			<label>
+				<input type="radio" value="800px" v-model="width" /> desktop
+			</label>
+			<label>
+				<input type="radio" value="320px" v-model="width" /> mobile
+			</label>
+		</form>
+		<iframe src="#/" :style="{width: width}" />
 	</div>
 </template>
 
 <script>
-	export default {}
+	export default {
+		data () {
+			return {
+				width: '800px',
+			};
+		}
+	}
 </script>
 
 <style scoped lang="less">
@@ -15,6 +29,7 @@
 		background-color: #edeef0;
 		padding: 20px;
 		display: flex;
+		flex-direction: column;
 		justify-content: center;
 
 		iframe {
