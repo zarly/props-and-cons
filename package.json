@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "description": "Props and cons",
   "scripts": {
-    "test": "npm run test:server && npm run test:frontend",
+    "test": "npm run test:server && npm run test:client",
     "test:server": "cd server && npm test && cd -",
-    "test:frontend": "cd frontend && npm test && cd -"
+    "test:client": "cd client && npm test && cd -"
   },
   "author": "Alexander Abramov",
   "license": "MIT",
