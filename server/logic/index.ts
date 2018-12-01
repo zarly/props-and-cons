@@ -144,10 +144,8 @@ export default class Logic {
 		} else if (`${idea.author._id}` !== `${userId}`) {
 			return 403;
 		} else if (!idea.parentIdea) {
-			ORM.Idea.remove({
-				_id: ideaId,
-				'author._id': userId,
-			});
+			await ORM.Idea.deleteOne({_id: ideaId});
+			return 200;
 		} else {
 			await Promise.all([
 				ORM.Idea.deleteOne({_id: ideaId}),

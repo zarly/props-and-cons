@@ -48,7 +48,11 @@
 					body: JSON.stringify(query),
 				});
 
+				this.reset();
 				this.$emit('update');
+			},
+			reset () {
+				this.text = '';
 			},
 		}
 	}

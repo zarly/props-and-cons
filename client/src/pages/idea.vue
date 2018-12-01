@@ -12,11 +12,16 @@
 					<span class="anch" v-text="par.title" @click="$router.push('/idea/' + par._id)" :key="par._id"></span>
 				</template>
 			</div>
-			<div class="title h2" v-text="idea.title"></div>
-			<div class="description" v-text="idea.description"></div>
-			<div class="created-area">
-				<a v-text="idea.author.name" class="anch" :href="authorUrl" target="_blank"></a>,
-				<span v-text="datetime" class="hint"></span>
+			<div class="content">
+				<div class="crud-actions">
+					<div class="remove" @click="remove" v-if="isAllowedRemove"></div>
+				</div>
+				<div class="title h2" v-text="idea.title"></div>
+				<div class="description" v-text="idea.description"></div>
+				<div class="created-area">
+					<a v-text="idea.author.name" class="anch" :href="authorUrl" target="_blank"></a>,
+					<span v-text="datetime" class="hint"></span>
+				</div>
 			</div>
 			<div class="actions row" v-if="!this.idea.myVote || this.revote">
 				<button @click="vote(3)" class="option" :class="{active: this.idea.myVote === 3}">
@@ -54,7 +59,7 @@
 			</div>
 			<section>
 				<div class="hr wide" />
-				<div class="row">
+				<div class="row for-half">
 					<div class="half-area plus">
 						<div class="area-title">
 							<span class="h2">Комментарии &laquo;За&raquo;</span>
@@ -62,7 +67,7 @@
 							<button class="add-btn" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Добавить</button>
 						</div>
 						<ArgumentInDetails v-for="child in idea.ideasPlus" :idea="child" :key="child._id" @update="fetch"></ArgumentInDetails>
-						<AddItemCompact class="add-item-compact" @send="onSendComment" :parent="idea" :type="3"></AddItemCompact>
+						<AddItemCompact class="add-item-compact" @update="fetch" :parent="idea" :type="3"></AddItemCompact>
 					</div>
 					<div class="vr main" />
 					<div class="half-area minus">
@@ -72,7 +77,7 @@
 							<button class="add-btn" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Добавить</button>
 						</div>
 						<ArgumentInDetails v-for="child in idea.ideasMinus" :idea="child" :key="child._id" @update="fetch"></ArgumentInDetails>
-						<AddItemCompact class="add-item-compact" @send="onSendComment" :parent="idea" :type="4"></AddItemCompact>
+						<AddItemCompact class="add-item-compact" @update="fetch" :parent="idea" :type="4"></AddItemCompact>
 					</div>
 				</div>
 				<!--<div class="anch">загрузить ещё...</div>-->
@@ -83,6 +88,7 @@
 
 <script>
 	import gate from '../modules/gate'
+	import me from '../modules/me'
 	import {renderDatetime} from '../modules/decorators'
 	import ArgumentInDetails from '@/components/argument_in_details.vue';
 	import AddItemCompact from '@/components/add_item_compact.vue';
@@ -99,6 +105,8 @@
 				idea: null,
 
 				revote: false,
+
+				me,
 			};
 		},
 		watch: {
@@ -132,6 +140,11 @@
 					return '-';
 				}
 			},
+			isAllowedRemove () {
+				return this.idea && this.idea.author && 
+					this.me && this.me.user &&
+					this.idea.author._id === this.me.user._id;
+			},
 		},
 		methods: {
 			async fetch () {
@@ -157,9 +170,17 @@
 			onClickRevote () {
 				this.revote = true;
 			},
-			onSendComment (data, a, b) {
-				console.log(data, a, b);
-			}
+			async remove () {
+				if (!confirm('Вы уверены, что хотите безвозвратно удалить этот пост?')) return;
+				const result = await gate.ask(`/ideas/${this.idea._id}`, {
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json'
+					},
+					method: 'DELETE',
+				});
+				this.$router.push(`/ideas`);
+			},
 		},
 	};
 </script>

@@ -1,12 +1,48 @@
 @import "../styles/variables";
 
 .IdeaPage {
-	.title {
-		margin-top: 10px;
-	}
+	.content {
+		position: relative;
 
-	.description {
-		margin-top: 10px;
+		.crud-actions {
+			display: flex;
+			position: absolute;
+			top: 1px;
+			right: 2px;
+			opacity: 0;
+			transition: @transition-opacity-hide;
+
+			.edit,
+			.remove {
+				width: 16px;
+				height: 16px;
+				cursor: pointer;
+				background-repeat: no-repeat;
+				background-size: cover;
+				opacity: 0.5;
+				margin-left: 5px;
+			}
+
+			.edit {
+				background-image: url('../../static/icons/baseline-gavel-24px.svg');
+			}
+
+			.remove {
+				background-image: url('../../static/icons/baseline-delete-24px.svg');
+			}
+		}
+		&:hover .crud-actions {
+			opacity: 1;
+			transition: @transition-opacity-show;
+		}
+
+		.title {
+			margin-top: 10px;
+		}
+	
+		.description {
+			margin-top: 10px;
+		}
 	}
 
 	.created-area {
@@ -123,6 +159,16 @@
 
 		.add-item-compact {
 			margin-top: 15px;
+		}
+	}
+
+	@media (max-width: 400px) {
+		.for-half {
+			display: block;
+		}
+
+		.vr.main {
+			display: none;
 		}
 	}
 }

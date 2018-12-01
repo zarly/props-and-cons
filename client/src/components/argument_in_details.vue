@@ -39,10 +39,16 @@
 
 <script>
 	import gate from '../modules/gate'
+	import me from '../modules/me'
 	import {renderDatetime, renderQuantity} from '../modules/decorators'
 
 	export default {
 		props: ['idea'],
+		data () {
+			return {
+				me,
+			};
+		},
 		computed: {
 			datetime () {
 				const date = new Date(this.idea.createdAt);
@@ -54,7 +60,9 @@
 					+ this.idea.alternativesCount + this.idea.implementationsCount;
 			},
 			isAllowedRemove () {
-				return 1 || this.idea.author === this.me;
+				return this.idea && this.idea.author && 
+					this.me && this.me.user &&
+					this.idea.author._id === this.me.user._id;
 			},
 			authorPhoto () {
 				return this.idea.author && this.idea.author.photo;
