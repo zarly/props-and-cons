@@ -27,8 +27,8 @@
 						<span class="value" v-text="idea.votesMinus"></span>
 					</span>
 					&nbsp;
-					<span class="answers" v-if="responsesTotal" title="Читать комментарии">
-						<span class="arrow" @click="$router.push(`/idea/${idea._id}`)">&#9993;</span>
+					<span class="answers" v-if="responsesTotal" @click="$router.push(`/idea/${idea._id}`)" title="Читать комментарии">
+						<span class="arrow">&#9993;</span>
 						<span class="value" v-text="responsesTotal"></span>
 					</span>
 				</span>
@@ -169,7 +169,6 @@
 				height: @size;
 				outline: none;
 				border-radius: @size / 2;
-				background-color: #f00;
 				background-repeat: no-repeat no-repeat;
 				background-position: center center;
 				background-size: cover;
