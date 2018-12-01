@@ -99,10 +99,12 @@
 		position: relative;
 
 		.actions {
-			display: none;
+			display: flex;
 			position: absolute;
-			top: 0;
-			right: 0;
+			top: 2px;
+			right: 2px;
+			opacity: 0;
+			transition: opacity 0.5s 0.5s;
 
 			.edit,
 			.remove {
@@ -124,7 +126,8 @@
 			}
 		}
 		&:hover .actions {
-			display: flex;
+			opacity: 1;
+			transition: opacity 0.2s 0.1s;
 		}
 
 		.title {

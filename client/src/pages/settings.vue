@@ -1,6 +1,6 @@
 <template>
 	<div class="SettingsPage VkPage">
-		<div v-if="!idea" class="anch" @click="$router.push('/ideas')">&lt; список тем</div>
+		<div class="anch" @click="$router.push('/ideas')">&lt; список тем</div>
 		<h1>Настройки</h1>
 		<div v-if="me && me.vkInfo" class="user-card">
 			<img class="user-photo" :src="me.vkInfo.photo_100"/>

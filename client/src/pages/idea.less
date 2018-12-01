@@ -41,7 +41,7 @@
 	}
 
 	.stats {
-		margin-top: 10px;
+		margin: 10px 0;
 
 		.stat-box {
 			width: 100px;
@@ -82,45 +82,53 @@
 		}
 	}
 
+	.vr.main {
+		margin: 0 10px;
+	}
+
 	.half-area {
-		width: 49%;
+		flex: 1;
 		border-radius: 4px;
 		margin-top: 10px;
-		padding: 10px;
-		position: relative;
 
-		&.plus {
-			background: #eeffee;
-			border: 1px solid #ded;
-		}
+		.area-title {
+			display: flex;
+			justify-content: flex-start;
+			align-items: flex-start;
+			position: relative;
 
-		&.minus {
-			background: #ffeeee;
-			border: 1px solid #edd;
-		}
+			.count {
+				margin-top: 2px;
+				margin-left: 20px;
+			}
 
-		.h1 {
-			margin: 0 0 10px;
-		}
-
-		.anch {
-			display: block;
-		}
-
-		.add-btn {
-			position: absolute;
-			top: 10px;
-			right: 10px;
-		}
-	}
-
-	.comments-area {
-		.h1 {
-			margin: 20px 0 10px;
+			.add-btn {
+				position: absolute;
+				top: 0px;
+				right: 0px;
+				padding: 3px 14px;
+				font-size: 10px;
+				opacity: 0;
+				transition: opacity 0.5s 0.5s;
+			}
+			&:hover .add-btn {
+				opacity: 1;
+				transition: opacity 0.2s 0.1s;
+			}
 		}
 
 		.anch {
 			display: block;
 		}
 	}
+
+	// .comments-area {
+	// 	.h1 {
+	// 		margin: 20px 0 10px;
+	// 	}
+
+	// 	.anch {
+	// 		display: block;
+	// 	}
+	// }
 }

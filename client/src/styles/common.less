@@ -64,18 +64,33 @@ a.anch {
     color: @cl-grey;
 }
 
-.crumb {
-    color: #656565;
-    display: inline;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 54px;
-    height: 54px;
-    font-size: 16px;
+.hr {
+    background-color: @cl-light-grey;
+    height: 1px;
+
+	&.wide {
+		margin: 0 -@page-margin;
+	}
+}
+
+.vr {
+    background-color: @cl-light-grey;
+    width: 1px;
+}
+
+.header {
+    height: 28px;
+    margin: 0 -@page-margin;
+    padding: 0 @page-margin;
+    border-bottom: 1px solid @cl-light-grey;
 }
 
 .h1 {
 	font-size: 24px;
 	font-weight: 500;
+}
+
+.h2 {
+	font-size: 18px;
+	font-weight: 700;
 }
