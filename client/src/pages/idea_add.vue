@@ -28,6 +28,7 @@
 	export default {
 		data () {
 			const parentId = this.$route.query.parent;
+			const ideaId = this.$route.query.idea;
 			return {
 				initPromise: this.fetchParentIdea(parentId),
 				type: parseInt(this.$route.query.type, 10) || 1,
@@ -53,6 +54,11 @@
 			async fetchParentIdea (parentId) {
 				if (!parentId) return null;
 				this.parentIdea = await gate.ask(`/ideas/${parentId}`);
+			},
+			async fetchIdea (id) {
+				if (!id) return null;
+				const idea = await gate.ask(`/ideas/${id}`);
+				this.title = idea.title;
 			},
 			async onSubmit () {
 				const query = {

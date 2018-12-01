@@ -1,5 +1,9 @@
 <template>
 	<div class="ArgumentInDetails">
+		<div class="actions">
+			<!--div class="edit" @click="edit"></div-->
+			<div class="remove" @click="remove" v-if="isAllowedRemove"></div>
+		</div>
 		<div v-text="idea.title" class="anch title" @click="navigateToDetails"></div>
 		<div class="hint">
 			<span class="datetime" v-text="datetime"></span>
@@ -41,6 +45,9 @@
 				const count = this.responsesTotal;
 				return renderQuantity(count, 'ответ', 'ответа', 'ответов')
 			},
+			isAllowedRemove () {
+				return 1 || this.idea.author === this.me;
+			},
 		},
 		methods: {
 			navigateToDetails () {
@@ -64,6 +71,20 @@
 				this.idea.skips = newVotes.skips;
 				this.idea.myVote = newVotes.myVote;
 			},
+			edit () {
+				this.$router.push(`/idea-add?idea=${this.idea._id}`);
+			},
+			async remove () {
+				if (!confirm('Вы уверены, что хотите безвозвратно удалить этот пост?')) return;
+				const result = await gate.ask(`/ideas/${this.idea._id}`, {
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json'
+					},
+					method: 'DELETE',
+				});
+				this.$emit('update');
+			},
 		}
 	}
 </script>
@@ -75,6 +96,36 @@
 		font-size: 12.5px;
 		padding: 15px 0;
 		margin: 0 20px;
+		position: relative;
+
+		.actions {
+			display: none;
+			position: absolute;
+			top: 0;
+			right: 0;
+
+			.edit,
+			.remove {
+				width: 12px;
+				height: 12px;
+				cursor: pointer;
+				background-repeat: no-repeat;
+				background-size: cover;
+				opacity: 0.5;
+				margin-left: 5px;
+			}
+
+			.edit {
+				background-image: url('../../static/icons/baseline-gavel-24px.svg');
+			}
+
+			.remove {
+				background-image: url('../../static/icons/baseline-delete-24px.svg');
+			}
+		}
+		&:hover .actions {
+			display: flex;
+		}
 
 		.title {
 			overflow: hidden;

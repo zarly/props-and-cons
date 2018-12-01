@@ -305,6 +305,26 @@ export class Idea extends Typegoose {
 			});
 		});
 	}
+
+	@staticMethod
+	static async removeIdeaFromParent (parentId: ObjectId, childId: ObjectId) {
+		return new Promise((resolve, reject) => {
+			Model.updateOne({
+				_id: parentId
+			}, {
+				$pull: {
+					ideasPlus: childId,
+					ideasMinus: childId,
+					comments: childId,
+					alternatives: childId,
+					implementations: childId,
+				},
+			}, (err: any, res: any) => {
+				if (err) reject(err);
+				resolve(res);
+			});
+		});
+	}
 }
 
 const Model = new Idea().getModelForClass(Idea);

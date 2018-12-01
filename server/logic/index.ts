@@ -134,6 +134,30 @@ export default class Logic {
 		};
 	}
 
+	async deleteIdea (userId: MongoIdType, ideaId: string) {
+		const idea = await ORM.Idea.findById(ideaId, {
+			realm: 1,
+			author: 1,
+			parentIdea: 1,
+		});
+		if (!idea) {
+			return 404;
+		} else if (`${idea.author}` !== `${userId}`) {
+			return 403;
+		} else if (!idea.parentIdea) {
+			ORM.Idea.remove({
+				_id: ideaId,
+				author: userId,
+			});
+		} else {
+			await Promise.all([
+				ORM.Idea.deleteOne({_id: ideaId}),
+				ORM.Idea.removeIdeaFromParent(idea.parentIdea, idea._id),
+			]);
+			return 200;
+		}
+	}
+
 	/**
 	 * Сохраняет голос за идею
 	 *

@@ -56,12 +56,12 @@
 				<div class="row">
 					<div class="half-area plus">
 						<div class="h1">Аргументы За<span v-if="idea.ideasPlusCount" v-text="' (' +idea.ideasPlusCount + ')'"></span></div>
-						<ArgumentInDetails v-for="child in idea.ideasPlus" :idea="child" :key="child._id"></ArgumentInDetails>
+						<ArgumentInDetails v-for="child in idea.ideasPlus" :idea="child" :key="child._id" @update="fetch"></ArgumentInDetails>
 						<button class="add-btn" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Добавить</button>
 					</div>
 					<div class="half-area minus">
 						<div class="h1">Аргументы Против<span v-if="idea.ideasMinusCount" v-text="' (' +idea.ideasMinusCount + ')'"></span></div>
-						<ArgumentInDetails v-for="child in idea.ideasMinus" :idea="child" :key="child._id"></ArgumentInDetails>
+						<ArgumentInDetails v-for="child in idea.ideasMinus" :idea="child" :key="child._id" @update="fetch"></ArgumentInDetails>
 						<button class="add-btn" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Добавить</button>
 					</div>
 				</div>

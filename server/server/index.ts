@@ -82,7 +82,8 @@ export default class Server {
 		});
         
 		app.delete('/api/ideas/:id', this.auth.vk_app_auth_key, async (req, res) => {
-			res.send({result: 'Idea deleted'});
+			const status = await this.logic.deleteIdea(req.user._id, req.params.id);
+			res.status(status).json({success: status === 200});
 		});
         
 		app.post('/api/vote', this.auth.vk_app_auth_key, async (req, res) => {
