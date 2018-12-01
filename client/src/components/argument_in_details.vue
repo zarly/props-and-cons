@@ -92,19 +92,20 @@
 <style scoped lang="less">
 	@import "../styles/variables";
 
+	@shift-top: 20px;
+
 	.ArgumentInDetails {
 		font-size: 12.5px;
-		padding: 15px 0;
-		margin: 0 20px;
+		margin: @shift-top 0 0;
 		position: relative;
 
 		.actions {
 			display: flex;
 			position: absolute;
-			top: 2px;
+			top: 1px;
 			right: 2px;
 			opacity: 0;
-			transition: opacity 0.5s 0.5s;
+			transition: @transition-opacity-hide;
 
 			.edit,
 			.remove {
@@ -127,7 +128,7 @@
 		}
 		&:hover .actions {
 			opacity: 1;
-			transition: opacity 0.2s 0.1s;
+			transition: @transition-opacity-show;
 		}
 
 		.title {

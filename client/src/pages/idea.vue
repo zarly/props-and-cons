@@ -57,7 +57,7 @@
 				<div class="row">
 					<div class="half-area plus">
 						<div class="area-title">
-							<span class="h2">Аргументы За</span>
+							<span class="h2">Комментарии &laquo;За&raquo;</span>
 							<span class="hint count" v-if="idea.ideasPlusCount" v-text="'(' +idea.ideasPlusCount + ')'"></span>
 							<button class="add-btn" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Добавить</button>
 						</div>
@@ -66,7 +66,7 @@
 					<div class="vr main" />
 					<div class="half-area minus">
 						<div class="area-title">
-							<span class="h2">Аргументы Против</span>
+							<span class="h2">Комментарии &laquo;Против&raquo;</span>
 							<span class="hint count" v-if="idea.ideasMinusCount" v-text="'(' +idea.ideasMinusCount + ')'"></span>
 							<button class="add-btn" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Добавить</button>
 						</div>
