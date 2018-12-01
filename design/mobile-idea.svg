@@ -26,7 +26,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.8567357"
      inkscape:cx="297.50365"
-     inkscape:cy="1839.3615"
+     inkscape:cy="1796.2751"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      showgrid="false"
@@ -151,7 +151,8 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Elements"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <image
        y="-2.2270508e-05"
        x="0.52916664"
@@ -177,7 +178,7 @@
        y="64.185081"
        ry="1.1647223" />
     <rect
-       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#285473;stroke-width:0.26458333;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:0.26458333,0.52916666;stroke-dashoffset:0.52916666;stroke-opacity:1;paint-order:markers stroke fill"
+       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#285473;stroke-width:0.26458332;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:0.26458333, 0.52916666;stroke-dashoffset:0.52916664;stroke-opacity:1;paint-order:markers stroke fill"
        id="rect1970"
        width="95.25"
        height="169.33333"
