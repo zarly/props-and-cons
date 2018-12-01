@@ -4,23 +4,35 @@
 			<!--div class="edit" @click="edit"></div-->
 			<div class="remove" @click="remove" v-if="isAllowedRemove"></div>
 		</div>
-		<div v-text="idea.title" class="anch title" @click="navigateToDetails"></div>
-		<div class="hint">
-			<span class="datetime" v-text="datetime"></span>
-			<span class="votes-stats">
-				<span class="vote-up" @click="vote(3)">
-					<span class="arrow" :class="{active: this.idea.myVote === 3}">&#11014;</span>
-					<span class="value" v-text="idea.votesPlus"></span>
+		<div class="left-part">
+			<a class="author-photo" :href="authorVkLink" target="_blank" :style="{'background-image': 'url(' + authorPhoto + ')'}"></a>
+		</div>
+		<div class="center-part">
+			<div class="message-header">
+				<a v-text="authorName" class="anch fio" :href="authorVkLink" target="_blank"></a>
+				<span class="datetime hint" v-text="datetime" @click="navigateToDetails"></span>
+			</div>
+			<div v-text="idea.description" class="description"></div>
+			<div class="message-footer">
+				<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Возразить</span>
+				<span class="reply anch" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Дополнить</span>
+				<span class="votes-stats">
+					<span class="vote-up">
+						<span class="arrow" :class="{active: this.idea.myVote === 3}" @click="vote(3)" title="Голосовать За">&#11014;</span>
+						<span class="value" v-text="idea.votesPlus"></span>
+					</span>
+					&nbsp;
+					<span class="vote-down">
+						<span class="arrow" :class="{active: this.idea.myVote === 4}" @click="vote(4)" title="Голосовать Против">&#11015;</span>
+						<span class="value" v-text="idea.votesMinus"></span>
+					</span>
+					&nbsp;
+					<span class="answers" v-if="responsesTotal" title="Читать комментарии">
+						<span class="arrow" @click="$router.push(`/idea/${idea._id}`)">&#9993;</span>
+						<span class="value" v-text="responsesTotal"></span>
+					</span>
 				</span>
-				&middot;
-				<span class="value" v-text="idea.skips"></span>
-				&middot;
-				<span class="vote-down" @click="vote(4)">
-					<span class="value" v-text="idea.votesMinus"></span>
-					<span class="arrow" :class="{active: this.idea.myVote === 4}">&#11015;</span>
-				</span>
-			</span>
-			<span class="anch responses-stats" v-if="responsesTotal" @click="navigateToDetails">{{responses}}</span>
+			</div>
 		</div>
 	</div>
 </template>
@@ -41,12 +53,17 @@
 					+ this.idea.ideasPlusCount + this.idea.ideasMinusCount
 					+ this.idea.alternativesCount + this.idea.implementationsCount;
 			},
-			responses () {
-				const count = this.responsesTotal;
-				return renderQuantity(count, 'ответ', 'ответа', 'ответов')
-			},
 			isAllowedRemove () {
 				return 1 || this.idea.author === this.me;
+			},
+			authorPhoto () {
+				return this.idea.author && this.idea.author.photo;
+			},
+			authorName () {
+				return this.idea.author && this.idea.author.name;
+			},
+			authorVkLink () {
+				return this.idea.author && `https://vk.com/id${this.idea.author.vkUid}`;
 			},
 		},
 		methods: {
@@ -95,6 +112,9 @@
 	@shift-top: 20px;
 
 	.ArgumentInDetails {
+		display: flex;
+		justify-content: flex-start;
+		flex-direction: row;
 		font-size: 12.5px;
 		margin: @shift-top 0 0;
 		position: relative;
@@ -131,54 +151,83 @@
 			transition: @transition-opacity-show;
 		}
 
-		.title {
-			overflow: hidden;
-			text-overflow: ellipsis;
-			display: block;
-		}
+		.left-part {
+			margin-right: 10px;
 
-		.hint {
-			margin-top: 4px;
-		}
-
-		.datetime {
-			display: inline-block;
-			width: 150px;
-		}
-
-		.datetime {
-			display: inline-block;
-			width: 150px;
-		}
-
-		.votes-stats {
-			display: inline-block;
-			width: 100px;
-
-			.vote-up .arrow {
-				color: @cl-green;
-				cursor: pointer;
+			.author-photo {
+				display: block;
+				@size: 54px;
+				width: @size;
+				height: @size;
+				outline: none;
+				border-radius: @size / 2;
+				background-color: #f00;
+				background-repeat: no-repeat no-repeat;
+				background-position: center center;
+				background-size: cover;
 			}
+		}
 
-			.vote-down .arrow {
-				color: @cl-red;
-				cursor: pointer;
-			}
+		.center-part {
+			.message-header {
+				display: flex;
+				justify-content: flex-start;
 
-			.arrow {
-				opacity: 0.3;
+				.fio {
+					overflow: hidden;
+					text-overflow: ellipsis;
+					display: block;
+				}
 
-				&.active {
-					opacity: 1;
+				.datetime {
+					display: inline-block;
+					width: 150px;
+					margin-left: 5px;
+					cursor: pointer;
+
+					&:hover {
+						text-decoration: underline;
+					}
 				}
 			}
-		}
 
-		.responses-stats {
-			display: inline-block;
-			width: 100px;
-			color: @cl-grey;
-			font-weight: normal;
+			.description {
+				margin: 6px 0;
+			}
+
+			.message-footer {
+				.reply {
+					font-weight: normal;
+					margin-right: 5px;
+				}
+
+				.votes-stats {
+					display: inline-block;
+					width: 100px;
+
+					.vote-up .arrow {
+						color: @cl-green;
+						cursor: pointer;
+					}
+
+					.vote-down .arrow {
+						color: @cl-red;
+						cursor: pointer;
+					}
+
+					.arrow {
+						opacity: 0.3;
+
+						&.active {
+							opacity: 1;
+						}
+					}
+
+					.answers {
+						cursor: pointer;
+					}
+				}
+			}
 		}
 	}
 </style>

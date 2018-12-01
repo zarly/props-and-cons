@@ -3,6 +3,7 @@ import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelTyp
 import * as mongoose from 'mongoose'
 import {RootIdeaType, IdeaType, VoteType} from './_enums'
 import {IdeaForList, VotesUpdate} from '../interfaces'
+import {AuthorInfo} from './user'
 
 type ObjectId = mongoose.Types.ObjectId;
 export type MongoIdType = string | mongoose.Types.ObjectId;
@@ -21,10 +22,10 @@ export class Idea extends Typegoose {
     @prop()
     attachements: Array<Object>;
 
-    @prop({})
+    @prop()
     realm: string;
-    @prop({})
-    author: ObjectId;
+    @prop()
+    author: AuthorInfo;
     @prop({ref: 'Idea'})
     parentIdea: ObjectId;
 
@@ -188,7 +189,8 @@ export class Idea extends Typegoose {
 			}
 		}, {
 			$project: {
-				title: 1,
+				description: 1,
+				author: 1,
 
 				votesPlus: {$size: '$votesPlus'},
 				votesMinus: {$size: '$votesMinus'},

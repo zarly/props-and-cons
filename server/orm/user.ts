@@ -19,7 +19,7 @@ interface vkUserInfo {
 	photo_100: string;
 }
 
-interface AuthorInfo {
+export class AuthorInfo {
 	_id: string | ObjectId;
 	name: string;
 	photo?: string;
@@ -98,15 +98,20 @@ export class User extends Typegoose {
 		});
 	}
 
+	@instanceMethod
+	getAuthorInfo () : AuthorInfo {
+		return {
+			_id: this._id,
+			name: this.name || (this.vkInfo && (this.vkInfo.first_name + ' ' + this.vkInfo.last_name)) || 'noname',
+			photo: (this.vkInfo && this.vkInfo.photo_100) || null,
+			vkUid: this.vkUid,
+		};
+	}
+
 	@staticMethod
 	static async publicInfo (id: MongoIdType) : Promise<AuthorInfo> {
 		const user = await Model.findById(id, {name: true, vkInfo: true, vkUid: true});
-		return {
-			_id: user._id,
-			name: user.name || (user.vkInfo && (user.vkInfo.first_name + ' ' + user.vkInfo.last_name)) || 'noname',
-			photo: (user.vkInfo && user.vkInfo.photo_100) || null,
-			vkUid: user.vkUid,
-		};
+		return user.getAuthorInfo();
 	}
 }
 

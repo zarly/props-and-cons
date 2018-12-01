@@ -116,7 +116,7 @@
 				return renderDatetime(date);
 			},
 			authorUrl () {
-				return `https://vk.com/id${this.idea.author.vkUid}`
+				return this.idea.author && `https://vk.com/id${this.idea.author.vkUid}`;
 			},
 			acceptance () {
 				const {idea} = this;

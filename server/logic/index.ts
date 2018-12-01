@@ -25,7 +25,7 @@ export default class Logic {
 			description: (raw.description || '').substr(0, 2000),
 
 			realm: realm,
-			author: user._id,
+			author: user.getAuthorInfo(),
 			parentIdea: raw.parentIdea ? ObjectId(<any>raw.parentIdea) : null,
 
 			votesPlus: [user._id],
@@ -91,7 +91,6 @@ export default class Logic {
 	 */
 	async getIdeaById (realm: string, user: User, ideaId: string) : Promise<IdeaForDetails> {
 		const idea = await ORM.Idea.readWithChildren(user._id, ideaId);
-		const author = await ORM.User.publicInfo(idea.author);
 
 		const parentIdea = <any>(await ORM.Idea.findById(idea.parentIdea, ['title']));
 
@@ -107,7 +106,7 @@ export default class Logic {
 			title: idea.title,
 			description: idea.description,
 
-			author: author,
+			author: idea.author,
 			parentIdeas: [parentIdea].filter(o => o),
 
 			votesPlusCount: idea.votesPlusCount,
@@ -142,12 +141,12 @@ export default class Logic {
 		});
 		if (!idea) {
 			return 404;
-		} else if (`${idea.author}` !== `${userId}`) {
+		} else if (`${idea.author._id}` !== `${userId}`) {
 			return 403;
 		} else if (!idea.parentIdea) {
 			ORM.Idea.remove({
 				_id: ideaId,
-				author: userId,
+				'author._id': userId,
 			});
 		} else {
 			await Promise.all([
