@@ -3,13 +3,13 @@
 		<div v-text="idea.title" class="anch title" @click="navigateToDetails"></div>
 		<div class="bottom-line hint">
 			<span class="datetime" v-text="datetime"></span>
-			<IconedCounter class="counter" size="16" icon="../../static/icons/baseline-thumb_up-24px.svg"
+			<IconedCounter class="counter" size="16" :icon="iconUp"
 						   :counter="idea.votesPlus" imageOpacity="0.8" imageShift="-1"></IconedCounter>
-			<IconedCounter class="counter" size="16" icon="../../static/icons/baseline-thumb_down-24px.svg"
+			<IconedCounter class="counter" size="16" :icon="iconDown"
 						   :counter="idea.votesMinus" imageOpacity="0.8" imageShift="1"></IconedCounter>
-			<IconedCounter class="counter answers" size="16" icon="../../static/icons/baseline-question_answer-24px.svg"
+			<IconedCounter class="counter answers" size="16" :icon="iconAnswer"
 						   :counter="responsesTotal" imageOpacity="0.8"
-						   @click="navigateToDetails" v-if="responsesTotal"></IconedCounter>
+						   @click.native="navigateToDetails" v-if="responsesTotal"></IconedCounter>
 		</div>
 	</div>
 </template>
@@ -17,12 +17,22 @@
 <script>
 	import {renderDatetime, renderQuantity} from '../modules/decorators'
 	import IconedCounter from '@/components/iconed_counter.vue';
+	import iconUp from '../../static/icons/baseline-thumb_up-24px.svg';
+	import iconDown from '../../static/icons/baseline-thumb_down-24px.svg';
+	import iconAnswer from '../../static/icons/baseline-question_answer-24px.svg';
 
 	export default {
 		components: {
 			IconedCounter,
 		},
 		props: ['idea'],
+		data () {
+			return {
+				iconUp,
+				iconDown,
+				iconAnswer,
+			};
+		},
 		computed: {
 			datetime () {
 				const date = new Date(this.idea.createdAt);
