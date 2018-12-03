@@ -20,7 +20,7 @@
 
 <script>
 	import gate from '../modules/gate'
-	import IdeaItem from '@/components/idea_item.vue';
+	import IdeaItem from '@/parts/idea_item.vue';
 
 	export default {
 		components: {

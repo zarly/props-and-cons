@@ -90,8 +90,8 @@
 	import gate from '../modules/gate'
 	import me from '../modules/me'
 	import {renderDatetime} from '../modules/decorators'
-	import ArgumentInDetails from '@/components/argument_in_details.vue';
-	import AddItemCompact from '@/components/add_item_compact.vue';
+	import ArgumentInDetails from '@/parts/argument_in_details.vue';
+	import AddItemCompact from '@/parts/add_item_compact.vue';
 
 	export default {
 		components: {

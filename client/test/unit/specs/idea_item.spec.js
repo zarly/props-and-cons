@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import IdeaItem from '@/components/idea_item'
+import IdeaItem from '@/parts/idea_item'
 import idea from '../mocks/idea'
 
 describe('idea_item.vue', () => {

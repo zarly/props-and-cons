@@ -1,18 +1,27 @@
 <template>
 	<div class="IdeaItem">
 		<div v-text="idea.title" class="anch title" @click="navigateToDetails"></div>
-		<div class="hint">
+		<div class="bottom-line hint">
 			<span class="datetime" v-text="datetime"></span>
-			<span class="votes-stats">{{idea.votesPlus}} &middot; {{idea.skips}} &middot; {{idea.votesMinus}}</span>
-			<span class="anch responses-stats" v-if="responsesTotal" @click="navigateToDetails">{{responses}}</span>
+			<IconedCounter class="counter" size="16" icon="../../static/icons/baseline-thumb_up-24px.svg"
+						   :counter="idea.votesPlus" imageOpacity="0.8" imageShift="-1"></IconedCounter>
+			<IconedCounter class="counter" size="16" icon="../../static/icons/baseline-thumb_down-24px.svg"
+						   :counter="idea.votesMinus" imageOpacity="0.8" imageShift="1"></IconedCounter>
+			<IconedCounter class="counter answers" size="16" icon="../../static/icons/baseline-question_answer-24px.svg"
+						   :counter="responsesTotal" imageOpacity="0.8"
+						   @click="navigateToDetails" v-if="responsesTotal"></IconedCounter>
 		</div>
 	</div>
 </template>
 
 <script>
 	import {renderDatetime, renderQuantity} from '../modules/decorators'
+	import IconedCounter from '@/components/iconed_counter.vue';
 
 	export default {
+		components: {
+			IconedCounter,
+		},
 		props: ['idea'],
 		computed: {
 			datetime () {
@@ -23,10 +32,6 @@
 				return this.idea.commentsCount
 					+ this.idea.ideasPlusCount + this.idea.ideasMinusCount
 					+ this.idea.alternativesCount + this.idea.implementationsCount;
-			},
-			responses () {
-				const count = this.responsesTotal;
-				return renderQuantity(count, 'ответ', 'ответа', 'ответов')
 			},
 		},
 		methods: {
@@ -51,8 +56,11 @@
 			display: block;
 		}
 
-		.hint {
+		.bottom-line {
 			margin-top: 4px;
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
 		}
 
 		.datetime {
@@ -75,6 +83,14 @@
 			width: 100px;
 			color: @cl-grey;
 			font-weight: normal;
+		}
+
+		.counter {
+			width: 50px;
+
+			&.answers {
+				cursor: pointer;
+			}
 		}
 	}
 </style>
