@@ -159,34 +159,6 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async readDetails (id: MongoIdType, userId: MongoIdType = '222') : Promise<any> {
-		const records = await Model.aggregate([{
-			$match: {
-				_id: id,
-			}
-		}, {
-			$project: {
-				votesPlusCount: {$size: "$votesPlus"},
-				votesMinusCount: {$size: "$votesMinus"},
-				skipsCount: {$size: "$skips"},
-				viewsCount: {$size: "$views"},
-				reportsCount: {$size: "$reports"},
-
-				isVotedPlus: {
-					$size: {
-						$filter: {
-							input: "$votesPlus",
-							as: "item",
-							cond: {$eq: ['$$item', userId]}
-						}
-					}
-				},
-			},
-		}]);
-		return records[0] || null;
-	}
-
-	@staticMethod
 	static async resolveIdeas (userId: MongoIdType, ids: Array<ObjectId>) : Promise<IdeaForList[]> {
 		const rows = await Model.aggregate([{
 			$match: {
@@ -257,6 +229,30 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
+	static async getUserVote (userId: MongoIdType, ideaId: MongoIdType) : Promise<VoteType> {
+		const rows = await Model.aggregate([{
+			$match: {
+				_id: ('string' === typeof ideaId) ? mongoose.Types.ObjectId(<string>ideaId) : ideaId,
+			}
+		}, {
+			$project: {
+				_id: 0,
+				vote: {
+					$switch: {
+						branches: [
+							{'case': {$in: [userId, '$skips']}, then: VoteType.skip},
+							{'case': {$in: [userId, '$votesPlus']}, then: VoteType.plus},
+							{'case': {$in: [userId, '$votesMinus']}, then: VoteType.minus},
+						],
+						'default': 0
+					}
+				},
+			}
+		}]); // OPTIMIZATION: add limit
+		return (rows[0] && rows[0].vote) || VoteType.none;
+	}
+
+	@staticMethod
 	static vote (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) : Promise<any> {
 		const typeToArrayNameMap: {[index:string]:keyof Idea} = {
 			[VoteType.view]: 'views',
@@ -300,12 +296,16 @@ export class Idea extends Typegoose {
 		return new Promise((resolve, reject) => {
 			const arrayName = typeToArrayNameMap[voteType];
 			Model.updateOne({
-				_id: ideaId
+				_id: ideaId,
+				views: {$nin: [userId]},
+				skips: {$nin: [userId]},
+				votesPlus: {$nin: [userId]},
+				votesMinus: {$nin: [userId]},
+				reports: {$nin: [userId]},
 			}, {
 				$addToSet: {
 					[arrayName]: userId
 				},
-				$pull: pullNameMap[voteType],
 			}, (err: any, res: any) => {
 				if (err) reject(err);
 				resolve(res);
@@ -314,17 +314,15 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async voteCancel (userId: MongoIdType, ideaId: MongoIdType) {
+	static async voteCancel (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) {
 		return new Promise((resolve, reject) => {
 			Model.updateOne({
 				_id: ideaId
 			}, {
 				$pull: {
-					views: userId,
 					skips: userId,
 					votesPlus: userId,
 					votesMinus: userId,
-					reports: userId,
 				},
 			}, (err: any, res: any) => {
 				if (err) reject(err);
@@ -335,7 +333,10 @@ export class Idea extends Typegoose {
 
 	@staticMethod
 	static async reVote (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) {
-		await this.voteCancel(userId, ideaId);
+		const currentVoteType = await this.getUserVote(userId, ideaId);
+		if (currentVoteType) {
+			await this.voteCancel(userId, ideaId, currentVoteType);
+		}
 		return await this.vote(userId, ideaId, voteType);
 	}
 

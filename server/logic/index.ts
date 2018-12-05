@@ -163,7 +163,7 @@ export default class Logic {
 	 * @param {number} voteType
 	 */
 	async voteAndReturnNewValues (userId: MongoIdType, ideaId: MongoIdType, voteType: number) {
-		await ORM.Idea.vote(userId, ideaId, voteType);
+		await ORM.Idea.reVote(userId, ideaId, voteType); // OPTIMIZATION: use vote for first vote
 		return await ORM.Idea.getVotes(userId, ideaId);
 	}
 }

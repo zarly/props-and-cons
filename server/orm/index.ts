@@ -11,6 +11,7 @@ const error = chalk.yellow;
 const disconnected = chalk.red;
 const termination = chalk.magenta;
 
+export {RootIdeaType, IdeaType, VoteType} from './_enums'
 export const ObjectId = mongoose.Types.ObjectId;
 export type MongoIdType = string | mongoose.Types.ObjectId;
 

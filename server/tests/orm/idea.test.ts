@@ -1,6 +1,6 @@
 
 import config from '../../config'
-import ORM, {ObjectId} from '../../orm'
+import ORM, {ObjectId, VoteType} from '../../orm'
 import {clearDatabase} from './helper'
 
 const Idea = ORM.Idea;
@@ -184,7 +184,7 @@ describe('voting', () => {
 		const data1 = await Idea.readWithChildren(user._id, idea._id);
 		expect(data1.votesPlusCount).toBe(0);
 
-		await Idea.vote(user._id, idea._id, 3);
+		await Idea.vote(user._id, idea._id, VoteType.plus);
 
 		const data2 = await Idea.readWithChildren(user._id, idea._id);
 		expect(data2.votesPlusCount).toBe(1);
@@ -200,8 +200,8 @@ describe('voting', () => {
 		const data1 = await Idea.readWithChildren(user._id, idea._id);
 		expect(data1.votesPlusCount).toBe(0);
 
-		await Idea.vote(user._id, idea._id, 3);
-		await Idea.vote(user._id, idea._id, 3);
+		await Idea.vote(user._id, idea._id, VoteType.plus);
+		await Idea.vote(user._id, idea._id, VoteType.plus);
 
 		const data2 = await Idea.readWithChildren(user._id, idea._id);
 		expect(data2.votesPlusCount).toBe(1);
@@ -217,12 +217,12 @@ describe('voting', () => {
 		const data1 = await Idea.readWithChildren(user._id, idea._id);
 		expect(data1.votesPlusCount).toBe(0);
 
-		await Idea.vote(user._id, idea._id, 3);
+		await Idea.vote(user._id, idea._id, VoteType.plus);
 
 		const data2 = await Idea.readWithChildren(user._id, idea._id);
 		expect(data2.votesPlusCount).toBe(1);
 
-		await Idea.voteCancel(user._id, idea._id);
+		await Idea.voteCancel(user._id, idea._id, VoteType.plus);
 
 		const data3 = await Idea.readWithChildren(user._id, idea._id);
 		expect(data3.votesPlusCount).toBe(0);
@@ -239,78 +239,16 @@ describe('voting', () => {
 		expect(data1.votesPlusCount).toBe(0);
 		expect(data1.votesMinusCount).toBe(0);
 
-		await Idea.vote(user._id, idea._id, 3);
+		await Idea.vote(user._id, idea._id, VoteType.plus);
 
 		const data2 = await Idea.readWithChildren(user._id, idea._id);
 		expect(data2.votesPlusCount).toBe(1);
 		expect(data2.votesMinusCount).toBe(0);
 
-		await Idea.reVote(user._id, idea._id, 4);
+		await Idea.reVote(user._id, idea._id, VoteType.minus);
 
 		const data3 = await Idea.readWithChildren(user._id, idea._id);
 		expect(data3.votesPlusCount).toBe(0);
 		expect(data3.votesMinusCount).toBe(1);
-	});
-});
-
-describe('method readDetails', () => {
-	test('count votes', async () => {
-		const user = new ORM.User({name: 'name', login: 'login'});
-		await user.save();
-
-		const idea = new ORM.Idea({title: 'title'});
-		await idea.save();
-
-		let details = await Idea.readDetails(idea._id);
-		expect(details).toBeDefined();
-		expect(details.votesPlusCount).toBe(0);
-		expect(details.votesMinusCount).toBe(0);
-		expect(details.skipsCount).toBe(0);
-		expect(details.viewsCount).toBe(0);
-		expect(details.reportsCount).toBe(0);
-
-		await Idea.vote(user._id, idea._id, 3);
-		details = await Idea.readDetails(idea._id);
-		expect(details.votesPlusCount).toBe(1);
-
-		await Idea.vote(user._id, idea._id, 3);
-		details = await Idea.readDetails(idea._id);
-		expect(details.votesPlusCount).toBe(1);
-
-		await Idea.vote(user._id, idea._id, 4);
-		details = await Idea.readDetails(idea._id);
-		expect(details.votesMinusCount).toBe(1);
-		expect(details.votesPlusCount).toBe(0);
-	});
-
-	test('count votes for two users', async () => {
-		const user1 = new ORM.User({name: 'name', login: 'login_1', vkUid: '111'});
-		await user1.save();
-		const user2 = new ORM.User({name: 'name', login: 'login_2', vkUid: '222'});
-		await user2.save();
-
-		const idea = new ORM.Idea({title: 'title'});
-		await idea.save();
-
-		let details = await Idea.readDetails(idea._id);
-		expect(details).toBeDefined();
-		expect(details.votesPlusCount).toBe(0);
-		expect(details.votesMinusCount).toBe(0);
-		expect(details.skipsCount).toBe(0);
-		expect(details.viewsCount).toBe(0);
-		expect(details.reportsCount).toBe(0);
-
-		await Idea.vote(user1._id, idea._id, 3);
-		details = await Idea.readDetails(idea._id);
-		expect(details.votesPlusCount).toBe(1);
-
-		await Idea.vote(user2._id, idea._id, 3);
-		details = await Idea.readDetails(idea._id, user1._id);
-		expect(details.votesPlusCount).toBe(2);
-
-		await Idea.vote(user1._id, idea._id, 4);
-		details = await Idea.readDetails(idea._id);
-		expect(details.votesMinusCount).toBe(1);
-		expect(details.votesPlusCount).toBe(1);
 	});
 });
