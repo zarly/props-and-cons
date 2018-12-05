@@ -173,9 +173,59 @@ describe('method readWithChildren', () => {
 	});
 });
 
-describe('method vote', () => {
-	test('limit works', async () => {
-		expect(await Idea.countDocuments()).toBe(0);
+describe('voting', () => {
+	test('single vote', async () => {
+		const user = new ORM.User({name: 'name', login: 'login'});
+		await user.save();
+
+		const idea = new ORM.Idea({title: 'title'});
+		await idea.save();
+
+		const data1 = await Idea.readWithChildren(user._id, idea._id);
+		expect(data1.votesPlusCount).toBe(0);
+
+		await Idea.vote(user._id, idea._id, 3);
+
+		const data2 = await Idea.readWithChildren(user._id, idea._id);
+		expect(data2.votesPlusCount).toBe(1);
+	});
+
+	test('double vote not count', async () => {
+		const user = new ORM.User({name: 'name', login: 'login'});
+		await user.save();
+
+		const idea = new ORM.Idea({title: 'title'});
+		await idea.save();
+
+		const data1 = await Idea.readWithChildren(user._id, idea._id);
+		expect(data1.votesPlusCount).toBe(0);
+
+		await Idea.vote(user._id, idea._id, 3);
+		await Idea.vote(user._id, idea._id, 3);
+
+		const data2 = await Idea.readWithChildren(user._id, idea._id);
+		expect(data2.votesPlusCount).toBe(1);
+	});
+
+	test('voteCancel works fine', async () => {
+		const user = new ORM.User({name: 'name', login: 'login'});
+		await user.save();
+
+		const idea = new ORM.Idea({title: 'title'});
+		await idea.save();
+
+		const data1 = await Idea.readWithChildren(user._id, idea._id);
+		expect(data1.votesPlusCount).toBe(0);
+
+		await Idea.vote(user._id, idea._id, 3);
+
+		const data2 = await Idea.readWithChildren(user._id, idea._id);
+		expect(data2.votesPlusCount).toBe(1);
+
+		await Idea.voteCancel(user._id, idea._id);
+
+		const data3 = await Idea.readWithChildren(user._id, idea._id);
+		expect(data3.votesPlusCount).toBe(0);
 	});
 });
 

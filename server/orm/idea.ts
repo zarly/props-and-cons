@@ -8,6 +8,11 @@ import {AuthorInfo} from './user'
 type ObjectId = mongoose.Types.ObjectId;
 export type MongoIdType = string | mongoose.Types.ObjectId;
 
+type PostResult = {
+	success: boolean;
+	error?: any;
+};
+
 export class Idea extends Typegoose {
 	_id: ObjectId;
 
@@ -306,6 +311,31 @@ export class Idea extends Typegoose {
 				resolve(res);
 			});
 		});
+	}
+
+	@staticMethod
+	static async voteCancel (userId: MongoIdType, ideaId: MongoIdType) {
+		return new Promise((resolve, reject) => {
+			Model.updateOne({
+				_id: ideaId
+			}, {
+				$pull: {
+					views: userId,
+					skips: userId,
+					votesPlus: userId,
+					votesMinus: userId,
+					reports: userId,
+				},
+			}, (err: any, res: any) => {
+				if (err) reject(err);
+				resolve(res);
+			});
+		});
+	}
+
+	@staticMethod
+	static async reVote (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) {
+
 	}
 
 	@staticMethod
