@@ -227,6 +227,30 @@ describe('voting', () => {
 		const data3 = await Idea.readWithChildren(user._id, idea._id);
 		expect(data3.votesPlusCount).toBe(0);
 	});
+
+	test('reVote works fine', async () => {
+		const user = new ORM.User({name: 'name', login: 'login'});
+		await user.save();
+
+		const idea = new ORM.Idea({title: 'title'});
+		await idea.save();
+
+		const data1 = await Idea.readWithChildren(user._id, idea._id);
+		expect(data1.votesPlusCount).toBe(0);
+		expect(data1.votesMinusCount).toBe(0);
+
+		await Idea.vote(user._id, idea._id, 3);
+
+		const data2 = await Idea.readWithChildren(user._id, idea._id);
+		expect(data2.votesPlusCount).toBe(1);
+		expect(data2.votesMinusCount).toBe(0);
+
+		await Idea.reVote(user._id, idea._id, 4);
+
+		const data3 = await Idea.readWithChildren(user._id, idea._id);
+		expect(data3.votesPlusCount).toBe(0);
+		expect(data3.votesMinusCount).toBe(1);
+	});
 });
 
 describe('method readDetails', () => {

@@ -335,7 +335,8 @@ export class Idea extends Typegoose {
 
 	@staticMethod
 	static async reVote (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) {
-
+		await this.voteCancel(userId, ideaId);
+		return await this.vote(userId, ideaId, voteType);
 	}
 
 	@staticMethod
