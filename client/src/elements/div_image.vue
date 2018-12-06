@@ -3,8 +3,8 @@
 	export default {
 		props: {
 			src: String,
-			width: {type: String, 'default': '24px'},
-			height: {type: String, 'default': '24px'},
+			width: {'default': '24px'},
+			height: {'default': '24px'},
 			size: {type: String},
 		},
 		render (h) {

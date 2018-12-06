@@ -13,11 +13,11 @@
 			DivImage,
 		},
 		props: {
-			size: {type: Number, 'default': 16},
+			size: {'default': 16},
 			icon: {type: String},
-			counter: {type: Number, 'default': 0},
-			imageShift: {type: Number, 'default': 0},
-			imageOpacity: {type: Number, 'default': 1},
+			counter: {'default': 0},
+			imageShift: {'default': 0},
+			imageOpacity: {'default': 1},
 		},
 		computed: {
 			imageStyle () {
