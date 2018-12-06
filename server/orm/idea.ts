@@ -50,6 +50,9 @@ export class Idea extends Typegoose {
 	@arrayProp({items: mongoose.Types.ObjectId, 'default': []})
 	reports: Array<ObjectId>;
 
+	@prop({required: true, 'default': 0})
+	voteRating: number;
+
 	@arrayProp({itemsRef: Idea, 'default': []})
     ideasPlus: Array<ObjectId>;
 	@arrayProp({itemsRef: Idea, 'default': []})
@@ -61,7 +64,9 @@ export class Idea extends Typegoose {
 	@arrayProp({itemsRef: Idea, 'default': []})
 	implementations: Array<ObjectId>;
 
-    @prop({required: true, 'default': Date.now})
+	@prop({required: true, 'default': Date.now})
+	updatedAt: number;
+	@prop({required: true, 'default': Date.now})
 	createdAt: number;
 
 	@instanceMethod
@@ -118,6 +123,8 @@ export class Idea extends Typegoose {
 				skipsCount: {$size: "$skips"},
 				viewsCount: {$size: "$views"},
 				reportsCount: {$size: "$reports"},
+
+				voteRating: 1,
 
 				myVote: {
 					$switch: {
@@ -213,6 +220,8 @@ export class Idea extends Typegoose {
 				votesMinus: {$size: '$votesMinus'},
 				skips: {$size: '$skips'},
 
+				voteRating: 1,
+
 				myVote: {
 					$switch: {
 						branches: [
@@ -255,58 +264,33 @@ export class Idea extends Typegoose {
 	@staticMethod
 	static vote (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) : Promise<any> {
 		const typeToArrayNameMap: {[index:string]:keyof Idea} = {
-			[VoteType.view]: 'views',
 			[VoteType.skip]: 'skips',
 			[VoteType.plus]: 'votesPlus',
 			[VoteType.minus]: 'votesMinus',
-			[VoteType.report]: 'reports',
 		};
-		const pullNameMap: {[index:string]:any} = {
-			[VoteType.view]: {
-				skips: userId,
-				votesPlus: userId,
-				votesMinus: userId,
-				reports: userId,
-			},
-			[VoteType.skip]:  {
-				views: userId,
-				votesPlus: userId,
-				votesMinus: userId,
-				reports: userId,
-			},
-			[VoteType.plus]:  {
-				views: userId,
-				skips: userId,
-				votesMinus: userId,
-				reports: userId,
-			},
-			[VoteType.minus]:  {
-				views: userId,
-				skips: userId,
-				votesPlus: userId,
-				reports: userId,
-			},
-			[VoteType.report]:  {
-				views: userId,
-				skips: userId,
-				votesPlus: userId,
-				votesMinus: userId,
+		const arrayName = typeToArrayNameMap[voteType];
+		const query = {
+			_id: ideaId,
+			skips: {$nin: [userId]},
+			votesPlus: {$nin: [userId]},
+			votesMinus: {$nin: [userId]},
+		};
+		const modifier : any = {
+			$addToSet: {
+				[arrayName]: userId
 			},
 		};
+		switch (voteType) {
+			case VoteType.plus:
+				modifier.$inc = {voteRating: 1};
+				break;
+			case VoteType.minus:
+				modifier.$inc = {voteRating: -1};
+				break;
+		}
+		console.log(modifier);
 		return new Promise((resolve, reject) => {
-			const arrayName = typeToArrayNameMap[voteType];
-			Model.updateOne({
-				_id: ideaId,
-				views: {$nin: [userId]},
-				skips: {$nin: [userId]},
-				votesPlus: {$nin: [userId]},
-				votesMinus: {$nin: [userId]},
-				reports: {$nin: [userId]},
-			}, {
-				$addToSet: {
-					[arrayName]: userId
-				},
-			}, (err: any, res: any) => {
+			Model.updateOne(query, modifier, (err: any, res: any) => {
 				if (err) reject(err);
 				resolve(res);
 			});

@@ -16,6 +16,7 @@ export interface IdeaForDetails {
 	viewsCount: number;
 	reportsCount: number;
 
+	voteRating: number;
 	myVote: number;
 
 	ideasPlusCount: number;

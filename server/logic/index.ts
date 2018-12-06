@@ -51,7 +51,7 @@ export default class Logic {
 			parentIdea: parentId ? ObjectId(parentId) : null,
 		};
 		const count = await ORM.Idea.countDocuments(filter);
-		const rows = await ORM.Idea.aggregate([{
+		const rows = await ORM.Idea.aggregate([{ // TODO: move it to idea.ts
 			$match: filter
 		}, {
 			$project: {
@@ -115,6 +115,7 @@ export default class Logic {
 			viewsCount: idea.viewsCount,
 			reportsCount: idea.reportsCount,
 
+			voteRating: idea.voteRating,
 			myVote: idea.myVote,
 
 			ideasPlusCount: idea.ideasPlusCount,
