@@ -207,7 +207,10 @@ export class Idea extends Typegoose {
 				createdAt: 1,
 			}
 		}, {
-			$sort: {createdAt: -1}
+			$sort: {
+				voteRating: -1,
+				createdAt: -1,
+			}
 		}]);
 		return rows || [];
 	}

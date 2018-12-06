@@ -85,9 +85,14 @@ export default class Server {
 			const status = await this.logic.deleteIdea(req.user._id, req.params.id);
 			res.status(status || 500).json({success: status === 200});
 		});
-        
-		app.post('/api/vote', this.auth.vk_app_auth_key, async (req, res) => {
-            const result = await this.logic.voteAndReturnNewValues(req.user._id, req.body.ideaId, req.body.voteType);
+
+		app.post('/api/vote', this.auth.vk_app_auth_key, async (req, res) => { // OPTIMIZATION: использовать лёгкий vote а не тяжёлый reVote в реализации, отслеживая логику на клиенте
+			const result = await this.logic.voteAndReturnNewValues(req.user._id, req.body.ideaId, req.body.voteType);
+			res.send(result);
+		});
+
+		app.post('/api/revote', this.auth.vk_app_auth_key, async (req, res) => {
+			const result = await this.logic.voteAndReturnNewValues(req.user._id, req.body.ideaId, req.body.voteType);
 			res.send(result);
 		});
 

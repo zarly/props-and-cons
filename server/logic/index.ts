@@ -64,16 +64,22 @@ export default class Logic {
 				views: {$size: '$views'},
 				reports: {$size: '$reports'},
 
+				voteRating: 1,
+
 				ideasPlusCount: {$size: '$ideasPlus'},
 				ideasMinusCount: {$size: '$ideasMinus'},
 				commentsCount: {$size: '$comments'},
 				alternativesCount: {$size: '$alternatives'},
 				implementationsCount: {$size: '$implementations'},
 
+				updatedAt: 1,
 				createdAt: 1,
 			}
 		}, {
-			$sort: {createdAt: -1}
+			$sort: {
+				voteRating: -1,
+				createdAt: -1,
+			}
 		}]).skip(skip).limit(limit);
 		return {
 			count,
