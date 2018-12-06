@@ -185,8 +185,6 @@ export class Idea extends Typegoose {
 				votesPlus: {$size: '$votesPlus'},
 				votesMinus: {$size: '$votesMinus'},
 				skips: {$size: '$skips'},
-				views: {$size: '$views'},
-				reports: {$size: '$reports'},
 
 				ideasPlusCount: {$size: '$ideasPlus'},
 				ideasMinusCount: {$size: '$ideasMinus'},
@@ -194,6 +192,7 @@ export class Idea extends Typegoose {
 				alternativesCount: {$size: '$alternatives'},
 				implementationsCount: {$size: '$implementations'},
 
+				voteRating: 1,
 				myVote: {
 					$switch: {
 						branches: [

@@ -7,7 +7,9 @@ export interface IdeaForList {
 	votesPlus: number;
 	votesMinus: number;
 	skips: number;
-	views: number;
+
+	voteRating: number;
+	myVote: number;
 
 	ideasPlusCount: number;
 	ideasMinusCount: number;
