@@ -56,14 +56,14 @@ test('change vote', async () => {
 	const userVote2 = await logic.getIdeaById('my-realm', user, idea._id);
 	expect(userVote2).toBeDefined();
 	expect(userVote2.myVote).toBe(3);
-	expect(userVote1.voteRating).toBe(1);
+	expect(userVote2.voteRating).toBe(1);
 
 	await logic.voteAndReturnNewValues(user._id, idea._id, 4);
 
 	const userVote3 = await logic.getIdeaById('my-realm', user, idea._id);
 	expect(userVote3).toBeDefined();
 	expect(userVote3.myVote).toBe(4);
-	expect(userVote1.voteRating).toBe(-1);
+	expect(userVote3.voteRating).toBe(-1);
 });
 
 test('vote for two ideas', async () => {

@@ -13,6 +13,12 @@ type PostResult = {
 	error?: any;
 };
 
+const voteTypeToArrayNameMap: {[index:string]:keyof Idea} = {
+	[VoteType.skip]: 'skips',
+	[VoteType.plus]: 'votesPlus',
+	[VoteType.minus]: 'votesMinus',
+};
+
 export class Idea extends Typegoose {
 	_id: ObjectId;
 
@@ -71,7 +77,7 @@ export class Idea extends Typegoose {
 
 	@instanceMethod
 	registerInParent () {
-		const typeToArrayNameMap = {
+		const voteTypeToArrayNameMap = {
 			[IdeaType.comment]: 'comments',
 			[IdeaType.alternative]: 'alternatives',
 			[IdeaType.plus]: 'ideasPlus',
@@ -81,7 +87,7 @@ export class Idea extends Typegoose {
 		return new Promise((resolve, reject) => {
 			if (!this.parentIdea) return resolve(false);
 
-			const arrayName = typeToArrayNameMap[this.type];
+			const arrayName = voteTypeToArrayNameMap[this.type];
 			Model.updateOne({
 				_id: this.parentIdea
 			}, {
@@ -263,12 +269,7 @@ export class Idea extends Typegoose {
 
 	@staticMethod
 	static vote (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) : Promise<any> {
-		const typeToArrayNameMap: {[index:string]:keyof Idea} = {
-			[VoteType.skip]: 'skips',
-			[VoteType.plus]: 'votesPlus',
-			[VoteType.minus]: 'votesMinus',
-		};
-		const arrayName = typeToArrayNameMap[voteType];
+		const arrayName = voteTypeToArrayNameMap[voteType];
 		const query = {
 			_id: ideaId,
 			skips: {$nin: [userId]},
@@ -288,7 +289,6 @@ export class Idea extends Typegoose {
 				modifier.$inc = {voteRating: -1};
 				break;
 		}
-		console.log(modifier);
 		return new Promise((resolve, reject) => {
 			Model.updateOne(query, modifier, (err: any, res: any) => {
 				if (err) reject(err);
@@ -299,16 +299,25 @@ export class Idea extends Typegoose {
 
 	@staticMethod
 	static async voteCancel (userId: MongoIdType, ideaId: MongoIdType, voteType: VoteType) {
+		const arrayName = voteTypeToArrayNameMap[voteType];
+		const query = {
+			_id: ideaId
+		};
+		const modifier : any = {
+			$pull: {
+				[arrayName]: userId,
+			},
+		};
+		switch (voteType) {
+			case VoteType.plus:
+				modifier.$inc = {voteRating: -1};
+				break;
+			case VoteType.minus:
+				modifier.$inc = {voteRating: 1};
+				break;
+		}
 		return new Promise((resolve, reject) => {
-			Model.updateOne({
-				_id: ideaId
-			}, {
-				$pull: {
-					skips: userId,
-					votesPlus: userId,
-					votesMinus: userId,
-				},
-			}, (err: any, res: any) => {
+			Model.updateOne(query, modifier, (err: any, res: any) => {
 				if (err) reject(err);
 				resolve(res);
 			});
