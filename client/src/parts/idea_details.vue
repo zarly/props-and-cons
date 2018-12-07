@@ -1,37 +1,31 @@
 <template>
-	<div class="ArgumentInDetails">
+	<div class="IdeaDetails">
 		<div class="actions">
 			<!--div class="edit" @click="edit"></div-->
 			<div class="remove" @click="remove" v-if="isAllowedRemove"></div>
 		</div>
-		<div class="left-part">
-			<a class="author-photo" :href="authorVkLink" target="_blank" :style="{'background-image': 'url(' + authorPhoto + ')'}"></a>
-		</div>
 		<div class="center-part">
-			<div class="message-header">
-				<a v-text="authorName" class="anch fio" :href="authorVkLink" target="_blank"></a>
-				<span class="datetime hint" v-text="datetime" @click="navigateToDetails"></span>
-			</div>
 			<div v-text="idea.description" class="description"></div>
-			<div class="message-footer">
-				<span class="reply anch" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Дополнить</span>
-				<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Возразить</span>
-				<span class="votes-stats">
-					<span class="vote-up">
-						<span class="arrow" :class="{active: this.idea.myVote === 3}" @click="vote(3)" title="Голосовать За">&#11014;</span>
-						<span class="value" v-text="idea.votesPlus"></span>
+			<div class="message-footer row">
+				<div class="area-left">
+					<span class="reply anch" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Дополнить</span>
+					<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Возразить</span>
+					<span class="votes-stats">
+						<span class="vote-up">
+							<span class="arrow" :class="{active: this.idea.myVote === 3}" @click="vote(3)" title="Голосовать За">&#11014;</span>
+							<span class="value" v-text="idea.votesPlus"></span>
+						</span>
+						&nbsp;
+						<span class="vote-down">
+							<span class="arrow" :class="{active: this.idea.myVote === 4}" @click="vote(4)" title="Голосовать Против">&#11015;</span>
+							<span class="value" v-text="idea.votesMinus"></span>
+						</span>
 					</span>
-					&nbsp;
-					<span class="vote-down">
-						<span class="arrow" :class="{active: this.idea.myVote === 4}" @click="vote(4)" title="Голосовать Против">&#11015;</span>
-						<span class="value" v-text="idea.votesMinus"></span>
-					</span>
-					&nbsp;
-					<span class="answers" v-if="responsesTotal" @click="$router.push(`/idea/${idea._id}`)" title="Читать комментарии">
-						<span class="arrow">&#9993;</span>
-						<span class="value" v-text="responsesTotal"></span>
-					</span>
-				</span>
+				</div>
+				<div class="area-right hint">
+					<a v-text="authorName" class="fio anch hint" :href="authorVkLink" target="_blank"></a>,
+					<span class="datetime" v-text="datetime" @click="navigateToDetails"></span>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -117,14 +111,8 @@
 <style scoped lang="less">
 	@import "../styles/variables";
 
-	@shift-top: 20px;
-
-	.ArgumentInDetails {
-		display: flex;
-		justify-content: flex-start;
-		flex-direction: row;
+	.IdeaDetails {
 		font-size: 12.5px;
-		margin: @shift-top 0 0;
 		position: relative;
 
 		.actions {
@@ -159,79 +147,37 @@
 			transition: @transition-opacity-show;
 		}
 
-		.left-part {
-			margin-right: 10px;
-
-			.author-photo {
-				display: block;
-				@size: 54px;
-				width: @size;
-				height: @size;
-				outline: none;
-				border-radius: @size / 2;
-				background-repeat: no-repeat no-repeat;
-				background-position: center center;
-				background-size: cover;
-			}
+		.description {
+			margin: 0;
 		}
 
-		.center-part {
-			.message-header {
-				display: flex;
-				justify-content: flex-start;
+		.message-footer {
+			margin-top: 7px;
 
-				.fio {
-					overflow: hidden;
-					text-overflow: ellipsis;
-					display: block;
-				}
+			.reply {
+				font-weight: normal;
+				margin-right: 5px;
+			}
 
-				.datetime {
-					display: inline-block;
-					width: 150px;
-					margin-left: 5px;
+			.votes-stats {
+				display: inline-block;
+				width: 100px;
+
+				.vote-up .arrow {
+					color: @cl-green;
 					cursor: pointer;
-
-					&:hover {
-						text-decoration: underline;
-					}
-				}
-			}
-
-			.description {
-				margin: 6px 0;
-			}
-
-			.message-footer {
-				.reply {
-					font-weight: normal;
-					margin-right: 5px;
 				}
 
-				.votes-stats {
-					display: inline-block;
-					width: 100px;
+				.vote-down .arrow {
+					color: @cl-red;
+					cursor: pointer;
+				}
 
-					.vote-up .arrow {
-						color: @cl-green;
-						cursor: pointer;
-					}
+				.arrow {
+					opacity: 0.3;
 
-					.vote-down .arrow {
-						color: @cl-red;
-						cursor: pointer;
-					}
-
-					.arrow {
-						opacity: 0.3;
-
-						&.active {
-							opacity: 1;
-						}
-					}
-
-					.answers {
-						cursor: pointer;
+					&.active {
+						opacity: 1;
 					}
 				}
 			}

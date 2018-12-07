@@ -13,49 +13,7 @@
 				</template>
 			</div>
 			<div class="content">
-				<div class="crud-actions">
-					<div class="remove" @click="remove" v-if="isAllowedRemove"></div>
-				</div>
-				<div class="title h2" v-text="idea.title"></div>
-				<div class="description" v-text="idea.description"></div>
-				<div class="created-area">
-					<a v-text="idea.author.name" class="anch" :href="authorUrl" target="_blank"></a>,
-					<span v-text="datetime" class="hint"></span>
-				</div>
-			</div>
-			<div class="actions row" v-if="!this.idea.myVote || this.revote">
-				<button @click="vote(3)" class="option" :class="{active: this.idea.myVote === 3}">
-					Голосовать За
-				</button>
-				<button @click="vote(2)" class="option" :class="{active: this.idea.myVote === 2}">
-					Пропустить
-				</button>
-				<button @click="vote(4)" class="option" :class="{active: this.idea.myVote === 4}">
-					Голосовать Против
-				</button>
-			</div>
-			<div class="revote anch" v-if="this.idea.myVote && !this.revote" @click="onClickRevote">переголосовать</div>
-			<div class="stats row" v-if="this.idea.myVote">
-				<!--<div class="stat-box">-->
-					<!--<div class="count" v-text="acceptance"></div>-->
-					<!--<div class="label">одобрение</div>-->
-				<!--</div>-->
-				<div class="stat-box plus" :class="{active: this.idea.myVote === 3}">
-					<div class="count" v-text="idea.votesPlusCount"></div>
-					<div class="label">поддержали</div>
-				</div>
-				<div class="stat-box neutral" :class="{active: this.idea.myVote === 2}">
-					<div class="count" v-text="idea.skipsCount"></div>
-					<div class="label">пропустили</div>
-				</div>
-				<div class="stat-box minus" :class="{active: this.idea.myVote === 4}">
-					<div class="count" v-text="idea.votesMinusCount"></div>
-					<div class="label">возразили</div>
-				</div>
-				<!--<div class="stat-box">-->
-					<!--<div class="count" v-text="relevance"></div>-->
-					<!--<div class="label">актуальность</div>-->
-				<!--</div>-->
+				<IdeaDetails :idea="idea" @update="fetch"></IdeaDetails>
 			</div>
 			<section>
 				<div class="hr wide" />
@@ -90,11 +48,13 @@
 	import gate from '../modules/gate'
 	import me from '../modules/me'
 	import {renderDatetime} from '../modules/decorators'
+	import IdeaDetails from '@/parts/idea_details.vue';
 	import ArgumentInDetails from '@/parts/argument_in_details.vue';
 	import AddItemCompact from '@/parts/add_item_compact.vue';
 
 	export default {
 		components: {
+			IdeaDetails,
 			ArgumentInDetails,
 			AddItemCompact,
 		},

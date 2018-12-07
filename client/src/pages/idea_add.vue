@@ -3,14 +3,13 @@
 		<div class="anch" @click="$router.go(-1)">вернуться назад</div>
 		<form @submit.prevent="onSubmit">
 			<div class="parent-info" v-if="parentIdea">
-				<span class="type" v-text="typeText"></span> для
-				<span class="anch" v-text="parentIdea.title" @click="$router.push('/idea/' + parentIdea._id)"></span>
-				<p class="parent-description" v-if="parentIdea.description" v-text="parentIdea.description"></p>
+				<span class="type" v-text="typeText"></span>&nbsp;для&nbsp;
+				<span class="anch parent-preview" v-text="parentIdea.title || parentIdea.description" @click="$router.push('/idea/' + parentIdea._id)"></span>
 			</div>
-			<div class="fields-row">
+			<!--div class="fields-row">
 				<div class="label">Заголовок</div>
 				<input v-model="title" class="title-field" maxlength="200" />
-			</div>
+			</div-->
 			<div class="fields-row">
 				<div class="label">Текст</div>
 				<textarea v-model="text" class="text-field" maxlength="2000"></textarea>
@@ -100,13 +99,16 @@
 			color: #222;
 			margin: 18px 0 12px;
 			font-weight: 500;
-
-			.parent-description {
-				background: #fff;
-				border-radius: 2px;
-				border: 1px solid #d3d9de;
-				padding: 5px 9px 7px;
-				color: #000;
+			display: flex;
+			white-space: nowrap;
+			
+			.parent-preview {
+				font-weight: normal;
+				display: inline-block;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				max-width: 100%;
 			}
 		}
 
