@@ -147,11 +147,11 @@
 			}
 
 			.edit {
-				background-image: url('../../static/icons/baseline-gavel-24px.svg');
+				background-image: url('../../static/icons/baseline-edit-24px.svg');
 			}
 
 			.remove {
-				background-image: url('../../static/icons/baseline-delete-24px.svg');
+				background-image: url('../../static/icons/baseline-close-24px.svg');
 			}
 		}
 		&:hover .actions {

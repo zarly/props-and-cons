@@ -2,7 +2,7 @@
 	<div class="IdeasPage VkPage">
 		<div class="row">
 			<div class="header-left">
-				<span class="anch" v-if="1" @click="$router.push('/settings')">настройки</span>
+				<!--span class="anch" v-if="1" @click="$router.push('/settings')">настройки</span-->
 			</div>
 			<div class="header-right">
 				<button class="btn-add-new" @click="$router.push('/idea-add')">Добавить тему</button>
