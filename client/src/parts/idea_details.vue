@@ -5,6 +5,7 @@
 			<div class="remove" @click="remove" v-if="isAllowedRemove"></div>
 		</div>
 		<div class="center-part">
+			<div v-text="idea.title" v-if="idea.title" class="h2 title"></div>
 			<div v-text="idea.description" class="description"></div>
 			<div class="message-footer row">
 				<div class="area-left">
@@ -145,6 +146,10 @@
 		&:hover .actions {
 			opacity: 1;
 			transition: @transition-opacity-show;
+		}
+
+		.title {
+			margin-bottom: 7px;
 		}
 
 		.description {

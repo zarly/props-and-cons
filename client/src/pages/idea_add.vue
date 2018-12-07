@@ -6,10 +6,10 @@
 				<span class="type" v-text="typeText"></span>&nbsp;для&nbsp;
 				<span class="anch parent-preview" v-text="parentIdea.title || parentIdea.description" @click="$router.push('/idea/' + parentIdea._id)"></span>
 			</div>
-			<!--div class="fields-row">
+			<div class="fields-row" v-if="!parentIdea">
 				<div class="label">Заголовок</div>
 				<input v-model="title" class="title-field" maxlength="200" />
-			</div-->
+			</div>
 			<div class="fields-row">
 				<div class="label">Текст</div>
 				<textarea v-model="text" class="text-field" maxlength="2000"></textarea>
