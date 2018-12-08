@@ -65,11 +65,19 @@ export class Strategy extends BaseStrategy {
 
 		const isAuth = this.disableVerification || this.verifySign(params);
 		if (isAuth) {
-			const {viewer_id, user_id, group_id} = params;
+			const viewer_id = parseInt(params.viewer_id, 10);
+			const user_id = parseInt(params.user_id, 10);
+			const group_id = parseInt(params.group_id, 10);
 
 			const {userInfo, groupInfo} = Strategy.parseApiResult(params.api_result);
-			if (userInfo && userInfo.id !== parseInt(viewer_id, 10)) return this.fail(401);
-			if (groupInfo && groupInfo.id !== parseInt(group_id, 10)) return this.fail(401);
+			if (viewer_id && userInfo && userInfo.id !== viewer_id) {
+				console.warn('[401] Wrong viewer info', viewer_id, userInfo);
+				return this.fail(401);
+			}
+			if (group_id && groupInfo && groupInfo.id !== group_id) {
+				console.warn('[401] Wrong group info', group_id, groupInfo);
+				return this.fail(401);
+			}
 
 			const realmName = 'vk:' + ((group_id && `${group_id}`) || (user_id && `u${user_id}`) || 'common');
 			this.done(viewer_id, realmName, userInfo, (error: any, user: any, realm: any) => {
@@ -79,11 +87,13 @@ export class Strategy extends BaseStrategy {
 				(req as any).realm = realmName;
 				(req as any).realmEnt = realm;
 
-				user.role = parseInt(params.viewer_type, 10);
+				user.role = group_id ? parseInt(params.viewer_type, 10) :
+							user_id === viewer_id ? 4 : 0;
 
 				this.success(user);
 			});
 		} else {
+			console.warn('[401] Wrong sign check');
 			this.fail(401);
 		}
 	}
