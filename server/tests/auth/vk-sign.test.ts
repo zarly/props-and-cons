@@ -12,7 +12,7 @@ test('getUrlHash', async () => {
 });
 
 test('verifySign success', async () => {
-	const strategy = new Strategy({secret, verbose: !!1}, () => {});
+	const strategy = new Strategy({secret}, () => {});
 	const hash = Strategy.getUrlHash(url);
 	const result = strategy.verifySign(hash);
 	expect(result).toBeTruthy();

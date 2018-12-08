@@ -1,6 +1,6 @@
 /*
 Первый запрос к API ВКонтакте:
-method=execute&code=var viewer = API.users.get({user_ids: [{viewer_id}], fields: "sex,photo_100"});var group = API.groups.getById({group_ids: [{group_id}]});return [viewer,group];&format=json&v=5.27
+method=execute&code=var viewer = API.users.get({user_ids: [{viewer_id}], fields: "sex,photo_100"});var group = API.groups.getById({group_ids: [{group_id}]});var user = API.users.get({user_ids: [{user_id}], fields: "sex,photo_100"});return [viewer,group,user];&format=json&v=5.27
  */
 
 import {Strategy as BaseStrategy} from 'passport-strategy'
@@ -40,7 +40,7 @@ interface IApiResult {
 }
 
 export class Strategy extends BaseStrategy {
-	static readonly DEFAULT_NAME = 'vk_app_auth_key';
+	static readonly DEFAULT_NAME = 'vk_app_sign';
 
 	readonly name: string;
 	protected done: Function;
@@ -65,13 +65,18 @@ export class Strategy extends BaseStrategy {
 
 		const isAuth = this.disableVerification || this.verifySign(params);
 		if (isAuth) {
-			const {viewer_id} = params;
+			const {viewer_id, user_id, group_id} = params;
+
 			const {userInfo, groupInfo} = Strategy.parseApiResult(params.api_result);
+			if (userInfo && userInfo.id !== parseInt(viewer_id, 10)) return this.fail(401);
+			if (groupInfo && groupInfo.id !== parseInt(group_id, 10)) return this.fail(401);
+
+			const vkRealmName = (group_id && `${group_id}`) || (user_id && `u${user_id}`) || 'common';
 			this.done(viewer_id, userInfo, (error: any, user: any) => {
 				(req as any).vkParams = params;
 				(req as any).vkUserInfo = userInfo;
 				(req as any).vkGroupInfo = groupInfo;
-				(req as any).realm = `vk:${params.group_id}`;
+				(req as any).realm = `vk:${vkRealmName}`;
 				this.success(user);
 			});
 		} else {

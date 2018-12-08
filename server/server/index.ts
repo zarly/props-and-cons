@@ -55,7 +55,7 @@ export default class Server {
 
 		app.use('/api', bodyParser.json());
 
-		app.get('/api/ideas', this.auth.vk_app_auth_key, async (req, res) => {
+		app.get('/api/ideas', this.auth.vk_app_sign, async (req, res) => {
 			const {limit, skip, parentId} = req.query;
 			const ideas = await this.logic.getIdeasList(
 				(req as any).realm, // TODO: расширить req в стратегии паспорта
@@ -67,40 +67,40 @@ export default class Server {
 			res.send(ideas);
         });
         
-		app.get('/api/ideas/:id', this.auth.vk_app_auth_key, async (req, res) => {
+		app.get('/api/ideas/:id', this.auth.vk_app_sign, async (req, res) => {
             const result = await this.logic.getIdeaById((req as any).realm, req.user, req.params.id);
             res.send(result);
         });
         
-		app.post('/api/ideas', this.auth.vk_app_auth_key, async (req, res) => {
+		app.post('/api/ideas', this.auth.vk_app_sign, async (req, res) => {
             const result = await this.logic.publishIdea((req as any).realm, req.user, req.body);
 			res.send(result);
 		});
         
-		app.patch('/api/ideas/:id', this.auth.vk_app_auth_key, async (req, res) => {
+		app.patch('/api/ideas/:id', this.auth.vk_app_sign, async (req, res) => {
 			res.send({result: 'Idea edited'});
 		});
         
-		app.delete('/api/ideas/:id', this.auth.vk_app_auth_key, async (req, res) => {
+		app.delete('/api/ideas/:id', this.auth.vk_app_sign, async (req, res) => {
 			const status = await this.logic.deleteIdea(req.user._id, req.params.id);
 			res.status(status || 500).json({success: status === 200});
 		});
 
-		app.post('/api/vote', this.auth.vk_app_auth_key, async (req, res) => { // OPTIMIZATION: использовать лёгкий vote а не тяжёлый reVote в реализации, отслеживая логику на клиенте
+		app.post('/api/vote', this.auth.vk_app_sign, async (req, res) => { // OPTIMIZATION: использовать лёгкий vote а не тяжёлый reVote в реализации, отслеживая логику на клиенте
 			const result = await this.logic.voteAndReturnNewValues(req.user._id, req.body.ideaId, req.body.voteType);
 			res.send(result);
 		});
 
-		app.post('/api/revote', this.auth.vk_app_auth_key, async (req, res) => {
+		app.post('/api/revote', this.auth.vk_app_sign, async (req, res) => {
 			const result = await this.logic.voteAndReturnNewValues(req.user._id, req.body.ideaId, req.body.voteType);
 			res.send(result);
 		});
 
-		app.get('/api/users/me', this.auth.vk_app_auth_key, async (req, res) => {
+		app.get('/api/users/me', this.auth.vk_app_sign, async (req, res) => {
 			res.send(req.user);
 		});
 
-		app.get('/api/settings', this.auth.vk_app_auth_key, async (req, res) => {
+		app.get('/api/settings', this.auth.vk_app_sign, async (req, res) => {
 			res.send({
 				me: req.user,
 				group: {realm: (req as any).realm},
