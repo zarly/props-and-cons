@@ -30,6 +30,8 @@ export interface IConfig {
 	logging: {
 		morganFormat: string;
 	};
+
+	admins: number[];
 }
 
 export default <IConfig> config;

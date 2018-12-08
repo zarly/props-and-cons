@@ -12,4 +12,6 @@ export default {
 	logging: {
     	morganFormat: 'dev',
 	},
+
+	admins: [36906447],
 }

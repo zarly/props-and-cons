@@ -6,6 +6,7 @@ method=execute&code=var viewer = API.users.get({user_ids: [{viewer_id}], fields:
 import {Strategy as BaseStrategy} from 'passport-strategy'
 import {Request} from  'express'
 import * as crypto from 'crypto'
+import config from '../config';
 
 interface IStrategyOptions {
 	secret?: string;
@@ -88,7 +89,9 @@ export class Strategy extends BaseStrategy {
 				(req as any).realmEnt = realm;
 
 				user.role = group_id ? parseInt(params.viewer_type, 10) :
-							user_id === viewer_id ? 4 : 0;
+							user_id === viewer_id ? 4 :
+							config.admins.indexOf(viewer_id) !== -1 ? 4 :
+							0;
 
 				this.success(user);
 			});
