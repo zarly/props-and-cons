@@ -62,7 +62,8 @@
 			isAllowedRemove () {
 				return this.idea && this.idea.author && 
 					this.me && this.me.user &&
-					this.idea.author._id === this.me.user._id;
+					(this.idea.author._id === this.me.user._id ||
+						[2, 3, 4].indexOf(this.me.user.role) !== -1);
 			},
 			authorPhoto () {
 				return this.idea.author && this.idea.author.photo;

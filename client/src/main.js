@@ -18,3 +18,14 @@ new Vue({
 	components: { App },
 	template: '<App/>'
 });
+
+(function () {
+	const referrerMath = location.search.match('referrer=([^&]*)');
+	const referrer = referrerMath && referrerMath[1];
+	if (referrer) {
+		const refPath = referrer.split('_');
+		if (refPath[0] === 'ad' && refPath[1] === 'idea' && refPath[2]) {
+			router.push(`/idea/${refPath[2]}`);
+		}
+	}
+})();

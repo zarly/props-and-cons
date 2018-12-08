@@ -29,6 +29,8 @@ export class AuthorInfo {
 export class User extends Typegoose {
     _id: ObjectId;
 
+	role: number; // заполняется из NodeJS passport-vk-app-sign
+
     @prop({ index: true })
     login: string;
     @prop()

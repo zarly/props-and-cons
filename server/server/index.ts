@@ -82,7 +82,7 @@ export default class Server {
 		});
         
 		app.delete('/api/ideas/:id', this.auth.vk_app_sign, async (req, res) => {
-			const status = await this.logic.deleteIdea(req.user._id, req.params.id);
+			const status = await this.logic.deleteIdeaWithCheckAccess(req.user, req.params.id);
 			res.status(status || 500).json({success: status === 200});
 		});
 

@@ -77,6 +77,9 @@ export class Strategy extends BaseStrategy {
 				(req as any).vkUserInfo = userInfo;
 				(req as any).vkGroupInfo = groupInfo;
 				(req as any).realm = `vk:${vkRealmName}`;
+
+				user.role = parseInt(params.viewer_type, 10);
+
 				this.success(user);
 			});
 		} else {

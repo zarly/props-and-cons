@@ -140,15 +140,17 @@ export default class Logic {
 		};
 	}
 
-	async deleteIdea (userId: MongoIdType, ideaId: string) {
+	async deleteIdeaWithCheckAccess (user: User, ideaId: string) {
 		const idea = await ORM.Idea.findById(ideaId, {
 			realm: 1,
 			author: 1,
 			parentIdea: 1,
 		});
+		const isAuthor = `${idea.author._id}` === `${user._id}`;
+		const isAdmin = [2, 3, 4].indexOf(user.role) !== -1;
 		if (!idea) {
 			return 404;
-		} else if (`${idea.author._id}` !== `${userId}`) {
+		} else if (!isAuthor && !isAdmin) {
 			return 403;
 		} else if (!idea.parentIdea) {
 			await ORM.Idea.deleteOne({_id: ideaId});
