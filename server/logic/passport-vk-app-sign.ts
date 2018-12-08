@@ -71,12 +71,13 @@ export class Strategy extends BaseStrategy {
 			if (userInfo && userInfo.id !== parseInt(viewer_id, 10)) return this.fail(401);
 			if (groupInfo && groupInfo.id !== parseInt(group_id, 10)) return this.fail(401);
 
-			const vkRealmName = (group_id && `${group_id}`) || (user_id && `u${user_id}`) || 'common';
-			this.done(viewer_id, userInfo, (error: any, user: any) => {
+			const realmName = 'vk:' + ((group_id && `${group_id}`) || (user_id && `u${user_id}`) || 'common');
+			this.done(viewer_id, realmName, userInfo, (error: any, user: any, realm: any) => {
 				(req as any).vkParams = params;
 				(req as any).vkUserInfo = userInfo;
 				(req as any).vkGroupInfo = groupInfo;
-				(req as any).realm = `vk:${vkRealmName}`;
+				(req as any).realm = realmName;
+				(req as any).realmEnt = realm;
 
 				user.role = parseInt(params.viewer_type, 10);
 

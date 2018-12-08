@@ -2,7 +2,7 @@
 	<div class="IdeasPage VkPage">
 		<div class="row">
 			<div class="header-left">
-				<!--span class="anch" v-if="1" @click="$router.push('/settings')">настройки</span-->
+				<span class="anch" v-if="isAdmin" @click="$router.push('/settings')">настройки</span>
 			</div>
 			<div class="header-right">
 				<button class="btn-add-new" @click="$router.push('/idea-add')">Добавить тему</button>
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+	import me from '../modules/me'
 	import gate from '../modules/gate'
 	import IdeaItem from '@/parts/idea_item.vue';
 
@@ -32,7 +33,14 @@
 //				groupName: 'Название группы',
 				ideas: [],
 				totalCount: 0,
+
+				me,
 			};
+		},
+		computed: {
+			isAdmin () {
+				return this.me && this.me.user && [3, 4].indexOf(this.me.user.role) !== -1;
+			},
 		},
 		methods: {
 			async fetch () {

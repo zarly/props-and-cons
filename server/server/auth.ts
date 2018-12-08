@@ -16,9 +16,10 @@ export default class Auth {
 		passport.use('vk_app_sign', new vkAppStrategy.Strategy({
 			secret: config.auth.vkapp.secret,
 			disableVerification: config.auth.vkapp.disableVerification,
-		}, async (uid: string, userInfo: any, done: Function) => {
+		}, async (uid: string, rid: string, userInfo: any, done: Function) => {
 			const user = await ORM.User.loginOrRegisterVk(uid, userInfo);
-			done(null, user);
+			const realm = await ORM.Group.findOrCreate(rid);
+			done(null, user, realm);
 		}));
 
 		this.vk_app_sign = passport.authenticate('vk_app_sign', { session: false });

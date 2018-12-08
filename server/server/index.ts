@@ -97,13 +97,14 @@ export default class Server {
 		});
 
 		app.get('/api/users/me', this.auth.vk_app_sign, async (req, res) => {
+			console.log('user', req.user);
 			res.send(req.user);
 		});
 
 		app.get('/api/settings', this.auth.vk_app_sign, async (req, res) => {
 			res.send({
 				me: req.user,
-				group: {realm: (req as any).realm},
+				realm: (req as any).realmEnt,
 			});
 		});
     }

@@ -5,7 +5,7 @@ import * as mongoose from 'mongoose'
 export class Group extends Typegoose {
     _id: mongoose.Types.ObjectId;
     
-    @prop()
+    @prop({unique: true})
     realm: string;
     @prop()
     externalId: string;
@@ -19,6 +19,20 @@ export class Group extends Typegoose {
 
 	@prop({required: true, 'default': Date.now})
 	createdAt: number;
+
+	@staticMethod
+	static async findOrCreate (realm: string) : Promise<any> {
+		let instance: any|null = await Model.findOne({realm});
+
+		if (!instance) {
+			instance = new Model({
+				realm,
+			});
+			await instance.save();
+		}
+
+		return instance;
+	}
 }
 
 const Model = new Group().getModelForClass(Group);
