@@ -63,7 +63,7 @@ export class Strategy extends BaseStrategy {
 		const vkUrl = req.get('referrer');
 		const params = vkUrl ? Strategy.getUrlHash(vkUrl) : {};
 
-		const isAuth = this.disableVerification || this.verifyAuthKey(params);
+		const isAuth = this.disableVerification || this.verifySign(params);
 		if (isAuth) {
 			const {viewer_id} = params;
 			const {userInfo, groupInfo} = Strategy.parseApiResult(params.api_result);
@@ -99,16 +99,21 @@ export class Strategy extends BaseStrategy {
 		}, {});
 	}
 
-	verifyAuthKey (params: any) {
-		const str = `${params.api_id}_${params.viewer_id}_${this.secret}`;
-		const sign = crypto.createHash('md5')
+	verifySign (params: any) {
+		let str = '';
+		for (let name in params) {
+			if (!params.hasOwnProperty(name)) continue;
+			if (['sign', 'hash', 'api_result'].indexOf(name) !== -1) continue;
+			str += params[name];
+		}
+		const sign = crypto.createHmac('sha256', this.secret)
 			.update(str)
 			.digest('hex');
 
 		if (this.verbose) {
-			this.logFunction('Verify authKey:', str, sign, params.auth_key);
+			this.logFunction('Verify sign:', str, sign, params.sign);
 		}
 
-		return sign === params.auth_key;
+		return sign === params.sign;
 	}
 }

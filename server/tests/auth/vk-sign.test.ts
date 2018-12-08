@@ -11,37 +11,79 @@ test('getUrlHash', async () => {
 	expect(hash.auth_key).toBe('53a9058926617fa5f11cb56606cd6cf6');
 });
 
-test('verifyAuthKey success', async () => {
-	const strategy = new Strategy({secret}, () => {});
+test('verifySign success', async () => {
+	const strategy = new Strategy({secret, verbose: !!1}, () => {});
 	const hash = Strategy.getUrlHash(url);
-	const result = strategy.verifyAuthKey(hash);
+	const result = strategy.verifySign(hash);
 	expect(result).toBeTruthy();
 });
 
-test('verifyAuthKey wrong secret', async () => {
+test('verifySign wrong secret', async () => {
 	const strategy = new Strategy({secret: 'wrong_secret'}, () => {});
 	const hash = Strategy.getUrlHash(url);
-	const result = strategy.verifyAuthKey(hash);
+	const result = strategy.verifySign(hash);
 	expect(result).toBeFalsy();
 });
 
-test('verifyAuthKey wrong api_id', async () => {
+test('verifySign wrong api_id', async () => {
 	const strategy = new Strategy({secret}, () => {});
 	const hash = Strategy.getUrlHash(url);
-	const result = strategy.verifyAuthKey({...hash, api_id: '5'});
+	const result = strategy.verifySign({...hash, api_id: '5'});
 	expect(result).toBeFalsy();
 });
 
-test('verifyAuthKey wrong viewer_id', async () => {
+test('verifySign wrong viewer_id', async () => {
 	const strategy = new Strategy({secret}, () => {});
 	const hash = Strategy.getUrlHash(url);
-	const result = strategy.verifyAuthKey({...hash, viewer_id: '11'});
+	const result = strategy.verifySign({...hash, viewer_id: '11'});
 	expect(result).toBeFalsy();
 });
 
-test('verifyAuthKey wrong auth_key', async () => {
+test('verifySign wrong viewer_type', async () => {
 	const strategy = new Strategy({secret}, () => {});
 	const hash = Strategy.getUrlHash(url);
-	const result = strategy.verifyAuthKey({...hash, auth_key: '43a9058926617fa5f11cb56606cd6cf4'});
+	const result = strategy.verifySign({...hash, user_id: '1'});
+	expect(result).toBeFalsy();
+});
+
+test('verifySign wrong user_id', async () => {
+	const strategy = new Strategy({secret}, () => {});
+	const hash = Strategy.getUrlHash(url);
+	const result = strategy.verifySign({...hash, user_id: '11'});
+	expect(result).toBeFalsy();
+});
+
+test('verifySign wrong group_id', async () => {
+	const strategy = new Strategy({secret}, () => {});
+	const hash = Strategy.getUrlHash(url);
+	const result = strategy.verifySign({...hash, group_id: '11'});
+	expect(result).toBeFalsy();
+});
+
+test('verifySign wrong referrer', async () => {
+	const strategy = new Strategy({secret}, () => {});
+	const hash = Strategy.getUrlHash(url);
+	const result = strategy.verifySign({...hash, referrer: 'catalog_popular'});
+	expect(result).toBeFalsy();
+});
+
+test('verifySign wrong api_settings', async () => {
+	const strategy = new Strategy({secret}, () => {});
+	const hash = Strategy.getUrlHash(url);
+	const result = strategy.verifySign({...hash, referrer: '7'});
+	expect(result).toBeFalsy();
+});
+
+test('verifySign wrong api_url', async () => {
+	const strategy = new Strategy({secret}, () => {});
+	const hash = Strategy.getUrlHash(url);
+	const result = strategy.verifySign({...hash, api_url: 'https://wrong.com'});
+	expect(result).toBeFalsy();
+});
+
+test('verifySign wrong sign', async () => {
+	const strategy = new Strategy({secret}, () => {});
+	const hash = Strategy.getUrlHash(url);
+	const result = strategy.verifySign({...hash, sign: '2d6c28990ea6c50757d217b403868a3d4f27af079ab1889bd628c8f9eb8b4df1'});
 	expect(result).toBeFalsy();
 });
