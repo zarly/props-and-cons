@@ -9,7 +9,9 @@
     "build": "rm -Rf dist ; tsc && cp package.json dist",
     "test": "NODE_ENV=testing jest --maxWorkers=1",
     "deploy": "ssh app@alex-abramov.com 'rm -Rf /apps/pac-node' && scp -r dist app@alex-abramov.com:/apps/pac-node && ssh app@alex-abramov.com 'cd /apps/pac-node && npm install'",
-    "db:fetch": "ssh app@alex-abramov.com 'mongodump --db props-and-cons-production --archive > pac.dump' && scp app@alex-abramov.com:/apps/pac.dump pac.dump && mongorestore --archive pac.dump"
+    "db:fetch": "bash ./shell/mongo_fetch.sh",
+    "db:merge": "mongorestore --db props-and-cons-development last-dump/props-and-cons-production",
+    "db:replace": "mongorestore --db props-and-cons-development --drop last-dump/props-and-cons-production"
   },
   "author": "Alexander Abramov",
   "license": "MIT",
