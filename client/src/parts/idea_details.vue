@@ -13,13 +13,13 @@
 					<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Возразить</span>
 					<span class="votes-stats">
 						<span class="vote-up">
-							<span class="arrow" :class="{active: this.idea.myVote === 3}" @click="vote(3)" title="Голосовать За">&#11014;</span>
-							<span class="value" v-text="idea.votesPlus"></span>
+							<span class="arrow" :class="{active: idea.myVote === 3}" @click="vote(3)" title="Голосовать За">&#11014;</span>
+							<span class="value" v-text="idea.votesPlusCount"></span>
 						</span>
 						&nbsp;
 						<span class="vote-down">
-							<span class="arrow" :class="{active: this.idea.myVote === 4}" @click="vote(4)" title="Голосовать Против">&#11015;</span>
-							<span class="value" v-text="idea.votesMinus"></span>
+							<span class="arrow" :class="{active: idea.myVote === 4}" @click="vote(4)" title="Голосовать Против">&#11015;</span>
+							<span class="value" v-text="idea.votesMinusCount"></span>
 						</span>
 					</span>
 				</div>
@@ -87,8 +87,8 @@
 					method: 'POST',
 					body: JSON.stringify(query),
 				});
-				this.idea.votesPlus = newVotes.votesPlus;
-				this.idea.votesMinus = newVotes.votesMinus;
+				this.idea.votesPlusCount = newVotes.votesPlus;
+				this.idea.votesMinusCount = newVotes.votesMinus;
 				this.idea.skips = newVotes.skips;
 				this.idea.myVote = newVotes.myVote;
 			},
