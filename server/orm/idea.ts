@@ -2,7 +2,7 @@
 import { prop, arrayProp, instanceMethod, staticMethod, pre, Typegoose, ModelType, InstanceType } from 'typegoose'
 import * as mongoose from 'mongoose'
 import {RootIdeaType, IdeaType, VoteType} from './_enums'
-import {IdeaForList, VotesUpdate} from '../interfaces'
+import {IdeaForList, IdeaForDetails, VotesUpdate} from '../interfaces'
 import {AuthorInfo} from './user'
 
 type ObjectId = mongoose.Types.ObjectId;
@@ -155,7 +155,7 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async readWithChildren (userId: MongoIdType, ideaId: MongoIdType, childrenLimit: number = 30) : Promise<any> { // TODO: отображение аргументов выходящих за лимит (вероятно отдельным запросом)
+	static async readWithChildren (userId: MongoIdType, ideaId: MongoIdType, childrenLimit: number = 30) : Promise<IdeaForDetails> { // TODO: отображение аргументов выходящих за лимит (вероятно отдельным запросом)
 		const rows = await Model.aggregate([{
 			$match: {
 				_id: ('string' === typeof ideaId) ? mongoose.Types.ObjectId(<string>ideaId) : ideaId,
