@@ -1,32 +1,34 @@
 <template>
 	<div class="IconedCounter">
-		<DivImage class="image" :class="{clickable, active}" :size="`${size}px`" :src="icon" :style="imageStyle"
-				  @click.native="$emit('clickIcon')"></DivImage>
+		<SvgIcon class="image" :class="{clickable, active}" :size="parseInt(size, 10)" :src="icon" :style="imageStyle"
+				  @click.native="$emit('clickIcon')"></SvgIcon>
 		<div class="text" v-text="counter"></div>
 	</div>
 </template>
 
 <script>
-	import DivImage from '@/elements/div_image.vue';
+	import SvgIcon from '@/elements/svg_icon.vue';
 
 	export default {
 		components: {
-			DivImage,
+			SvgIcon,
 		},
 		props: {
-			size: {'default': 16},
-			icon: {type: String},
-			counter: {'default': 0},
-			imageShift: {'default': 0},
-			imageOpacity: {'default': 1},
+			counter: {type: Number, 'default': 0},
+
+			icon: {type: Object},
+			size: {type: Number, 'default': 16},
+			iconShiftX: {type: Number, 'default': 0},
+			iconShiftY: {type: Number, 'default': 0},
+
 			clickable: {type: Boolean, 'default': false},
 			active: {type: Boolean, 'default': false},
 		},
 		computed: {
 			imageStyle () {
 				return {
-					top: `${this.imageShift}px`,
-//					opacity: this.imageOpacity,
+					top: `${this.iconShiftY}px`,
+					left: `${this.iconShiftX}px`,
 				};
 			},
 		},
@@ -34,6 +36,8 @@
 </script>
 
 <style scoped lang="less">
+	@import "../styles/variables";
+
 	.IconedCounter {
 		display: flex;
 		justify-content: flex-start;
@@ -41,10 +45,10 @@
 
 		.image {
 			position: relative;
-			opacity: 0.6;
+			fill: @cl-youtube-grey;
 
 			&:hover {
-				opacity: 1;
+				fill: @cl-youtube-black;
 			}
 
 			&.clickable {
@@ -53,6 +57,7 @@
 
 			&.active {
 				opacity: 1;
+				fill: @cl-youtube-blue;
 			}
 		}
 

@@ -3,13 +3,12 @@
 		<div v-text="idea.title" class="anch title" @click="navigateToDetails"></div>
 		<div class="bottom-line hint">
 			<span class="datetime" v-text="datetime"></span>
-			<IconedCounter class="counter" size="16" :icon="iconUp" @clickIcon="vote(3)" clickable :active="idea.myVote == 3"
-						   :counter="idea.votesPlus" imageOpacity="0.8" imageShift="-1"></IconedCounter>
-			<IconedCounter class="counter" size="16" :icon="iconDown" @clickIcon="vote(4)" clickable :active="idea.myVote == 4"
-						   :counter="idea.votesMinus" imageOpacity="0.8" imageShift="1"></IconedCounter>
-			<IconedCounter class="counter answers" size="16" :icon="iconAnswer"
-						   :counter="responsesTotal" imageOpacity="0.8"
-						   @click.native="navigateToDetails" v-if="responsesTotal"></IconedCounter>
+			<IconedCounter class="counter" :size="16" :icon="iconUp" @clickIcon="vote(3)" clickable :active="idea.myVote === 3"
+						   :counter="idea.votesPlus" :iconShiftY="-1"></IconedCounter>
+			<IconedCounter class="counter" :size="16" :icon="iconDown" @clickIcon="vote(4)" clickable :active="idea.myVote === 4"
+						   :counter="idea.votesMinus" :iconShiftY="1"></IconedCounter>
+			<IconedCounter class="counter answers" :size="16" :icon="iconAnswer" @click.native="navigateToDetails"
+						   :counter="responsesTotal" v-if="responsesTotal"></IconedCounter>
 		</div>
 	</div>
 </template>
@@ -18,9 +17,9 @@
 	import {renderDatetime, renderQuantity} from '../modules/decorators'
 	import gate from '../modules/gate'
 	import IconedCounter from '@/components/iconed_counter.vue';
-	import iconUp from '../../static/backgrounds/baseline-thumb_up-24px.svg';
-	import iconDown from '../../static/backgrounds/baseline-thumb_down-24px.svg';
-	import iconAnswer from '../../static/backgrounds/baseline-question_answer-24px.svg';
+	import iconUp from '../../static/icons/baseline-thumb_up-24px.svg';
+	import iconDown from '../../static/icons/baseline-thumb_down-24px.svg';
+	import iconAnswer from '../../static/icons/baseline-question_answer-24px.svg';
 
 	export default {
 		components: {

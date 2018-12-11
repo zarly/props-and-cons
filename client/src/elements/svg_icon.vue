@@ -2,28 +2,16 @@
 <script>
 	export default {
 		props: {
-			src: String,
-			width: {'default': '24px'},
-			height: {'default': '24px'},
-			size: {type: String},
+			src: {type: Object},
+			size: {type: Number, 'default': 24},
 		},
 		render (h) {
-			return h('div', {
-				'class': 'Image',
+			const zoom = this.size / 24;
+			return h(this.src, {
 				'style': {
-					backgroundImage: `url(${this.src})`,
-					width: this.size || this.width,
-					height: this.size || this.height,
+					zoom: zoom,
 				},
-			})
+			});
 		},
 	}
 </script>
-
-<style scoped>
-	.Image {
-		background-position: center center;
-		background-repeat: no-repeat no-repeat;
-		background-size: cover;
-	}
-</style>
