@@ -47,12 +47,18 @@ module.exports = {
 				include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
 			},
 			{
+				test: /\.svg(\?.*)?$/,
+				loader: 'vue-svg-loader',
+				include: [resolve('static/icons')]
+			},
+			{
 				test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
 				loader: 'url-loader',
 				options: {
 					limit: 10000,
 					name: utils.assetsPath('img/[name].[hash:7].[ext]')
-				}
+				},
+				exclude: [resolve('static/icons')]
 			},
 			{
 				test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
