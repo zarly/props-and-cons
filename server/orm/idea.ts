@@ -110,6 +110,51 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
+	static async getIdeasList (userId: MongoIdType, filter: any, limit: number = 20, skip: number = 0) : Promise<IdeaForList[]> {
+		return await Model.aggregate([{
+			$match: filter
+		}, {
+			$project: {
+				title: 1,
+				description: 1,
+
+				votesPlus: {$size: '$votesPlus'},
+				votesMinus: {$size: '$votesMinus'},
+				skips: {$size: '$skips'},
+				views: {$size: '$views'},
+				reports: {$size: '$reports'},
+
+				voteRating: 1,
+
+				myVote: {
+					$switch: {
+						branches: [
+							{'case': {$in: [userId, '$skips']}, then: VoteType.skip},
+							{'case': {$in: [userId, '$votesPlus']}, then: VoteType.plus},
+							{'case': {$in: [userId, '$votesMinus']}, then: VoteType.minus},
+						],
+						'default': 0
+					}
+				},
+
+				ideasPlusCount: {$size: '$ideasPlus'},
+				ideasMinusCount: {$size: '$ideasMinus'},
+				commentsCount: {$size: '$comments'},
+				alternativesCount: {$size: '$alternatives'},
+				implementationsCount: {$size: '$implementations'},
+
+				updatedAt: 1,
+				createdAt: 1,
+			}
+		}, {
+			$sort: {
+				voteRating: -1,
+				createdAt: -1,
+			}
+		}]).skip(skip).limit(limit);
+	}
+
+	@staticMethod
 	static async readWithChildren (userId: MongoIdType, ideaId: MongoIdType, childrenLimit: number = 30) : Promise<any> { // TODO: отображение аргументов выходящих за лимит (вероятно отдельным запросом)
 		const rows = await Model.aggregate([{
 			$match: {

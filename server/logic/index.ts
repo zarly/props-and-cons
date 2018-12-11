@@ -43,7 +43,7 @@ export default class Logic {
 	 * @param {String} parentId
 	 * @returns {Promise<ItemList<IdeaForList>>}
 	 */
-	async getIdeasList (realm: string, user: User, limit: number = 10, skip: number = 0, parentId: string = null) : Promise<ItemList<IdeaForList>> {
+	async getIdeasList (realm: string, user: User, limit: number = 20, skip: number = 0, parentId: string = null) : Promise<ItemList<IdeaForList>> {
 		limit = Math.min(limit, 100);
 
 		const filter : any = {
@@ -51,36 +51,7 @@ export default class Logic {
 			parentIdea: parentId ? ObjectId(parentId) : null,
 		};
 		const count = await ORM.Idea.countDocuments(filter);
-		const rows = await ORM.Idea.aggregate([{ // TODO: move it to idea.ts
-			$match: filter
-		}, {
-			$project: {
-				title: 1,
-				description: 1,
-
-				votesPlus: {$size: '$votesPlus'},
-				votesMinus: {$size: '$votesMinus'},
-				skips: {$size: '$skips'},
-				views: {$size: '$views'},
-				reports: {$size: '$reports'},
-
-				voteRating: 1,
-
-				ideasPlusCount: {$size: '$ideasPlus'},
-				ideasMinusCount: {$size: '$ideasMinus'},
-				commentsCount: {$size: '$comments'},
-				alternativesCount: {$size: '$alternatives'},
-				implementationsCount: {$size: '$implementations'},
-
-				updatedAt: 1,
-				createdAt: 1,
-			}
-		}, {
-			$sort: {
-				voteRating: -1,
-				createdAt: -1,
-			}
-		}]).skip(skip).limit(limit);
+		const rows = await ORM.Idea.getIdeasList(user._id, filter, limit, skip);
 		return {
 			count,
 			rows: <IdeaForList[]>rows,

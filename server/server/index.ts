@@ -97,7 +97,6 @@ export default class Server {
 		});
 
 		app.get('/api/users/me', this.auth.vk_app_sign, async (req, res) => {
-			console.log('user', req.user);
 			res.send(req.user);
 		});
 
