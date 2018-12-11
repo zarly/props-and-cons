@@ -1,6 +1,7 @@
 <template>
 	<div class="IconedCounter">
-		<DivImage class="image" :size="`${size}px`" :src="icon" :style="imageStyle"></DivImage>
+		<DivImage class="image" :class="{clickable, active}" :size="`${size}px`" :src="icon" :style="imageStyle"
+				  @click.native="$emit('clickIcon')"></DivImage>
 		<div class="text" v-text="counter"></div>
 	</div>
 </template>
@@ -18,12 +19,14 @@
 			counter: {'default': 0},
 			imageShift: {'default': 0},
 			imageOpacity: {'default': 1},
+			clickable: {type: Boolean, 'default': false},
+			active: {type: Boolean, 'default': false},
 		},
 		computed: {
 			imageStyle () {
 				return {
 					top: `${this.imageShift}px`,
-					opacity: this.imageOpacity,
+//					opacity: this.imageOpacity,
 				};
 			},
 		},
@@ -38,6 +41,19 @@
 
 		.image {
 			position: relative;
+			opacity: 0.6;
+
+			&:hover {
+				opacity: 1;
+			}
+
+			&.clickable {
+				cursor: pointer;
+			}
+
+			&.active {
+				opacity: 1;
+			}
 		}
 
 		.text {

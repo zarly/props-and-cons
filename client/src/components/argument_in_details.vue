@@ -80,18 +80,7 @@
 				this.$router.push(`/idea/${this.idea._id}`);
 			},
 			async vote (voteType) {
-				const query = {
-					ideaId: this.idea._id,
-					voteType,
-				};
-				const newVotes = await gate.ask('/vote', {
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json'
-					},
-					method: 'POST',
-					body: JSON.stringify(query),
-				});
+				const newVotes = await gate.vote(this.idea._id, voteType);
 				this.idea.votesPlus = newVotes.votesPlus;
 				this.idea.votesMinus = newVotes.votesMinus;
 				this.idea.skips = newVotes.skips;

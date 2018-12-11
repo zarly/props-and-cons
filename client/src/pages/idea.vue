@@ -113,18 +113,7 @@
 				this.revote = false;
 			},
 			async vote (voteType) {
-				const query = {
-					ideaId: this.idea._id,
-					voteType,
-				};
-				await gate.ask('/vote', {
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json'
-					},
-					method: 'POST',
-					body: JSON.stringify(query),
-				});
+				await gate.vote(this.idea._id, voteType);
 				await this.fetch();
 				this.revote = false;
 			},

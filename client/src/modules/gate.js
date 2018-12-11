@@ -11,6 +11,21 @@ export class Gate {
 		}
 		return await res.json();
 	}
+
+	async vote (ideaId, voteType) {
+		const query = {
+			ideaId,
+			voteType,
+		};
+		return await this.ask('/vote', {
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			method: 'POST',
+			body: JSON.stringify(query),
+		});
+	}
 }
 
 export default new Gate('/api');

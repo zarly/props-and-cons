@@ -3,9 +3,9 @@
 		<div v-text="idea.title" class="anch title" @click="navigateToDetails"></div>
 		<div class="bottom-line hint">
 			<span class="datetime" v-text="datetime"></span>
-			<IconedCounter class="counter" size="16" :icon="iconUp"
+			<IconedCounter class="counter" size="16" :icon="iconUp" @clickIcon="vote(3)" clickable :active="myVote == 3"
 						   :counter="idea.votesPlus" imageOpacity="0.8" imageShift="-1"></IconedCounter>
-			<IconedCounter class="counter" size="16" :icon="iconDown"
+			<IconedCounter class="counter" size="16" :icon="iconDown" @clickIcon="vote(4)" clickable :active="myVote == 4"
 						   :counter="idea.votesMinus" imageOpacity="0.8" imageShift="1"></IconedCounter>
 			<IconedCounter class="counter answers" size="16" :icon="iconAnswer"
 						   :counter="responsesTotal" imageOpacity="0.8"
@@ -16,6 +16,7 @@
 
 <script>
 	import {renderDatetime, renderQuantity} from '../modules/decorators'
+	import gate from '../modules/gate'
 	import IconedCounter from '@/components/iconed_counter.vue';
 	import iconUp from '../../static/icons/baseline-thumb_up-24px.svg';
 	import iconDown from '../../static/icons/baseline-thumb_down-24px.svg';
@@ -47,7 +48,14 @@
 		methods: {
 			navigateToDetails () {
 				this.$router.push(`/idea/${this.idea._id}`);
-			}
+			},
+			async vote (voteType) {
+				const newVotes = await gate.vote(this.idea._id, voteType);
+				this.idea.votesPlus = newVotes.votesPlus;
+				this.idea.votesMinus = newVotes.votesMinus;
+				this.idea.skips = newVotes.skips;
+				this.idea.myVote = newVotes.myVote;
+			},
 		}
 	}
 </script>
