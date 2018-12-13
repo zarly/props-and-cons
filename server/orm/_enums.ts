@@ -1,17 +1,20 @@
 
 export enum RootIdeaType {
-	information = 1, // правда-ложь
-	action = 2,		 // за-против
-	question = 3,	 // актуально или нет, варианты ответов
-	category = 4,
 }
 
 export enum IdeaType {
+	// Child types
 	comment = 1,
 	alternative = 2,
 	plus = 3,
 	minus = 4,
 	implementation = 5,
+
+	// Root types
+	information = 101, 	// правда-ложь
+	action = 102,		// за-против
+	question = 103,	 	// актуально или нет, варианты ответов, одна колонка
+	category = 104,
 }
 
 export enum VoteType {

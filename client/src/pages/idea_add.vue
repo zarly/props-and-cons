@@ -1,9 +1,12 @@
 <template>
 	<div class="IdeaAddPage VkPage">
 		<div class="anch" @click="$router.go(-1)">вернуться назад</div>
-		<form @submit.prevent="onSubmit">
+		<form @submit.prevent="onSubmit" class="form">
+			<select class="type-field" v-model="type">
+				<option v-for="t in (parentIdea ? childTypes : rootTypes)" :value="t" v-text="typeToTextDict[t]"></option>
+			</select>
 			<div class="parent-info" v-if="parentIdea">
-				<span class="type" v-text="typeText"></span>&nbsp;для&nbsp;
+				&nbsp;для&nbsp;
 				<span class="anch parent-preview" v-text="parentIdea.title || parentIdea.description" @click="$router.push('/idea/' + parentIdea._id)"></span>
 			</div>
 			<div class="fields-row" v-if="!parentIdea">
@@ -24,29 +27,39 @@
 <script>
 	import gate from '../modules/gate'
 
+	const typeToTextDict = {
+		1: 'Комментарий',
+		2: 'Альтернатива',
+		3: 'Аргумент За',
+		4: 'Аргумент Против',
+		5: 'Дополнение',
+
+		101: 'Утверждение',
+		102: 'Предложение',
+		103: 'Вопрос',
+		104: 'Категория',
+	};
+
 	export default {
 		data () {
 			const parentId = this.$route.query.parent;
 			const ideaId = this.$route.query.idea;
 			return {
 				initPromise: this.fetchParentIdea(parentId),
-				type: parseInt(this.$route.query.type, 10) || 1,
+				type: parseInt(this.$route.query.type, 10) || (parentId ? 1 : 102),
 				parentId: parentId,
 				parentIdea: null,
 				title: '',
 				text: '',
+
+				typeToTextDict,
+				rootTypes: [101, 102, 103, 104],
+				childTypes: [1, 2, 3, 4, 5],
 			};
 		},
 		computed: {
 			typeText () {
-				const dict = {
-					1: 'Комментарий',
-					2: 'Альтернатив',
-					3: 'Аргумент За',
-					4: 'Аргумент Против',
-					5: 'Дополнение',
-				};
-				return dict[this.type];
+				return typeToTextDict[this.type];
 			}
 		},
 		methods: {
@@ -95,13 +108,48 @@
 			color: #222;
 		}
 
+		.form {
+			margin-top: 18px;
+		}
+
+		select.type-field {
+			border: 1px solid transparent;
+			outline: none;
+			border-radius: 2px;
+			overflow: hidden;
+			padding: 1px;
+			background: transparent;
+			font-size: 24px;
+			color: #222;
+			display: block;
+			cursor: pointer;
+
+			&:active,
+			&:hover {
+				border: 1px solid #d3d9de;
+				background: #fff;
+				color: #000;
+			}
+
+			& {
+				/* Hide arrows for Firefox */
+				-moz-appearance: none;
+				/* Hide arrows for Chrome */
+				-webkit-appearance: none;
+			}
+			/* Hide arrows for IE10 */
+			&::-ms-expand {
+				display: none;
+			}
+		}
+
 		.parent-info {
 			color: #222;
-			margin: 18px 0 12px;
+			margin: 2px 0 12px;
 			font-weight: 500;
 			display: flex;
 			white-space: nowrap;
-			
+
 			.parent-preview {
 				font-weight: normal;
 				display: inline-block;

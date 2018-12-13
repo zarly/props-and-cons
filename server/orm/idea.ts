@@ -19,6 +19,14 @@ const voteTypeToArrayNameMap: {[index:string]:keyof Idea} = {
 	[VoteType.minus]: 'votesMinus',
 };
 
+const ideaTypeToArrayNameMap: {[index:string]:keyof Idea} = {
+	[IdeaType.comment]: 'comments',
+	[IdeaType.alternative]: 'alternatives',
+	[IdeaType.plus]: 'ideasPlus',
+	[IdeaType.minus]: 'ideasMinus',
+	[IdeaType.implementation]: 'implementations',
+};
+
 export class Idea extends Typegoose {
 	_id: ObjectId;
 
@@ -77,17 +85,10 @@ export class Idea extends Typegoose {
 
 	@instanceMethod
 	registerInParent () {
-		const voteTypeToArrayNameMap = {
-			[IdeaType.comment]: 'comments',
-			[IdeaType.alternative]: 'alternatives',
-			[IdeaType.plus]: 'ideasPlus',
-			[IdeaType.minus]: 'ideasMinus',
-			[IdeaType.implementation]: 'implementations',
-		};
 		return new Promise((resolve, reject) => {
 			if (!this.parentIdea) return resolve(false);
 
-			const arrayName = voteTypeToArrayNameMap[this.type];
+			const arrayName = ideaTypeToArrayNameMap[this.type];
 			Model.updateOne({
 				_id: this.parentIdea
 			}, {
