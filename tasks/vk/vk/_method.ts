@@ -22,6 +22,7 @@ export async function method (method: string, params: any = {}) : Promise<any> {
 
     Object.keys(params).forEach((key: string) => url.searchParams.append(key, params[key]));
 
+    console.debug(url);
     const res = await fetch(<any>url);
     const json = await res.json();
 

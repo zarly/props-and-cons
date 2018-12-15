@@ -40,7 +40,8 @@ export const board = {
             topic_id,
             need_likes: 1,
             count: 1000,
-            sort: 'desc',
+            // sort: 'desc',
+            sort: 'asc',
         });
     },
 };
