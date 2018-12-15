@@ -189,11 +189,27 @@ export class Idea extends Typegoose {
 					}
 				},
 
-				ideasPlus: 1,
-				ideasMinus: 1,
-				comments: 1,
-				alternatives: 1,
-				implementations: 1,
+				// ideasPlus: 1,
+				// ideasMinus: 1,
+				// comments: 1,
+				// alternatives: 1,
+				// implementations: 1,
+
+				ideasPlus: { // TODO: решить вопрос с сортировкой дочерних идей по рейтингу
+					$slice: ['$ideasPlus', 0, childrenLimit]
+				},
+				ideasMinus: {
+					$slice: ['$ideasMinus', 0, childrenLimit]
+				},
+				comments: {
+					$slice: ['$comments', 0, childrenLimit]
+				},
+				alternatives: {
+					$slice: ['$alternatives', 0, childrenLimit]
+				},
+				implementations: {
+					$slice: ['$implementations', 0, childrenLimit]
+				},
 
 				ideasPlusCount: {$size: "$ideasPlus"},
 				ideasMinusCount: {$size: "$ideasMinus"},
