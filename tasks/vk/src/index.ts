@@ -3,6 +3,7 @@ import { board, wall, likes } from '../vk'
 import serverConfig from '../../../server/config'
 import ORM from '../../../server/orm'
 // import { getTopicCommentsByTopics } from './logic';
+import {getAuthorInfo} from './user_storage'
 
 (async function init () {
     console.log('Start');
@@ -19,9 +20,11 @@ import ORM from '../../../server/orm'
         const topic = topics[i];
         if (!topic.first_comment) continue;
 
+        const authorInfo = await getAuthorInfo(topic.created_by);
         const idea = new ORM.Idea({
             type: ORM.IdeaType.question,
             realm,
+            author: authorInfo,
             title: topic.title,
             description: topic.first_comment,
             voteRating: 1,
@@ -35,7 +38,7 @@ import ORM from '../../../server/orm'
             mongo: idea,
         };
     }
-    console.log('topics =', topics);
+    // console.log('topics =', topics);
 
     let topicComments : any[] = [];
     for (let i = 0; i < topics.length; i++) {
@@ -61,9 +64,11 @@ import ORM from '../../../server/orm'
             })).items;
             console.log('likesList =', likesList);
 
+            const authorInfo = await getAuthorInfo(answer.from_id);
             const idea = await ORM.Idea.createAndRegister({
                 type: ORM.IdeaType.plus,
                 realm,
+                author: authorInfo,
                 parentIdea: topic.mongo._id,
                 description: answer.text,
 

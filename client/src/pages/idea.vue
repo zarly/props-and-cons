@@ -74,14 +74,6 @@
 				this.initPromise = this.fetch();
 			}
 		},
-		computed: {
-			isAllowedRemove () {
-				return this.idea && this.idea.author && 
-					this.me && this.me.user &&
-					(this.idea.author._id === this.me.user._id ||
-						[2, 3, 4].indexOf(this.me.user.role) !== -1);
-			},
-		},
 		methods: {
 			async fetch () {
 				this.idea = await gate.getIdea(this.id);

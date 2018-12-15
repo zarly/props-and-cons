@@ -23,6 +23,9 @@ Idea.prototype = {
 	get authorName () {
 		return this.author ? this.author.name : undefined;
 	},
+	get authorId () {
+		return this.author ? this.author._id : undefined;
+	},
 	get responsesTotal () {
 		return this.commentsCount
 			+ this.ideasPlusCount + this.ideasMinusCount
@@ -35,6 +38,13 @@ Idea.prototype = {
 	get prettyCreatedDate () {
 		const date = new Date(this.createdAt);
 		return renderDatetime(date);
+	},
+	isAllowedRemove (user) {
+		if (!user) return false;
+
+		const isAuthor = this.authorId === user._id;
+		const isAdmin = [2, 3, 4].indexOf(user.role) !== -1;
+		return isAuthor || isAdmin;
 	},
 };
 

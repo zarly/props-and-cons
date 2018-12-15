@@ -2,7 +2,7 @@
 	<div class="IdeaDetails">
 		<div class="actions">
 			<!--div class="edit" @click="edit"></div-->
-			<div class="remove" @click="remove" v-if="isAllowedRemove"></div>
+			<div class="remove" @click="remove" v-if="isShowRemove"></div>
 		</div>
 		<div class="center-part">
 			<div v-text="idea.title" v-if="idea.title" class="h2 title"></div>
@@ -47,11 +47,8 @@
 			};
 		},
 		computed: {
-			isAllowedRemove () {
-				return this.idea && this.idea.author && 
-					this.me && this.me.user &&
-					(this.idea.author._id === this.me.user._id ||
-						[2, 3, 4].indexOf(this.me.user.role) !== -1);
+			isShowRemove () {
+				return this.idea.isAllowedRemove(this.me.user);
 			},
 			lines () {
 				return (this.idea.description || '').split('\n');

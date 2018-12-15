@@ -2,7 +2,7 @@
 	<div class="ArgumentInDetails">
 		<div class="actions">
 			<!--div class="edit" @click="edit"></div-->
-			<div class="remove" @click="remove" v-if="isAllowedRemove"></div>
+			<div class="remove" @click="remove" v-if="isShowRemove"></div>
 		</div>
 		<div class="left-part">
 			<a class="author-photo" :href="idea.authorUrl" target="_blank" :style="{'background-image': 'url(' + idea.authorPhoto + ')'}"></a>
@@ -50,11 +50,8 @@
 			};
 		},
 		computed: {
-			isAllowedRemove () {
-				return this.idea && this.idea.author && 
-					this.me && this.me.user &&
-					(this.idea.author._id === this.me.user._id ||
-						[2, 3, 4].indexOf(this.me.user.role) !== -1);
+			isShowRemove () {
+				return this.idea.isAllowedRemove(this.me.user);
 			},
 		},
 		methods: {
