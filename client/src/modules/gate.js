@@ -35,6 +35,17 @@ export class Gate {
 		return Idea(idea);
 	}
 
+	async createIdea (json) {
+		return await this.ask(`/ideas`, {
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			method: 'POST',
+			body: JSON.stringify(json),
+		});
+	}
+
 	async deleteIdea (ideaId) {
 		return await this.ask(`/ideas/${ideaId}`, {
 			headers: {

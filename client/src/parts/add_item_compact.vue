@@ -39,14 +39,8 @@
 					type: this.type,
 				};
 
-				const result = await gate.ask('/ideas', {
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json'
-					},
-					method: 'POST',
-					body: JSON.stringify(query),
-				});
+				const result = await gate.createIdea(query);
+				console.log(result);
 
 				this.reset();
 				this.$emit('update');
