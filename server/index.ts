@@ -14,9 +14,11 @@ if (parseInt(process.version.slice(1)) < 10) {
 console.log(`environment = ${config.environment}`);
 dotenv.config();
 
-const orm = new ORM(config.mongoose, true);
-const logic = new Logic(orm);
-const server = new Server(orm, logic);
-
-orm.connect();
-server.listen(config.port);
+(async function init () {
+	const orm = new ORM(config.mongoose, true);
+	const logic = new Logic(orm);
+	const server = new Server(orm, logic);
+	
+	orm.connect();
+	server.listen(config.port);
+})();

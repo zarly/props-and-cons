@@ -1,16 +1,14 @@
 {
-    "compilerOptions": {
+  "compileOnSave": true,
+  "compilerOptions": {
       "module": "commonjs",
-      "lib": [ "es2015" ],
       "target": "es6",
-      "moduleResolution" : "node",
-      "rootDir": "src/",
-      "sourceMap": true
-    },
-    "includes" : [
-      "src/**/*.ts"
-    ],
-    "exclude": [
-      "node_modules"
-    ]
+      "noImplicitAny": true,
+      "removeComments": true,
+      "preserveConstEnums": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "sourceMap": true,
+      "outDir": "dist"
   }
+}

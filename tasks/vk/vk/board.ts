@@ -27,6 +27,9 @@ export const board = {
     async getTopics ({group_id}: {group_id: number}) : Promise<{count: number, items: Array<Topic>}> {
         return await extendLimit(method)('board.getTopics', {
             group_id,
+            extended: 1,
+            preview: 1,
+            preview_length: 0,
             count: 20,
             order: 1,
         });
@@ -36,7 +39,7 @@ export const board = {
             group_id,
             topic_id,
             need_likes: 1,
-            count: 100,
+            count: 10000,
             sort: 'desc',
         });
     },

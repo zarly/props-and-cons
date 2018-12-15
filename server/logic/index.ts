@@ -69,13 +69,13 @@ export default class Logic {
 	async getIdeaById (realm: string, user: User, ideaId: string) : Promise<IdeaForDetails> {
 		const idea = await ORM.Idea.readWithChildren(user._id, ideaId);
 
-		const parentIdea = <any>(await ORM.Idea.findById(idea.parentIdea, ['title']));
+		const parentIdea = <any>(await ORM.Idea.findById((<any>idea).parentIdea, ['title']));
 
-		const comments = await ORM.Idea.resolveIdeas(user._id, idea.comments);
-		const alternatives = await ORM.Idea.resolveIdeas(user._id, idea.alternatives);
-		const ideasPlus = await ORM.Idea.resolveIdeas(user._id, idea.ideasPlus);
-		const ideasMinus = await ORM.Idea.resolveIdeas(user._id, idea.ideasMinus);
-		const implementations = await ORM.Idea.resolveIdeas(user._id, idea.implementations);
+		const comments = await ORM.Idea.resolveIdeas(user._id, <any>idea.comments);
+		const alternatives = await ORM.Idea.resolveIdeas(user._id, <any>idea.alternatives);
+		const ideasPlus = await ORM.Idea.resolveIdeas(user._id, <any>idea.ideasPlus);
+		const ideasMinus = await ORM.Idea.resolveIdeas(user._id, <any>idea.ideasMinus);
+		const implementations = await ORM.Idea.resolveIdeas(user._id, <any>idea.implementations);
 
 		return {
 			_id: idea._id,

@@ -4,15 +4,15 @@ import { URL } from 'url';
 
 const access_token = process.env.ACCESS_TOKEN;
 
-export async function delay (timimg) {
+export async function delay (timimg: number) {
     return new Promise(resolve => setTimeout(resolve, timimg));
 }
 
-export async function execute (code) { // https://vk.com/dev/execute
+export async function execute (code: string) { // https://vk.com/dev/execute
     return await method('execute', {code});
 }
 
-export async function method (method: string, params: object = {}) : Promise<any> {
+export async function method (method: string, params: any = {}) : Promise<any> {
     await delay(350);
     // console.log(method, params);
 
@@ -20,9 +20,9 @@ export async function method (method: string, params: object = {}) : Promise<any
     url.searchParams.append('v', '5.52');
     url.searchParams.append('access_token', access_token);
 
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    Object.keys(params).forEach((key: string) => url.searchParams.append(key, params[key]));
 
-    const res = await fetch(url);
+    const res = await fetch(<any>url);
     const json = await res.json();
 
     if (json.response) {
@@ -33,8 +33,8 @@ export async function method (method: string, params: object = {}) : Promise<any
     }
 }
 
-export function extendLimit (fn, BATCH = 100) {
-    return async function (method, params) {
+export function extendLimit (fn: Function, BATCH = 100) {
+    return async function (method: string, params: any) {
         const OFFSET = params.offset || 0;
         const COUNT = params.count || Infinity;
 
