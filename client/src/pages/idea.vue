@@ -75,31 +75,6 @@
 			}
 		},
 		computed: {
-			datetime () {
-				const date = new Date(this.idea.createdAt);
-				return renderDatetime(date);
-			},
-			authorUrl () {
-				return this.idea.author && `https://vk.com/id${this.idea.author.vkUid}`;
-			},
-			acceptance () {
-				const {idea} = this;
-				const val = idea.votesPlusCount / (idea.votesPlusCount + idea.votesMinusCount);
-				if (val >= 0) {
-					return Math.round(100 * val) + '%';
-				} else {
-					return '-';
-				}
-			},
-			relevance () {
-				const {idea} = this;
-				const val = (idea.votesPlusCount + idea.votesMinusCount) / (idea.votesPlusCount + idea.votesMinusCount + idea.skipsCount);
-				if (val >= 0) {
-					return Math.round(100 * val) + '%';
-				} else {
-					return '-';
-				}
-			},
 			isAllowedRemove () {
 				return this.idea && this.idea.author && 
 					this.me && this.me.user &&
@@ -109,7 +84,7 @@
 		},
 		methods: {
 			async fetch () {
-				this.idea = await gate.ask(`/ideas/${this.id}`);
+				this.idea = await gate.getIdea(this.id);
 				this.revote = false;
 			},
 			async vote (voteType) {
@@ -122,13 +97,7 @@
 			},
 			async remove () {
 				if (!confirm('Вы уверены, что хотите безвозвратно удалить этот пост?')) return;
-				const result = await gate.ask(`/ideas/${this.idea._id}`, {
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json'
-					},
-					method: 'DELETE',
-				});
+				await gate.deleteIdea(this.idea._id);
 				this.$router.push(`/ideas`);
 			},
 		},

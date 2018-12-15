@@ -24,8 +24,8 @@
 					</span>
 				</div>
 				<div class="area-right hint">
-					<a v-text="authorName" class="fio anch hint" :href="authorVkLink" target="_blank"></a>,
-					<span class="datetime" v-text="datetime" @click="navigateToDetails"></span>
+					<a v-text="idea.authorName" class="fio anch hint" :href="idea.authorUrl" target="_blank"></a>,
+					<span class="datetime" v-text="idea.prettyCreatedDate" @click="navigateToDetails"></span>
 				</div>
 			</div>
 		</div>
@@ -45,29 +45,11 @@
 			};
 		},
 		computed: {
-			datetime () {
-				const date = new Date(this.idea.createdAt);
-				return renderDatetime(date);
-			},
-			responsesTotal () {
-				return this.idea.commentsCount
-					+ this.idea.ideasPlusCount + this.idea.ideasMinusCount
-					+ this.idea.alternativesCount + this.idea.implementationsCount;
-			},
 			isAllowedRemove () {
 				return this.idea && this.idea.author && 
 					this.me && this.me.user &&
 					(this.idea.author._id === this.me.user._id ||
 						[2, 3, 4].indexOf(this.me.user.role) !== -1);
-			},
-			authorPhoto () {
-				return this.idea.author && this.idea.author.photo;
-			},
-			authorName () {
-				return this.idea.author && this.idea.author.name;
-			},
-			authorVkLink () {
-				return this.idea.author && `https://vk.com/id${this.idea.author.vkUid}`;
 			},
 		},
 		methods: {
@@ -86,13 +68,7 @@
 			},
 			async remove () {
 				if (!confirm('Вы уверены, что хотите безвозвратно удалить этот пост?')) return;
-				const result = await gate.ask(`/ideas/${this.idea._id}`, {
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json'
-					},
-					method: 'DELETE',
-				});
+				await gate.deleteIdea(this.idea._id);
 				this.$router.push(`/ideas`);
 			},
 		}

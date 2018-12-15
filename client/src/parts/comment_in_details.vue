@@ -2,7 +2,7 @@
 	<div class="CommentInDetails">
 		<div v-text="idea.title" class="anch title" @click="navigateToDetails"></div>
 		<div class="hint">
-			<span class="datetime" v-text="datetime"></span>
+			<span class="datetime" v-text="idea.prettyCreatedDate"></span>
 			<span class="votes-stats">
 				<span class="vote-up" @click="vote(3)">
 					<span class="arrow" :class="{active: this.idea.myVote === 3}">&#11014;</span>
@@ -16,7 +16,7 @@
 					<span class="arrow" :class="{active: this.idea.myVote === 4}">&#11015;</span>
 				</span>
 			</span>
-			<span class="anch responses-stats" v-if="responsesTotal" @click="navigateToDetails">{{responses}}</span>
+			<span class="anch responses-stats" v-if="idea.responsesTotal" @click="navigateToDetails">{{responses}}</span>
 		</div>
 	</div>
 </template>
@@ -27,21 +27,6 @@
 
 	export default {
 		props: ['idea'],
-		computed: {
-			datetime () {
-				const date = new Date(this.idea.createdAt);
-				return renderDatetime(date);
-			},
-			responsesTotal () {
-				return this.idea.commentsCount
-					+ this.idea.ideasPlusCount + this.idea.ideasMinusCount
-					+ this.idea.alternativesCount + this.idea.implementationsCount;
-			},
-			responses () {
-				const count = this.responsesTotal;
-				return renderQuantity(count, 'ответ', 'ответа', 'ответов')
-			},
-		},
 		methods: {
 			navigateToDetails () {
 				this.$router.push(`/idea/${this.idea._id}`);

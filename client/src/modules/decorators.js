@@ -16,7 +16,7 @@ export function renderDatetime (datetime) {
 	const now = new Date();
 	if (year !== now.getFullYear()) {
 		return `${day} ${strMonth} ${year} в ${time}`;
-	} else if (mon !== now.getMonth() && day !== now.getDate()) {
+	} else if (mon !== now.getMonth() || day !== now.getDate()) {
 		return `${day} ${strMonth} в ${time}`;
 	} else {
 		return `сегодня в ${time}`;

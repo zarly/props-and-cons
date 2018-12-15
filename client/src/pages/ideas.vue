@@ -44,7 +44,7 @@
 		},
 		methods: {
 			async fetch () {
-				const result = await gate.ask('/ideas');
+				const result = await gate.getIdeasList();
 				this.ideas = result.rows;
 				this.totalCount = result.count;
 			}

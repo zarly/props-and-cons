@@ -2,13 +2,13 @@
 	<div class="IdeaItem">
 		<div v-text="idea.title" class="anch title" @click="navigateToDetails"></div>
 		<div class="bottom-line hint">
-			<span class="datetime" v-text="datetime"></span>
+			<span class="datetime" v-text="idea.prettyCreatedDate"></span>
 			<IconedCounter class="counter" :size="16" :icon="iconUp" @clickIcon="vote(3)" clickable :active="idea.myVote === 3"
 						   :counter="idea.votesPlus" :iconShiftY="-1"></IconedCounter>
 			<IconedCounter class="counter" :size="16" :icon="iconDown" @clickIcon="vote(4)" clickable :active="idea.myVote === 4"
 						   :counter="idea.votesMinus" :iconShiftY="1"></IconedCounter>
 			<IconedCounter class="counter answers" :size="16" :icon="iconAnswer" @click.native="navigateToDetails"
-						   :counter="responsesTotal" v-if="responsesTotal"></IconedCounter>
+						   :counter="idea.responsesTotal" v-if="idea.responsesTotal"></IconedCounter>
 		</div>
 	</div>
 </template>
@@ -32,17 +32,6 @@
 				iconDown,
 				iconAnswer,
 			};
-		},
-		computed: {
-			datetime () {
-				const date = new Date(this.idea.createdAt);
-				return renderDatetime(date);
-			},
-			responsesTotal () {
-				return this.idea.commentsCount
-					+ this.idea.ideasPlusCount + this.idea.ideasMinusCount
-					+ this.idea.alternativesCount + this.idea.implementationsCount;
-			},
 		},
 		methods: {
 			navigateToDetails () {

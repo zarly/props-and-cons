@@ -65,11 +65,11 @@
 		methods: {
 			async fetchParentIdea (parentId) {
 				if (!parentId) return null;
-				this.parentIdea = await gate.ask(`/ideas/${parentId}`);
+				this.parentIdea = await gate.getIdea(parentId);
 			},
-			async fetchIdea (id) {
+			async fetchIdea (id) { // TODO: implement
 				if (!id) return null;
-				const idea = await gate.ask(`/ideas/${id}`);
+				const idea = await gate.getIdea(id);
 				this.title = idea.title;
 			},
 			async onSubmit () {

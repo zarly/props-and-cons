@@ -1,4 +1,6 @@
 
+import Idea from '../models/idea'
+
 export class Gate {
 	constructor (apiUrl) {
 		this.apiUrl = apiUrl;
@@ -10,6 +12,37 @@ export class Gate {
 			return Promise.reject(res);
 		}
 		return await res.json();
+	}
+
+	async getIdeasList () {
+		const response = await this.ask(`/ideas`, {
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+		});
+		response.rows = response.rows.map(Idea);
+		return response;
+	}
+
+	async getIdea (ideaId) {
+		const idea = await this.ask(`/ideas/${ideaId}`, {
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+		});
+		return Idea(idea);
+	}
+
+	async deleteIdea (ideaId) {
+		return await this.ask(`/ideas/${ideaId}`, {
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			method: 'DELETE',
+		});
 	}
 
 	async vote (ideaId, voteType) {
