@@ -39,7 +39,7 @@ export const board = {
             group_id,
             topic_id,
             need_likes: 1,
-            count: 10000,
+            count: 1000,
             sort: 'desc',
         });
     },

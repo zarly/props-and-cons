@@ -8,6 +8,8 @@ import ORM from '../../../server/orm'
     console.log('Start');
     // const group_id = 23333093;
     const group_id = 119446;
+    // const realm = `vk:${group_id}`;
+    const realm = `vk:132657268`;
 
     const orm = new ORM(serverConfig.mongoose, true);
     await orm.connect();
@@ -19,10 +21,10 @@ import ORM from '../../../server/orm'
 
         const idea = new ORM.Idea({
             type: ORM.IdeaType.question,
-            // realm: `vk:${group_id}`,
-            realm: `vk:132657268`,
+            realm,
             title: topic.title,
             description: topic.first_comment,
+            voteRating: 1,
             updatedAt: topic.updated * 1000,
             createdAt: topic.created * 1000,
         });
@@ -44,7 +46,7 @@ import ORM from '../../../server/orm'
             topic_id: topic.vk.id,
         });
         const proper = data.items
-            .filter((o: any) => o.likes.count)
+            .filter((o: any) => o.likes.count >= 1)
             .filter((o: any) => !o.attachments)
             .filter((o: any) => o.text)
             .filter((o: any) => o.text[0] !== '[');
@@ -52,14 +54,24 @@ import ORM from '../../../server/orm'
 
         for (let j = 0; j < proper.length; j++) {
             const answer = proper[j];
+            const likesList = (await likes.getList({
+                type: 'topic_comment',
+                owner_id: -group_id,
+                item_id: answer.id,
+            })).items;
+            console.log('likesList =', likesList);
+
             const idea = await ORM.Idea.createAndRegister({
                 type: ORM.IdeaType.plus,
-                // realm: `vk:${group_id}`,
-                realm: `vk:132657268`,
+                realm,
                 parentIdea: topic.mongo._id,
                 description: answer.text,
-                updatedAt: topic.updated ? topic.updated * 1000 : undefined,
-                createdAt: topic.created ? topic.created * 1000 : undefined,
+
+                voteRating: answer.likes.count,
+                votesPlus: likesList,
+
+                updatedAt: answer.date ? answer.date * 1000 : undefined,
+                createdAt: answer.date ? answer.date * 1000 : undefined,
             });
         }
 

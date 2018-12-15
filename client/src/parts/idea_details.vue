@@ -6,7 +6,9 @@
 		</div>
 		<div class="center-part">
 			<div v-text="idea.title" v-if="idea.title" class="h2 title"></div>
-			<div v-text="idea.description" class="description"></div>
+			<div class="description">
+				<div class="line" v-for="(line, index) in lines" :key="index + ':' + line" v-text="line"></div>
+			</div>
 			<div class="message-footer row">
 				<div class="area-left">
 					<span class="reply anch" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Дополнить</span>
@@ -50,6 +52,9 @@
 					this.me && this.me.user &&
 					(this.idea.author._id === this.me.user._id ||
 						[2, 3, 4].indexOf(this.me.user.role) !== -1);
+			},
+			lines () {
+				return (this.idea.description || '').split('\n');
 			},
 		},
 		methods: {
@@ -120,6 +125,10 @@
 
 		.description {
 			margin: 0;
+
+			.line {
+				min-height: 12px;
+			}
 		}
 
 		.message-footer {
