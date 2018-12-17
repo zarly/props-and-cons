@@ -1,11 +1,11 @@
 <template>
 	<div class="IdeasPage VkPage">
-		<div class="row">
+		<div class="row" v-if="isAdmin">
 			<div class="header-left">
 				<span class="anch" v-if="isAdmin" @click="$router.push('/settings')">настройки</span>
 			</div>
 			<div class="header-right">
-				<button class="btn-add-new" @click="$router.push('/idea-add')">Добавить тему</button>
+				<button class="btn-add-new" v-if="isAdmin" @click="$router.push('/idea-add')">Добавить тему</button>
 			</div>
 		</div>
 		<div v-if="ideas && ideas.length">

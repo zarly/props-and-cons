@@ -46,7 +46,7 @@
 			const ideaId = this.$route.query.idea;
 			return {
 				initPromise: this.fetchParentIdea(parentId),
-				type: parseInt(this.$route.query.type, 10) || (parentId ? 1 : 102),
+				type: parseInt(this.$route.query.type, 10) || (parentId ? 1 : 103),
 				parentId: parentId,
 				parentIdea: null,
 				title: '',
