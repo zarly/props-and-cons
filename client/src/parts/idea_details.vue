@@ -11,8 +11,13 @@
 			</div>
 			<div class="message-footer row">
 				<div class="area-left">
-					<span class="reply anch" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Дополнить</span>
-					<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Возразить</span>
+					<template v-if="idea.type === 103">
+						<span class="reply anch" @click="$router.push(`/idea-add?type=1&parent=${idea._id}`)">Ответить</span>
+					</template>
+					<template v-else>
+						<span class="reply anch" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Дополнить</span>
+						<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Возразить</span>
+					</template>
 					<span class="votes-stats">
 						<span class="vote-up">
 							<span class="arrow" :class="{active: idea.myVote === 3}" @click="vote(3)" title="Голосовать За">&#11014;</span>
