@@ -15,8 +15,20 @@
 			<div class="content">
 				<IdeaDetails :idea="idea" @update="fetch"></IdeaDetails>
 			</div>
-			<section>
-				<div class="hr wide" />
+			<section v-if="idea.type === 103">
+				<div class="hr wide"></div>
+				<div class="full-area">
+					<div class="area-title">
+						<span class="h2">Ответы</span>
+						<span class="hint count" v-if="idea.commentsCount" v-text="'(' +idea.commentsCount + ')'"></span>
+						<button class="add-btn" @click="$router.push(`/idea-add?type=1&parent=${idea._id}`)">Добавить</button>
+					</div>
+					<ArgumentInDetails v-for="child in idea.comments" :idea="child" :key="child._id" @update="fetch"></ArgumentInDetails>
+					<AddItemCompact class="add-item-compact" @update="fetch" :parent="idea" :type="1"></AddItemCompact>
+				</div>
+			</section>
+			<section v-else>
+				<div class="hr wide"></div>
 				<div class="row for-half">
 					<div class="half-area plus">
 						<div class="area-title">
@@ -27,7 +39,7 @@
 						<ArgumentInDetails v-for="child in idea.ideasPlus" :idea="child" :key="child._id" @update="fetch"></ArgumentInDetails>
 						<AddItemCompact class="add-item-compact" @update="fetch" :parent="idea" :type="3"></AddItemCompact>
 					</div>
-					<div class="vr main" />
+					<div class="vr main"></div>
 					<div class="half-area minus">
 						<div class="area-title">
 							<span class="h2">Комментарии &laquo;Против&raquo;</span>
