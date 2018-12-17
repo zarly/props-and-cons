@@ -69,6 +69,7 @@ export class Strategy extends BaseStrategy {
 			const viewer_id = parseInt(params.viewer_id, 10);
 			const user_id = parseInt(params.user_id, 10);
 			const group_id = parseInt(params.group_id, 10);
+			const api_id = parseInt(params.api_id, 10);
 
 			const {userInfo, groupInfo} = Strategy.parseApiResult(params.api_result);
 			if (viewer_id && userInfo && userInfo.id !== viewer_id) {
@@ -80,7 +81,9 @@ export class Strategy extends BaseStrategy {
 				return this.fail(401);
 			}
 
-			const realmName = 'vk:' + ((group_id && `${group_id}`) || (user_id && `u${user_id}`) || 'common');
+			const realmApp = `${api_id}` || 'common';
+			const realmOwner = (group_id && `g${group_id}`) || (user_id && `u${user_id}`) || 'common';
+			const realmName = `vk:${realmApp}:${realmOwner}`;
 			this.done(viewer_id, realmName, userInfo, (error: any, user: any, realm: any) => {
 				(req as any).vkParams = params;
 				(req as any).vkUserInfo = userInfo;
