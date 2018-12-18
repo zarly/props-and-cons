@@ -22,14 +22,10 @@ export interface IdeaForDetails {
 	ideasPlus: Array<IdeaForList>;
 	ideasMinus: Array<IdeaForList>;
 	comments: Array<IdeaForList>;
-	alternatives: Array<IdeaForList>;
-	implementations: Array<IdeaForList>;
 
 	ideasPlusCount: number;
 	ideasMinusCount: number;
 	commentsCount: number;
-	alternativesCount: number;
-	implementationsCount: number;
 
 	createdAt: number;
 }

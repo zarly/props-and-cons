@@ -56,19 +56,7 @@ describe('save children', () => {
 		const idea = await Idea.createAndRegister({title: 'Child idea', type: ORM.IdeaType.comment, parentIdea: rootIdea._id});
 
 		const actualRootIdea = await Idea.findById(rootIdea._id);
-		expect(actualRootIdea.comments.length).toEqual(1);
-		expect(actualRootIdea.comments[0]).toEqual(idea._id);
-	});
-
-	test('alternative', async () => {
-		expect(await Idea.countDocuments()).toBe(0);
-
-		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
-		const idea = await Idea.createAndRegister({title: 'Child idea', type: ORM.IdeaType.alternative, parentIdea: rootIdea._id});
-
-		const actualRootIdea = await Idea.findById(rootIdea._id);
-		expect(actualRootIdea.alternatives.length).toEqual(1);
-		expect(actualRootIdea.alternatives[0]).toEqual(idea._id);
+		expect(actualRootIdea.commentsCount).toEqual(1);
 	});
 
 	test('plus', async () => {
@@ -78,8 +66,7 @@ describe('save children', () => {
 		const idea = await Idea.createAndRegister({title: 'Child idea', type: ORM.IdeaType.plus, parentIdea: rootIdea._id});
 
 		const actualRootIdea = await Idea.findById(rootIdea._id);
-		expect(actualRootIdea.ideasPlus.length).toEqual(1);
-		expect(actualRootIdea.ideasPlus[0]).toEqual(idea._id);
+		expect(actualRootIdea.ideasPlusCount).toEqual(1);
 	});
 
 	test('minus', async () => {
@@ -89,19 +76,7 @@ describe('save children', () => {
 		const idea = await Idea.createAndRegister({title: 'Child idea', type: ORM.IdeaType.minus, parentIdea: rootIdea._id});
 
 		const actualRootIdea = await Idea.findById(rootIdea._id);
-		expect(actualRootIdea.ideasMinus.length).toEqual(1);
-		expect(actualRootIdea.ideasMinus[0]).toEqual(idea._id);
-	});
-
-	test('implementation', async () => {
-		expect(await Idea.countDocuments()).toBe(0);
-
-		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
-		const idea = await Idea.createAndRegister({title: 'Child idea', type: ORM.IdeaType.implementation, parentIdea: rootIdea._id});
-
-		const actualRootIdea = await Idea.findById(rootIdea._id);
-		expect(actualRootIdea.implementations.length).toEqual(1);
-		expect(actualRootIdea.implementations[0]).toEqual(idea._id);
+		expect(actualRootIdea.ideasMinusCount).toEqual(1);
 	});
 });
 
@@ -132,16 +107,6 @@ describe('method readWithChildren', () => {
 		expect(data.comments[0]).toBeInstanceOf(ObjectId);
 	});
 
-	test('resolve alternative', async () => {
-		expect(await Idea.countDocuments()).toBe(0);
-
-		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
-		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.alternative, parentIdea: rootIdea._id});
-
-		const data = await Idea.readWithChildren(user._id, rootIdea._id);
-		expect(data.alternatives[0]).toBeInstanceOf(ObjectId);
-	});
-
 	test('resolve plus', async () => {
 		expect(await Idea.countDocuments()).toBe(0);
 
@@ -160,16 +125,6 @@ describe('method readWithChildren', () => {
 
 		const data = await Idea.readWithChildren(user._id, rootIdea._id);
 		expect(data.ideasMinus[0]).toBeInstanceOf(ObjectId);
-	});
-
-	test('resolve implementation', async () => {
-		expect(await Idea.countDocuments()).toBe(0);
-
-		const rootIdea = await Idea.createAndRegister({title: 'Root idea title'});
-		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.implementation, parentIdea: rootIdea._id});
-
-		const data = await Idea.readWithChildren(user._id, rootIdea._id);
-		expect(data.implementations[0]).toBeInstanceOf(ObjectId);
 	});
 });
 

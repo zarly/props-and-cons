@@ -20,12 +20,8 @@ export default {
 	"ideasPlusCount":0,
 	"ideasMinusCount":0,
 	"commentsCount":0,
-	"alternativesCount":0,
-	"implementationsCount":0,
 	"ideasPlus":[],
 	"ideasMinus":[],
 	"comments":[],
-	"alternatives":[],
-	"implementations":[],
 	"createdAt":1543666481836
 };

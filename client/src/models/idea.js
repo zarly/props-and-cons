@@ -7,8 +7,6 @@ function Idea (json) {
 	if (json.comments) json.comments = json.comments.map(Idea);
 	if (json.ideasPlus) json.ideasPlus = json.ideasPlus.map(Idea);
 	if (json.ideasMinus) json.ideasMinus = json.ideasMinus.map(Idea);
-	if (json.alternatives) json.alternatives = json.alternatives.map(Idea);
-	if (json.implementations) json.implementations = json.implementations.map(Idea);
 
 	return json;
 }
@@ -28,8 +26,7 @@ Idea.prototype = {
 	},
 	get responsesTotal () {
 		return this.commentsCount
-			+ this.ideasPlusCount + this.ideasMinusCount
-			+ this.alternativesCount + this.implementationsCount;
+			+ this.ideasPlusCount + this.ideasMinusCount;
 	},
 	get prettyUpdatedDate () {
 		const date = new Date(this.updatedAt);

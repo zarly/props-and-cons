@@ -5,10 +5,10 @@ export enum RootIdeaType {
 export enum IdeaType {
 	// Child types
 	comment = 1,
-	alternative = 2,
+	// alternative = 2,
 	plus = 3,
 	minus = 4,
-	implementation = 5,
+	// implementation = 5,
 
 	// Root types
 	information = 101, 	// правда-ложь

@@ -20,11 +20,9 @@ const voteTypeToArrayNameMap: {[index:string]:keyof Idea} = {
 };
 
 const ideaTypeToArrayNameMap: {[index:string]:keyof Idea} = {
-	[IdeaType.comment]: 'comments',
-	[IdeaType.alternative]: 'alternatives',
-	[IdeaType.plus]: 'ideasPlus',
-	[IdeaType.minus]: 'ideasMinus',
-	[IdeaType.implementation]: 'implementations',
+	[IdeaType.comment]: 'commentsCount',
+	[IdeaType.plus]: 'ideasPlusCount',
+	[IdeaType.minus]: 'ideasMinusCount',
 };
 
 export class Idea extends Typegoose {
@@ -67,16 +65,12 @@ export class Idea extends Typegoose {
 	@prop({required: true, 'default': 0})
 	voteRating: number;
 
-	@arrayProp({itemsRef: Idea, 'default': []})
-    ideasPlus: Array<ObjectId>;
-	@arrayProp({itemsRef: Idea, 'default': []})
-    ideasMinus: Array<ObjectId>;
-	@arrayProp({itemsRef: Idea, 'default': []})
-    alternatives: Array<ObjectId>;
-	@arrayProp({itemsRef: Idea, 'default': []})
-	comments: Array<ObjectId>;
-	@arrayProp({itemsRef: Idea, 'default': []})
-	implementations: Array<ObjectId>;
+	@prop({'default': 0})
+    ideasPlusCount: number;
+	@prop({'default': 0})
+    ideasMinusCount: number;
+	@prop({'default': 0})
+    commentsCount: number;
 
 	@prop({required: true, 'default': Date.now})
 	updatedAt: number;
@@ -92,8 +86,27 @@ export class Idea extends Typegoose {
 			Model.updateOne({
 				_id: this.parentIdea
 			}, {
-				$push: {
-					[arrayName]: this._id
+				$inc: {
+					[arrayName]: 1
+				}
+			}, (err: any, res: any) => {
+				if (err) reject(err);
+				resolve(res.result);
+			});
+		});
+	}
+
+	@instanceMethod
+	async removeFromParent () {
+		return new Promise((resolve, reject) => {
+			if (!this.parentIdea) return resolve(false);
+
+			const arrayName = ideaTypeToArrayNameMap[this.type];
+			Model.updateOne({
+				_id: this.parentIdea
+			}, {
+				$inc: {
+					[arrayName]: -1
 				}
 			}, (err: any, res: any) => {
 				if (err) reject(err);
@@ -138,11 +151,9 @@ export class Idea extends Typegoose {
 					}
 				},
 
-				ideasPlusCount: {$size: '$ideasPlus'},
-				ideasMinusCount: {$size: '$ideasMinus'},
-				commentsCount: {$size: '$comments'},
-				alternativesCount: {$size: '$alternatives'},
-				implementationsCount: {$size: '$implementations'},
+				ideasPlusCount: 1,
+				ideasMinusCount: 1,
+				commentsCount: 1,
 
 				updatedAt: 1,
 				createdAt: 1,
@@ -189,33 +200,9 @@ export class Idea extends Typegoose {
 					}
 				},
 
-				// ideasPlus: 1,
-				// ideasMinus: 1,
-				// comments: 1,
-				// alternatives: 1,
-				// implementations: 1,
-
-				ideasPlus: { // TODO: решить вопрос с сортировкой дочерних идей по рейтингу
-					$slice: ['$ideasPlus', 0, childrenLimit]
-				},
-				ideasMinus: {
-					$slice: ['$ideasMinus', 0, childrenLimit]
-				},
-				comments: {
-					$slice: ['$comments', 0, childrenLimit]
-				},
-				alternatives: {
-					$slice: ['$alternatives', 0, childrenLimit]
-				},
-				implementations: {
-					$slice: ['$implementations', 0, childrenLimit]
-				},
-
-				ideasPlusCount: {$size: "$ideasPlus"},
-				ideasMinusCount: {$size: "$ideasMinus"},
-				commentsCount: {$size: "$comments"},
-				alternativesCount: {$size: "$alternatives"},
-				implementationsCount: {$size: "$implementations"},
+				ideasPlusCount: 1,
+				ideasMinusCount: 1,
+				commentsCount: 1,
 
 				createdAt: 1,
 			}
@@ -224,10 +211,10 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async resolveIdeas (userId: MongoIdType, ids: Array<ObjectId>) : Promise<IdeaForList[]> {
+	static async resolveIdeas (userId: MongoIdType, parentIdeaId: MongoIdType, skip: number = 0, limit: number = 10) : Promise<IdeaForList[]> {
 		const rows = await Model.aggregate([{
 			$match: {
-				_id: {$in: ids}
+				parentIdea: parentIdeaId,
 			}
 		}, {
 			$project: {
@@ -238,11 +225,9 @@ export class Idea extends Typegoose {
 				votesMinus: {$size: '$votesMinus'},
 				skips: {$size: '$skips'},
 
-				ideasPlusCount: {$size: '$ideasPlus'},
-				ideasMinusCount: {$size: '$ideasMinus'},
-				commentsCount: {$size: '$comments'},
-				alternativesCount: {$size: '$alternatives'},
-				implementationsCount: {$size: '$implementations'},
+				ideasPlusCount: 1,
+				ideasMinusCount: 1,
+				commentsCount: 1,
 
 				voteRating: 1,
 				myVote: {
@@ -263,7 +248,7 @@ export class Idea extends Typegoose {
 				voteRating: -1,
 				createdAt: -1,
 			}
-		}]);
+		}]).skip(skip).limit(limit);
 		return rows || [];
 	}
 
@@ -385,26 +370,6 @@ export class Idea extends Typegoose {
 			await this.voteCancel(userId, ideaId, currentVoteType);
 		}
 		return await this.vote(userId, ideaId, voteType);
-	}
-
-	@staticMethod
-	static async removeIdeaFromParent (parentId: ObjectId, childId: ObjectId) {
-		return new Promise((resolve, reject) => {
-			Model.updateOne({
-				_id: parentId
-			}, {
-				$pull: {
-					ideasPlus: childId,
-					ideasMinus: childId,
-					comments: childId,
-					alternatives: childId,
-					implementations: childId,
-				},
-			}, (err: any, res: any) => {
-				if (err) reject(err);
-				resolve(res);
-			});
-		});
 	}
 }
 

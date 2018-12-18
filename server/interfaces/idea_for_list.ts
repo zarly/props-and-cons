@@ -14,8 +14,6 @@ export interface IdeaForList {
 	ideasPlusCount: number;
 	ideasMinusCount: number;
 	commentsCount: number;
-	alternativesCount: number;
-	implementationsCount: number;
 
 	createdAt: number;
 }

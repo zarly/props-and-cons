@@ -30,7 +30,6 @@
 		data () {
 			return {
 				initPromise: this.fetch(),
-//				groupName: 'Название группы',
 				ideas: [],
 				totalCount: 0,
 

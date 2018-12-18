@@ -71,11 +71,9 @@ export default class Logic {
 
 		const parentIdea = <any>(await ORM.Idea.findById((<any>idea).parentIdea, ['title']));
 
-		const comments = await ORM.Idea.resolveIdeas(user._id, <any>idea.comments);
-		const alternatives = await ORM.Idea.resolveIdeas(user._id, <any>idea.alternatives);
-		const ideasPlus = await ORM.Idea.resolveIdeas(user._id, <any>idea.ideasPlus);
-		const ideasMinus = await ORM.Idea.resolveIdeas(user._id, <any>idea.ideasMinus);
-		const implementations = await ORM.Idea.resolveIdeas(user._id, <any>idea.implementations);
+		const comments = await ORM.Idea.resolveIdeas(user._id, idea._id);
+		const ideasPlus = await ORM.Idea.resolveIdeas(user._id, idea._id);
+		const ideasMinus = await ORM.Idea.resolveIdeas(user._id, idea._id);
 
 		return {
 			_id: idea._id,
@@ -98,14 +96,10 @@ export default class Logic {
 			ideasPlusCount: idea.ideasPlusCount,
 			ideasMinusCount: idea.ideasMinusCount,
 			commentsCount: idea.commentsCount,
-			alternativesCount: idea.alternativesCount,
-			implementationsCount: idea.implementationsCount,
 
 			ideasPlus: ideasPlus,
 			ideasMinus: ideasMinus,
 			comments: comments,
-			alternatives: alternatives,
-			implementations: implementations,
 
 			createdAt: idea.createdAt,
 		};
@@ -116,6 +110,7 @@ export default class Logic {
 			realm: 1,
 			author: 1,
 			parentIdea: 1,
+			type: 1,
 		});
 		const isAuthor = `${idea.author._id}` === `${user._id}`;
 		const isAdmin = [2, 3, 4].indexOf(user.role) !== -1;
@@ -129,7 +124,7 @@ export default class Logic {
 		} else {
 			await Promise.all([
 				ORM.Idea.deleteOne({_id: ideaId}),
-				ORM.Idea.removeIdeaFromParent(idea.parentIdea, idea._id),
+				idea.removeFromParent(),
 			]);
 			return 200;
 		}
