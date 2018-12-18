@@ -12,7 +12,7 @@
 				<a v-text="idea.authorName" class="anch fio" :href="idea.authorUrl" target="_blank"></a>
 				<span class="datetime hint" v-text="idea.prettyCreatedDate" @click="navigateToDetails"></span>
 			</div>
-			<div v-text="idea.description" class="description"></div>
+			<UserTextViewer :text="idea.description" class="description"></UserTextViewer>
 			<div class="message-footer">
 				<span class="reply anch" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Дополнить</span>
 				<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Возразить</span>
@@ -41,8 +41,12 @@
 	import gate from '../modules/gate'
 	import me from '../modules/me'
 	import {renderDatetime, renderQuantity} from '../modules/decorators'
+	import UserTextViewer from '@/components/user_text_viewer.vue';
 
 	export default {
+		components: {
+			UserTextViewer,
+		},
 		props: ['idea'],
 		data () {
 			return {

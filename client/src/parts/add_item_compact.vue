@@ -1,7 +1,7 @@
 <template>
 	<div class="AddItemCompact">
 		<textarea class="text" v-model="text" placeholder="Написать комментарий..." :class="{active: focus}"
-			@focus="expand" @blur="collapse"></textarea>
+			@focus="expand" @blur="collapse" @keypress.ctrl.enter="send"></textarea>
 		<div class="actions" v-if="focus">
 			<!-- <span class="anch" @click="$router.push(`/idea-add?type=${type}&parent=${parent._id}`)">полная форма ответа</span> -->
 			<button @click="send">Отправить</button>
@@ -21,14 +21,20 @@
 			return {
 				focus: false,
 				text: '',
+				collapseTimer: null,
 			};
 		},
 		methods: {
 			expand () {
 				this.focus = true;
+				if (this.collapseTimer) {
+					clearTimeout(this.collapseTimer);
+					this.collapseTimer = null;
+				}
 			},
 			collapse () {
-				setTimeout(() => {
+				this.collapseTimer = setTimeout(() => {
+					this.collapseTimer = null;
 					this.focus = false;
 				}, 1000)
 			},
@@ -40,7 +46,6 @@
 				};
 
 				const result = await gate.createIdea(query);
-				console.log(result);
 
 				this.reset();
 				this.$emit('update');

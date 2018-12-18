@@ -6,9 +6,7 @@
 		</div>
 		<div class="center-part">
 			<div v-text="idea.title" v-if="idea.title" class="h2 title"></div>
-			<div class="description">
-				<div class="line" v-for="(line, index) in lines" :key="index + ':' + line" v-text="line"></div>
-			</div>
+			<UserTextViewer :text="idea.description" class="description"></UserTextViewer>
 			<div class="message-footer row">
 				<div class="area-left">
 					<template v-if="idea.type === 103">
@@ -43,8 +41,12 @@
 	import gate from '../modules/gate'
 	import me from '../modules/me'
 	import {renderDatetime, renderQuantity} from '../modules/decorators'
+	import UserTextViewer from '@/components/user_text_viewer.vue';
 
 	export default {
+		components: {
+			UserTextViewer,
+		},
 		props: ['idea'],
 		data () {
 			return {
@@ -54,9 +56,6 @@
 		computed: {
 			isShowRemove () {
 				return this.idea.isAllowedRemove(this.me.user);
-			},
-			lines () {
-				return (this.idea.description || '').split('\n');
 			},
 		},
 		methods: {
@@ -127,10 +126,6 @@
 
 		.description {
 			margin: 0;
-
-			.line {
-				min-height: 12px;
-			}
 		}
 
 		.message-footer {
