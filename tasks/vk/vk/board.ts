@@ -30,7 +30,7 @@ export const board = {
             extended: 1,
             preview: 1,
             preview_length: 0,
-            count: 1000,
+            count: 200,
             order: 1,
         });
     },
@@ -39,7 +39,7 @@ export const board = {
             group_id,
             topic_id,
             need_likes: 1,
-            count: 1000000,
+            count: 300000,
             // sort: 'desc',
             sort: 'asc',
         });

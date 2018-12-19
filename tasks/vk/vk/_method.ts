@@ -22,7 +22,7 @@ export async function method (method: string, params: any = {}) : Promise<any> {
 
     Object.keys(params).forEach((key: string) => url.searchParams.append(key, params[key]));
 
-    console.debug(url);
+    console.debug(url.href);
     const res = await fetch(<any>url);
     const json = await res.json();
 
@@ -47,7 +47,7 @@ export function extendLimit (fn: Function, BATCH = 100) {
             return {items, count};
         }
 
-        for (let i = BATCH; i < count; i++) {
+        for (let i = BATCH; i < count; i += BATCH) {
             if (items.length >= COUNT) break;
 
             data = await fn(method, Object.assign({}, params, {count: BATCH, offset: OFFSET + items.length}));
