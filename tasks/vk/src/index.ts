@@ -9,7 +9,8 @@ import {getAuthorInfo} from './user_storage'
     console.log('Start');
     // const group_id = 23333093;
     const group_id = 119446;
-    const realm = `vk:6747875:${group_id}`;
+    // const realm = `vk:6747875:${group_id}`;
+    const realm = `vk:6747875:common`;
     // const realm = `vk:6747875:132657268`; // TODO: заменить на реальный реалм
 
     const orm = new ORM(serverConfig.mongoose, true);
