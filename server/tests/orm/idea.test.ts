@@ -44,9 +44,7 @@ describe('save children', () => {
 		const actualRootIdea = await Idea.findById(rootIdea._id);
 
 		expect(actualRootIdea.title).toBe(rootIdea.title);
-		expect(actualRootIdea.comments.length).toEqual(2);
-		expect(actualRootIdea.comments[0]).toEqual(idea1._id);
-		expect(actualRootIdea.comments[1]).toEqual(idea2._id);
+		expect(actualRootIdea.commentsCount).toEqual(2);
 	});
 
 	test('comment', async () => {
@@ -94,7 +92,7 @@ describe('method readWithChildren', () => {
 
 		const data = await Idea.readWithChildren(user._id, rootIdea._id, 3);
 		expect(data).toBeDefined();
-		expect(data.comments.length).toBe(3);
+		expect(data.commentsCount).toBe(3);
 	});
 
 	test('resolve comments', async () => {
