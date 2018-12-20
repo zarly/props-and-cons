@@ -161,7 +161,7 @@ export class Idea extends Typegoose {
 		}, {
 			$sort: {
 				voteRating: -1,
-				createdAt: -1,
+				updatedAt: -1,
 			}
 		}]).skip(skip).limit(limit);
 	}
@@ -247,7 +247,7 @@ export class Idea extends Typegoose {
 		}, {
 			$sort: {
 				voteRating: -1,
-				createdAt: -1,
+				updatedAt: -1,
 			}
 		}]).skip(skip).limit(limit);
 		return rows || [];
