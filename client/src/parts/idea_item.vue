@@ -2,7 +2,7 @@
 	<div class="IdeaItem">
 		<div v-text="idea.title" class="anch title" @click="navigateToDetails"></div>
 		<div class="bottom-line hint">
-			<span class="datetime" v-text="idea.prettyCreatedDate"></span>
+			<span class="datetime" v-text="idea.prettyUpdatedDate"></span>
 			<IconedCounter class="counter" :size="16" :icon="iconUp" @clickIcon="vote(3)" clickable :active="idea.myVote === 3"
 						   :counter="idea.votesPlus" :iconShiftY="-1"></IconedCounter>
 			<IconedCounter class="counter" :size="16" :icon="iconDown" @clickIcon="vote(4)" clickable :active="idea.myVote === 4"
