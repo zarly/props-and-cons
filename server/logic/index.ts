@@ -1,7 +1,7 @@
 
 import {Idea} from '../orm/idea'
 import {User} from '../orm/user'
-import ORM, {ObjectId, MongoIdType} from '../orm'
+import ORM, {ObjectId, MongoIdType, IdeaType} from '../orm'
 import {IdeaForDetails, IdeaForList, ItemList} from '../interfaces'
 
 export default class Logic {
@@ -71,9 +71,9 @@ export default class Logic {
 
 		const parentIdea = <any>(await ORM.Idea.findById((<any>idea).parentIdea, ['title']));
 
-		const comments = await ORM.Idea.resolveIdeas(user._id, idea._id);
-		const ideasPlus = await ORM.Idea.resolveIdeas(user._id, idea._id);
-		const ideasMinus = await ORM.Idea.resolveIdeas(user._id, idea._id);
+		const comments = await ORM.Idea.resolveIdeas(user._id, idea._id, IdeaType.comment);
+		const ideasPlus = await ORM.Idea.resolveIdeas(user._id, idea._id, IdeaType.plus);
+		const ideasMinus = await ORM.Idea.resolveIdeas(user._id, idea._id, IdeaType.minus);
 
 		return {
 			_id: idea._id,

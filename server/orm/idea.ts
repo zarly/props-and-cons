@@ -211,9 +211,10 @@ export class Idea extends Typegoose {
 	}
 
 	@staticMethod
-	static async resolveIdeas (userId: MongoIdType, parentIdeaId: MongoIdType, skip: number = 0, limit: number = 10) : Promise<IdeaForList[]> {
+	static async resolveIdeas (userId: MongoIdType, parentIdeaId: MongoIdType, ideaType: IdeaType, skip: number = 0, limit: number = 10) : Promise<IdeaForList[]> {
 		const rows = await Model.aggregate([{
 			$match: {
+				type: ideaType,
 				parentIdea: parentIdeaId,
 			}
 		}, {

@@ -24,7 +24,10 @@
 						<button class="add-btn" @click="$router.push(`/idea-add?type=1&parent=${idea._id}`)">Добавить</button>
 					</div>
 					<ArgumentInDetails v-for="child in idea.comments" :idea="child" :key="child._id" @update="fetch"></ArgumentInDetails>
-					<AddItemCompact class="add-item-compact" @update="fetch" :parent="idea" :type="1"></AddItemCompact>
+					<div v-if="idea.commentsCount > idea.comments.length" class="load-more-items">
+						<button @click="fetchMoreComments">загрузить ещё</button>
+					</div>
+					<AddItemCompact v-else class="add-item-compact" @update="fetch" :parent="idea" :type="1"></AddItemCompact>
 				</div>
 			</section>
 			<section v-else>
@@ -90,6 +93,9 @@
 			async fetch () {
 				this.idea = await gate.getIdea(this.id);
 				this.revote = false;
+			},
+			async fetchMoreComments () {
+				alert('Пока не реализовано');
 			},
 			async vote (voteType) {
 				await gate.vote(this.idea._id, voteType);

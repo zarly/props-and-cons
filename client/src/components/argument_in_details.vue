@@ -15,7 +15,7 @@
 			<div v-text="idea.description" class="description"></div>
 			<div class="message-footer">
 				<span class="reply anch" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Дополнить</span>
-				<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Возразить</span>
+				<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Опровергнуть</span>
 				<span class="votes-stats">
 					<span class="vote-up">
 						<span class="arrow" :class="{active: this.idea.myVote === 3}" @click="vote(3)" title="Голосовать За">&#11014;</span>

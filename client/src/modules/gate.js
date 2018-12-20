@@ -14,8 +14,8 @@ export class Gate {
 		return await res.json();
 	}
 
-	async getIdeasList () {
-		const response = await this.ask(`/ideas`, {
+	async getIdeasList (skip = 0) {
+		const response = await this.ask(`/ideas?skip=${skip}`, {
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'

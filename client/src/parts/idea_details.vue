@@ -14,7 +14,7 @@
 					</template>
 					<template v-else>
 						<span class="reply anch" @click="$router.push(`/idea-add?type=3&parent=${idea._id}`)">Дополнить</span>
-						<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Возразить</span>
+						<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Опровергнуть</span>
 					</template>
 					<span class="votes-stats">
 						<span class="vote-up">

@@ -11,6 +11,9 @@
 		<div v-if="ideas && ideas.length">
 			<div class="filter"></div>
 			<IdeaItem v-for="idea in ideas" :key="idea._id" :idea="idea" class="idea" />
+			<div v-if="totalCount > ideas.length" class="load-more-items">
+				<button @click="fetchMore">загрузить ещё</button>
+			</div>
 		</div>
 		<div v-else>
 			<div class="hint no-content">В сообществе ещё нет тем.</div>
@@ -46,7 +49,12 @@
 				const result = await gate.getIdeasList();
 				this.ideas = result.rows;
 				this.totalCount = result.count;
-			}
+			},
+			async fetchMore () {
+				const result = await gate.getIdeasList(this.ideas.length);
+				this.ideas = this.ideas.concat(result.rows);
+				this.totalCount = result.count;
+			},
 		},
 	};
 </script>
@@ -74,6 +82,10 @@
 			&:last-child {
 				border-bottom: 0;
 			}
+		}
+
+		.load-more-items {
+			padding: 15px 20px;
 		}
 
 		.no-content {
