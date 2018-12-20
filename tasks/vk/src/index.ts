@@ -67,7 +67,7 @@ import {getAuthorInfo} from './user_storage'
 
             const authorInfo = await getAuthorInfo(answer.from_id);
             const idea = await ORM.Idea.createAndRegister({
-                type: ORM.IdeaType.plus,
+                type: ORM.IdeaType.comment,
                 realm,
                 author: authorInfo,
                 parentIdea: topic.mongo._id,

@@ -3,6 +3,12 @@ import fetch from 'node-fetch';
 import { URL } from 'url';
 
 const access_token = process.env.ACCESS_TOKEN;
+const methodQueue: Function[] = [];
+
+setInterval(async function onIntervalTick () {
+    const fn = await methodQueue.pop();
+    if (fn) fn();
+}, 350);
 
 export async function delay (timimg: number) {
     return new Promise(resolve => setTimeout(resolve, timimg));
@@ -13,25 +19,26 @@ export async function execute (code: string) { // https://vk.com/dev/execute
 }
 
 export async function method (method: string, params: any = {}) : Promise<any> {
-    await delay(350);
-    // console.log(method, params);
-
-    const url = new URL(`https://api.vk.com/method/${method}`);
-    url.searchParams.append('v', '5.52');
-    url.searchParams.append('access_token', access_token);
-
-    Object.keys(params).forEach((key: string) => url.searchParams.append(key, params[key]));
-
-    console.debug(url.href);
-    const res = await fetch(<any>url);
-    const json = await res.json();
-
-    if (json.response) {
-        return json.response;
-    } else {
-        console.error(json);
-        throw json.error;
-    }
+    return new Promise(function (resolve, reject) {
+        methodQueue.push(async () => {
+            const url = new URL(`https://api.vk.com/method/${method}`);
+            url.searchParams.append('v', '5.52');
+            url.searchParams.append('access_token', access_token);
+        
+            Object.keys(params).forEach((key: string) => url.searchParams.append(key, params[key]));
+        
+            console.debug(url.href);
+            const res = await fetch(<any>url);
+            const json = await res.json();
+        
+            if (json.response) {
+                resolve(json.response);
+            } else {
+                console.error(json);
+                reject(json.error);
+            }
+        });
+    });
 }
 
 export function extendLimit (fn: Function, BATCH = 100) {
