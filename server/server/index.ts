@@ -56,13 +56,27 @@ export default class Server {
 		app.use('/api', bodyParser.json());
 
 		app.get('/api/ideas', this.auth.vk_app_sign, async (req, res) => {
-			const {limit, skip, parentId} = req.query;
+			const {limit, skip, type, parentId} = req.query;
 			const ideas = await this.logic.getIdeasList(
 				(req as any).realm, // TODO: расширить req в стратегии паспорта
 				req.user,
 				limit ? parseInt(limit, 10) : undefined,
 				skip ? parseInt(skip, 10) : undefined,
 				parentId ? `${parentId}` : undefined,
+				type ? parseInt(type, 10) : undefined,
+			);
+			res.send(ideas);
+        });
+
+		app.get('/api/ideas/children', this.auth.vk_app_sign, async (req, res) => {
+			const {limit, skip, type, parentId} = req.query;
+			const ideas = await this.logic.getIdeaChildren(
+				(req as any).realm, // TODO: расширить req в стратегии паспорта
+				req.user,
+				limit ? parseInt(limit, 10) : undefined,
+				skip ? parseInt(skip, 10) : undefined,
+				parentId ? `${parentId}` : undefined,
+				type ? parseInt(type, 10) : undefined,
 			);
 			res.send(ideas);
         });

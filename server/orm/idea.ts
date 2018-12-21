@@ -132,8 +132,12 @@ export class Idea extends Typegoose {
 			$match: filter
 		}, {
 			$project: {
+				type: 1,
 				title: 1,
 				description: 1,
+
+				author: 1,
+				parentIdea: 1,
 
 				votesPlus: {$size: '$votesPlus'},
 				votesMinus: {$size: '$votesMinus'},
@@ -207,6 +211,7 @@ export class Idea extends Typegoose {
 				ideasMinusCount: 1,
 				commentsCount: 1,
 
+				updatedAt: 1,
 				createdAt: 1,
 			}
 		}]);

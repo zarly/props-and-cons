@@ -14,8 +14,12 @@ export class Gate {
 		return await res.json();
 	}
 
-	async getIdeasList (skip = 0) {
-		const response = await this.ask(`/ideas?skip=${skip}`, {
+	async getIdeasList (skip = 0, parentId, ideaType) {
+		let url = `/ideas?skip=${skip}`;
+		if (parentId) url += `&parentId=${parentId}`;
+		if (ideaType) url += `&type=${ideaType}`;
+
+		const response = await this.ask(url, {
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
@@ -23,6 +27,20 @@ export class Gate {
 		});
 		response.rows = response.rows.map(Idea);
 		return response;
+	}
+
+	async getIdeaChildren (skip = 0, parentId, ideaType) {
+		let url = `/ideas/children?skip=${skip}`;
+		if (parentId) url += `&parentId=${parentId}`;
+		if (ideaType) url += `&type=${ideaType}`;
+
+		const response = await this.ask(url, {
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+		});
+		return response.map(Idea);
 	}
 
 	async getIdea (ideaId) {

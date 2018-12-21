@@ -43,19 +43,37 @@ export default class Logic {
 	 * @param {String} parentId
 	 * @returns {Promise<ItemList<IdeaForList>>}
 	 */
-	async getIdeasList (realm: string, user: User, limit: number = 20, skip: number = 0, parentId: string = null) : Promise<ItemList<IdeaForList>> {
+	async getIdeasList (realm: string, user: User, limit: number = 20, skip: number = 0, parentId: string = null, type?: IdeaType) : Promise<ItemList<IdeaForList>> {
 		limit = Math.min(limit, 100);
 
 		const filter : any = {
 			realm: realm,
 			parentIdea: parentId ? ObjectId(parentId) : null,
 		};
+		if (type) filter.type = type;
+
 		const count = await ORM.Idea.countDocuments(filter);
 		const rows = await ORM.Idea.getIdeasList(user._id, filter, limit, skip);
 		return {
 			count,
 			rows: <IdeaForList[]>rows,
 		};
+	}
+
+	/**
+	 * Возвращает список потомков идеи
+	 *
+	 * @param {String} realm
+	 * @param {User} user
+	 * @param {Number} limit
+	 * @param {Number} skip
+	 * @param {String} parentId
+	 * @returns {Promise<ItemList<IdeaForList>>}
+	 */
+	async getIdeaChildren (realm: string, user: User, limit: number = 20, skip: number = 0, parentId: string = null, type: IdeaType) : Promise<IdeaForList[]> {
+		limit = Math.min(limit, 100);
+		const rows = await ORM.Idea.resolveIdeas(user._id, ObjectId(parentId), type, skip, limit);
+		return <IdeaForList[]>rows;
 	}
 
 	/**

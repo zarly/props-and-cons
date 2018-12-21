@@ -24,7 +24,7 @@
 						<button class="add-btn" @click="$router.push(`/idea-add?type=1&parent=${idea._id}`)">Добавить</button>
 					</div>
 					<ArgumentInDetails v-for="child in idea.comments" :idea="child" :key="child._id" @update="fetch"></ArgumentInDetails>
-					<div v-if="idea.commentsCount > idea.comments.length" class="load-more-items">
+					<div v-if="idea.commentsCount > loadedCommentsCount" class="load-more-items">
 						<button @click="fetchMoreComments">загрузить ещё</button>
 					</div>
 					<AddItemCompact v-else class="add-item-compact" @update="fetch" :parent="idea" :type="1"></AddItemCompact>
@@ -60,6 +60,7 @@
 </template>
 
 <script>
+	import unionBy from 'lodash/unionBy'
 	import gate from '../modules/gate'
 	import me from '../modules/me'
 	import {renderDatetime} from '../modules/decorators'
@@ -79,6 +80,8 @@
 				initPromise: this.fetch(),
 				idea: null,
 
+				loadedCommentsCount: 0, // используется для учЁта значения skip
+
 				revote: false,
 
 				me,
@@ -92,10 +95,15 @@
 		methods: {
 			async fetch () {
 				this.idea = await gate.getIdea(this.id);
+				this.loadedCommentsCount = this.idea.comments.length;
 				this.revote = false;
 			},
-			async fetchMoreComments () {
-				alert('Пока не реализовано');
+			async fetchMoreComments () { // TODO: добавить защиту от двойного нажатия до окончания фетчинга
+				const rows = await gate.getIdeaChildren(this.loadedCommentsCount, this.idea._id, 1);
+
+				this.idea.comments = unionBy(this.idea.comments, rows, '_id'); // TODO: спорно, возможно стоит вынести в идею
+				this.loadedCommentsCount += rows.length;
+				console.log(this.idea.comments.length, rows.length, this.loadedCommentsCount, rows);
 			},
 			async vote (voteType) {
 				await gate.vote(this.idea._id, voteType);
