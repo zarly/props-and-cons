@@ -1,6 +1,6 @@
 <template>
 	<div class="IdeasPage VkPage">
-		<div class="row" v-if="isAdmin">
+		<div class="row header" v-if="isAdmin">
 			<div class="header-left">
 				<span class="anch" v-if="isAdmin" @click="$router.push('/settings')">настройки</span>
 			</div>
@@ -9,7 +9,6 @@
 			</div>
 		</div>
 		<div v-if="ideas && ideas.length">
-			<div class="filter"></div>
 			<IdeaItem v-for="idea in ideas" :key="idea._id" :idea="idea" class="idea" />
 			<div v-if="totalCount > ideas.length" class="load-more-items">
 				<button @click="fetchMore">загрузить ещё</button>
@@ -63,17 +62,21 @@
 	@import "../styles/variables";
 
 	.IdeasPage {
-		.header-right {
-			display: flex;
-			flex-direction: column;
-			align-items: flex-end;
-			justify-content: flex-start;
-		}
+		.header {
+			padding-bottom: 15px;
+			margin-bottom: 5px;
+			height: auto;
 
-		.filter {
-			border-bottom: @grey-border;
-			margin: 15px -@page-margin 5px;
-			padding: 0 @page-margin;
+			.header-left .anch {
+				font-weight: normal;
+			}
+
+			.header-right {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-end;
+				justify-content: flex-start;
+			}
 		}
 
 		.idea {
