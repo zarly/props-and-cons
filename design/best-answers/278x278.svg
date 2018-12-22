@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="278"
+   height="278"
+   viewBox="0 0 73.554165 73.554169"
+   version="1.1"
+   id="svg1993"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="278x278.svg"
+   inkscape:export-filename="/home/alex/code/props-and-cons/design/best-answers/278x278.png"
+   inkscape:export-xdpi="96.55806"
+   inkscape:export-ydpi="96.55806">
+  <defs
+     id="defs1987" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.03"
+     inkscape:cx="103.28681"
+     inkscape:cy="115.06783"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1920"
+     inkscape:window-height="1052"
+     inkscape:window-x="1366"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata1990">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-223.44581)">
+    <path
+       id="path864"
+       d="m 58.937449,256.23353 c 0,-2.31287 -1.875246,-4.16732 -4.167248,-4.16732 H 41.601503 l 2.000305,-9.52229 c 0.03939,-0.20874 0.063,-0.43788 0.063,-0.66707 0,-0.85428 -0.354384,-1.64608 -0.916833,-2.20865 l -2.208691,-2.18782 -13.710413,13.71044 c -0.770983,0.77098 -1.229318,1.8127 -1.229318,2.95871 v 20.83655 a 4.1673009,4.1673009 0 0 0 4.167327,4.16726 h 18.752833 c 1.729395,0 3.208756,-1.04181 3.833887,-2.54206 l 6.292614,-14.68973 c 0.187441,-0.47958 0.291383,-0.97925 0.291383,-1.52107 v -4.16727 m -45.840262,22.92013 h 8.334579 v -25.00381 h -8.334571 z"
+       inkscape:connector-curvature="0"
+       style="display:inline;fill:#008000;stroke-width:2.08365035;fill-opacity:0.94117647" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:92.68186951px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#404040;fill-opacity:1;stroke:none;stroke-width:2.3170464"
+       x="-0.23719794"
+       y="234.32512"
+       id="text939"><tspan
+         sodipodi:role="line"
+         id="tspan937"
+         x="-0.23719794"
+         y="234.32512"
+         style="font-size:18.53637123px;fill:#404040;fill-opacity:1;stroke-width:2.3170464">лучшие</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:100.58995819px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#404040;fill-opacity:1;stroke:none;stroke-width:2.51474881;"
+       x="-0.76259643"
+       y="296.52481"
+       id="text939-4"><tspan
+         sodipodi:role="line"
+         id="tspan937-1"
+         x="-0.76259643"
+         y="296.52481"
+         style="font-size:20.11799049px;fill:#404040;stroke-width:2.51474881;fill-opacity:1;">ответы</tspan></text>
+  </g>
+</svg>
