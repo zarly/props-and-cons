@@ -72,3 +72,6 @@ client/dist
 
 # db dumps
 *.dump
+
+# build output
+dist
