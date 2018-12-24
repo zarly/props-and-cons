@@ -23,6 +23,7 @@
 
 <script>
 	import gate from '../modules/gate'
+	import {sendParams} from '../modules/stats'
 	import {renderDatetime, renderQuantity} from '../modules/decorators'
 
 	export default {
@@ -37,6 +38,7 @@
 				this.idea.votesMinus = newVotes.votesMinus;
 				this.idea.skips = newVotes.skips;
 				this.idea.myVote = newVotes.myVote;
+				sendParams('vote', 'comment_in_details', this.voteType, this.idea._id);
 			},
 		}
 	}

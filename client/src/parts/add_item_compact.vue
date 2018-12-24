@@ -11,6 +11,7 @@
 
 <script>
 	import gate from '../modules/gate'
+	import {sendParams} from '../modules/stats'
 
 	export default {
 		props: [
@@ -49,6 +50,7 @@
 
 				this.reset();
 				this.$emit('update');
+				sendParams('comment', 'compact', this.type, this.parent._id);
 			},
 			reset () {
 				this.text = '';

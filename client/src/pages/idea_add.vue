@@ -3,7 +3,7 @@
 		<div class="anch" @click="$router.go(-1)">вернуться назад</div>
 		<form @submit.prevent="onSubmit" class="form">
 			<select class="type-field" v-model="type">
-				<option v-for="t in (parentIdea ? childTypes : rootTypes)" :value="t" v-text="typeToTextDict[t]"></option>
+				<option v-for="t in (parentIdea ? childTypes : rootTypes)" :value="t" v-text="typeToTextDict[t]" :key="t"></option>
 			</select>
 			<div class="parent-info" v-if="parentIdea">
 				&nbsp;для&nbsp;
@@ -26,6 +26,7 @@
 
 <script>
 	import gate from '../modules/gate'
+	import {sendParams} from '../modules/stats'
 
 	const typeToTextDict = {
 		1: 'Комментарий',
@@ -85,6 +86,8 @@
 
 				const id = result._id;
 				this.$router.push(`/idea/${id}`);
+
+				sendParams('comment', 'full', this.type, this.parentId);
 			}
 		},
 	};

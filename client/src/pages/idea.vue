@@ -63,6 +63,7 @@
 	import unionBy from 'lodash/unionBy'
 	import gate from '../modules/gate'
 	import me from '../modules/me'
+	import {sendParams} from '../modules/stats'
 	import {renderDatetime} from '../modules/decorators'
 	import IdeaDetails from '@/parts/idea_details.vue';
 	import ArgumentInDetails from '@/parts/argument_in_details.vue';
@@ -109,6 +110,7 @@
 				await gate.vote(this.idea._id, voteType);
 				await this.fetch();
 				this.revote = false;
+				sendParams('vote', 'idea_page', this.voteType, this.idea._id);
 			},
 			onClickRevote () {
 				this.revote = true;

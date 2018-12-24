@@ -40,6 +40,7 @@
 <script>
 	import gate from '../modules/gate'
 	import me from '../modules/me'
+	import {sendParams} from '../modules/stats'
 	import {renderDatetime, renderQuantity} from '../modules/decorators'
 
 	export default {
@@ -64,6 +65,7 @@
 				this.idea.votesMinus = newVotes.votesMinus;
 				this.idea.skips = newVotes.skips;
 				this.idea.myVote = newVotes.myVote;
+				sendParams('vote', 'component_argument_in_details', this.voteType, this.idea._id);
 			},
 			edit () {
 				this.$router.push(`/idea-add?idea=${this.idea._id}`);

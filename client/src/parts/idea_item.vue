@@ -16,6 +16,7 @@
 <script>
 	import {renderDatetime, renderQuantity} from '../modules/decorators'
 	import gate from '../modules/gate'
+	import {sendParams} from '../modules/stats'
 	import IconedCounter from '@/components/iconed_counter.vue';
 	import iconUp from '../../static/icons/baseline-thumb_up-24px.svg';
 	import iconDown from '../../static/icons/baseline-thumb_down-24px.svg';
@@ -43,6 +44,7 @@
 				this.idea.votesMinus = newVotes.votesMinus;
 				this.idea.skips = newVotes.skips;
 				this.idea.myVote = newVotes.myVote;
+				sendParams('vote', 'idea_item', this.voteType, this.idea._id);
 			},
 		}
 	}
