@@ -17,10 +17,12 @@
 						<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Опровергнуть</span>
 					</template>
 					<span class="votes-stats">
-						<IconedCounter class="counter" :size="16" :icon="iconUp" @clickIcon="vote(3)" :clickable="true" :active="idea.myVote === 3"
+						<IconedCounter :size="16" :icon="iconUp" @clickIcon="vote(3)" :clickable="true" :active="idea.myVote === 3"
 									   :counter="idea.votesPlusCount" :iconShiftY="-1"></IconedCounter>
-						<IconedCounter class="counter" :size="16" :icon="iconDown" @clickIcon="vote(4)" :clickable="true" :active="idea.myVote === 4"
+						<IconedCounter :size="16" :icon="iconDown" @clickIcon="vote(4)" :clickable="true" :active="idea.myVote === 4"
 									   :counter="idea.votesMinusCount" :iconShiftY="1"></IconedCounter>
+						<IconedCounter class="share" :size="16" :icon="iconShare" @clickIcon="showShareDialog" :clickable="true" :hideZero="true"
+									   :counter="0" :iconShiftY="1" title="Позвать друзей"></IconedCounter>
 					</span>
 				</div>
 				<div class="area-right hint">
@@ -41,7 +43,7 @@
 	import IconedCounter from '@/components/iconed_counter.vue';
 	import iconUp from '../../static/icons/baseline-thumb_up-24px.svg';
 	import iconDown from '../../static/icons/baseline-thumb_down-24px.svg';
-	import iconAnswer from '../../static/icons/baseline-question_answer-24px.svg';
+	import iconShare from '../../static/icons/baseline-share-24px.svg';
 
 	export default {
 		components: {
@@ -53,7 +55,7 @@
 			return {
 				iconUp,
 				iconDown,
-				iconAnswer,
+				iconShare,
 
 				me,
 			};
@@ -82,6 +84,17 @@
 				if (!confirm('Вы уверены, что хотите безвозвратно удалить этот пост?')) return;
 				await gate.deleteIdea(this.idea._id);
 				this.$router.push(`/ideas`);
+			},
+			showShareDialog () {
+				const match_api_id = location.search.match(/api_id=([0-9]+)/);
+				const match_group_id = location.search.match(/group_id=([0-9]+)/);
+				const match_user_id = location.search.match(/user_id=([0-9]+)/);
+
+				const app = match_api_id && match_api_id[1];
+				const community = (match_group_id && match_group_id[1] && ('_-' + match_group_id[1])) || (match_user_id && match_user_id[1] && ('_' + match_user_id[1]));
+
+				const link = `https://vk.com/app${app}${community || ''}?ad_id=idea_${this.idea._id}_share`;
+				prompt('Чтобы позвать сюда своих друзей, скопируйте и отправьте им эту ссылку, на стене или в личных сообщениях:', link);
 			},
 		}
 	}
@@ -146,12 +159,18 @@
 				display: flex;
 				justify-content: flex-start;
 				align-items: center;
-				width: 100px;
+				max-width: 150px;
 				margin-left: 20px;
 
 				.IconedCounter {
 					margin-top: -1px;
 					margin-right: 10px;
+
+					&.share {
+						margin-top: -2px;
+						margin-right: 0;
+						margin-left: 15px;
+					}
 				}
 			}
 		}

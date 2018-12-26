@@ -2,7 +2,7 @@
 	<div class="IconedCounter">
 		<SvgIcon class="image" :class="{clickable, active}" :size="parseInt(size, 10)" :src="icon" :style="imageStyle"
 				  @click.native="$emit('clickIcon')"></SvgIcon>
-		<div class="text" v-text="counter"></div>
+		<div class="text" v-text="counter" v-if="counter || !hideZero"></div>
 	</div>
 </template>
 
@@ -23,6 +23,7 @@
 
 			clickable: {type: Boolean, 'default': false},
 			active: {type: Boolean, 'default': false},
+			hideZero: {type: Boolean, 'default': false},
 		},
 		computed: {
 			imageStyle () {
