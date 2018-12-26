@@ -6,6 +6,8 @@ export const monthes = [
 ];
 
 export function renderDatetime (datetime) {
+	if (!datetime.getTime()) return '-';
+
 	const dtstr = datetime.toISOString();
 	const time = dtstr.substr(11, 5);
 	const day = datetime.getDate();

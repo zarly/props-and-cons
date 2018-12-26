@@ -29,10 +29,14 @@ Idea.prototype = {
 			+ this.ideasPlusCount + this.ideasMinusCount;
 	},
 	get prettyUpdatedDate () {
+		if (!this.updatedAt) return '-';
+
 		const date = new Date(this.updatedAt);
 		return renderDatetime(date);
 	},
 	get prettyCreatedDate () {
+		if (!this.createdAt) return '-';
+
 		const date = new Date(this.createdAt);
 		return renderDatetime(date);
 	},
