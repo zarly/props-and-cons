@@ -3,13 +3,18 @@ const ora = require('ora');
 const chalk = require('chalk');
 const webpack = require('webpack');
 const config = require('./config');
+const {getIdeas} = require('./db');
 
-const spinner = ora('Webpack building...');
-spinner.start();
+async function webpackPromise (config) {
+	return new Promise((resolve, reject) => {
+		webpack(config, (error, stats) => {
+			if (error) return reject(error);
+			resolve(stats);
+		});
+	});
+}
 
-webpack(config, (err, stats) => {
-	spinner.stop();
-	if (err) throw err;
+async function displayWebpackStats (stats) {
 	process.stdout.write(stats.toString({
 		colors: true,
 		modules: false,
@@ -28,4 +33,16 @@ webpack(config, (err, stats) => {
 		'  Tip: built files are meant to be served over an HTTP server.\n' +
 		'  Opening index.html over file:// won\'t work.\n'
 	));
-});
+}
+
+const spinner = ora('Webpack building...');
+spinner.start();
+
+(async function main () {
+	await getIdeas(async (idea) => {
+		console.log('idea', idea);
+		const stats = await webpackPromise(config);
+		await displayWebpackStats(stats);
+	});
+	spinner.stop();
+})();

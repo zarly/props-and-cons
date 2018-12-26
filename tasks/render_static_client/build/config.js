@@ -10,13 +10,14 @@ function resolve (dir) {
 module.exports = {
 	// context: path.resolve(__dirname, '..'),
 	entry: {
-		index: resolve('src/index.js'),
+		index: resolve('src/index.ts'),
 	},
 	output: {
 		path: path.resolve(__dirname, '..', 'dist'),
 		filename: '[name].js',
 	},
 	target: 'node',
+	mode: 'production',
 	resolve: {
 		extensions: ['.js', '.ts', '.vue', '.json'],
 		alias: {
