@@ -8,7 +8,7 @@
 			<div v-text="idea.title" v-if="idea.title" class="h2 title"></div>
 			<UserTextViewer :text="idea.description" class="description"></UserTextViewer>
 			<div class="message-footer row">
-				<div class="area-left">
+				<div class="area-left row">
 					<template v-if="idea.type === 103">
 						<span class="reply anch" @click="$router.push(`/idea-add?type=1&parent=${idea._id}`)">Ответить</span>
 					</template>
@@ -17,15 +17,10 @@
 						<span class="reply anch" @click="$router.push(`/idea-add?type=4&parent=${idea._id}`)">Опровергнуть</span>
 					</template>
 					<span class="votes-stats">
-						<span class="vote-up">
-							<span class="arrow" :class="{active: idea.myVote === 3}" @click="vote(3)" title="Голосовать За">&#11014;</span>
-							<span class="value" v-text="idea.votesPlusCount"></span>
-						</span>
-						&nbsp;
-						<span class="vote-down">
-							<span class="arrow" :class="{active: idea.myVote === 4}" @click="vote(4)" title="Голосовать Против">&#11015;</span>
-							<span class="value" v-text="idea.votesMinusCount"></span>
-						</span>
+						<IconedCounter class="counter" :size="16" :icon="iconUp" @clickIcon="vote(3)" :clickable="true" :active="idea.myVote === 3"
+									   :counter="idea.votesPlusCount" :iconShiftY="-1"></IconedCounter>
+						<IconedCounter class="counter" :size="16" :icon="iconDown" @clickIcon="vote(4)" :clickable="true" :active="idea.myVote === 4"
+									   :counter="idea.votesMinusCount" :iconShiftY="1"></IconedCounter>
 					</span>
 				</div>
 				<div class="area-right hint">
@@ -43,14 +38,23 @@
 	import {sendParams} from '../modules/stats'
 	import {renderDatetime, renderQuantity} from '../modules/decorators'
 	import UserTextViewer from '@/components/user_text_viewer.vue';
+	import IconedCounter from '@/components/iconed_counter.vue';
+	import iconUp from '../../static/icons/baseline-thumb_up-24px.svg';
+	import iconDown from '../../static/icons/baseline-thumb_down-24px.svg';
+	import iconAnswer from '../../static/icons/baseline-question_answer-24px.svg';
 
 	export default {
 		components: {
+			IconedCounter,
 			UserTextViewer,
 		},
 		props: ['idea'],
 		data () {
 			return {
+				iconUp,
+				iconDown,
+				iconAnswer,
+
 				me,
 			};
 		},
@@ -139,25 +143,15 @@
 			}
 
 			.votes-stats {
-				display: inline-block;
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
 				width: 100px;
+				margin-left: 20px;
 
-				.vote-up .arrow {
-					color: @cl-green;
-					cursor: pointer;
-				}
-
-				.vote-down .arrow {
-					color: @cl-red;
-					cursor: pointer;
-				}
-
-				.arrow {
-					opacity: 0.3;
-
-					&.active {
-						opacity: 1;
-					}
+				.IconedCounter {
+					margin-top: -1px;
+					margin-right: 10px;
 				}
 			}
 		}
