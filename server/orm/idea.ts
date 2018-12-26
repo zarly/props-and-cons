@@ -90,7 +90,7 @@ export class Idea extends Typegoose {
 					[arrayName]: 1
 				},
 				$set: {
-					updatedAt: Date.now
+					updatedAt: Date.now()
 				},
 			}, (err: any, res: any) => {
 				if (err) reject(err);
