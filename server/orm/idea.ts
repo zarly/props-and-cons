@@ -89,8 +89,8 @@ export class Idea extends Typegoose {
 				$inc: {
 					[arrayName]: 1
 				},
-				$currentDate: {
-					updatedAt: {$type: "timestamp"}
+				$set: {
+					updatedAt: Date.now
 				},
 			}, (err: any, res: any) => {
 				if (err) reject(err);

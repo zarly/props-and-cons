@@ -55,8 +55,8 @@ async function fixRootItemsUpdatedAt () {
             .limit(1);
 
         doc.updatedAt = Math.max(
-            (doc.updatedAt || 0),
-            (doc.createdAt || 0),
+            ((doc.updatedAt < Date.now()) ? (doc.updatedAt || 0) : 0),
+            ((doc.createdAt < Date.now()) ? (doc.createdAt || 0) : 0),
             ((children && children[0] && children[0].createdAt) || 0)
         );
 
