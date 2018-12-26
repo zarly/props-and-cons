@@ -84,8 +84,11 @@
 				if (!confirm('Вы уверены, что хотите безвозвратно удалить этот пост?')) return;
 				await gate.deleteIdea(this.idea._id);
 				this.$router.push(`/ideas`);
+				sendParams('delete_idea', 'idea_details', '-', this.idea._id);
 			},
 			showShareDialog () {
+				sendParams('share_idea', 'idea_details', '-', this.idea._id);
+
 				const match_api_id = location.search.match(/api_id=([0-9]+)/);
 				const match_group_id = location.search.match(/group_id=([0-9]+)/);
 				const match_user_id = location.search.match(/user_id=([0-9]+)/);
