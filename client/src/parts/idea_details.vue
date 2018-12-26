@@ -18,9 +18,9 @@
 					</template>
 					<span class="votes-stats">
 						<IconedCounter :size="16" :icon="iconUp" @clickIcon="vote(3)" :clickable="true" :active="idea.myVote === 3"
-									   :counter="idea.votesPlusCount" :iconShiftY="-1"></IconedCounter>
+									   :counter="idea.votesPlusCount" :iconShiftY="-1" title="Голосовать За"></IconedCounter>
 						<IconedCounter :size="16" :icon="iconDown" @clickIcon="vote(4)" :clickable="true" :active="idea.myVote === 4"
-									   :counter="idea.votesMinusCount" :iconShiftY="1"></IconedCounter>
+									   :counter="idea.votesMinusCount" :iconShiftY="1" title="Голосовать Против"></IconedCounter>
 						<IconedCounter class="share" :size="16" :icon="iconShare" @clickIcon="showShareDialog" :clickable="true" :hideZero="true"
 									   :counter="0" :iconShiftY="1" title="Позвать друзей"></IconedCounter>
 					</span>
