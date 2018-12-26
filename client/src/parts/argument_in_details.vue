@@ -145,6 +145,8 @@
 		}
 
 		.center-part {
+			overflow: auto;
+
 			.message-header {
 				display: flex;
 				justify-content: flex-start;
