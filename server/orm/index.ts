@@ -3,7 +3,6 @@ import * as mongoose from 'mongoose'
 import UserModel, {User} from './user'
 import GroupModel, {Group} from './group'
 import IdeaModel, {Idea} from './idea'
-import SessionModel, {Session} from './session'
 import {RootIdeaType, IdeaType, VoteType} from './_enums'
 import chalk from 'chalk'
 
@@ -20,7 +19,9 @@ export default class ORM {
 	private credentials: string;
 	private verbose: boolean;
 	private reconnect: boolean;
-	static Session = SessionModel;
+
+	public connection: mongoose.Connection;
+
 	static User = UserModel;
 	static Group = GroupModel;
 	static Idea = IdeaModel;
@@ -32,24 +33,25 @@ export default class ORM {
 		this.credentials = credentials;
 		this.verbose = verbose;
 		this.reconnect = true;
+		this.connection = mongoose.connection;
 
 		process.on('SIGINT', () => {
 			this.reconnect = false;
-			mongoose.connection.close(() => {
+			this.connection.close(() => {
 				if (this.verbose) console.log(termination('Mongoose default connection is disconnected due to application termination'));
 				process.exit(0);
 			});
 		});
 
-		mongoose.connection.on('connected', () => {
+		this.connection.on('connected', () => {
 			if (this.verbose) console.log(connected('Mongoose default connection is open to', this.credentials));
 		});
 
-		mongoose.connection.on('error', (err) => {
+		this.connection.on('error', (err) => {
 			if (this.verbose) console.log(error(`Mongoose default connection has occured ${err} error`));
 		});
 
-		mongoose.connection.on('disconnected', async () => {
+		this.connection.on('disconnected', async () => {
 			if (this.verbose) console.log(disconnected('Mongoose default connection is disconnected'));
 
 			if (this.reconnect) {

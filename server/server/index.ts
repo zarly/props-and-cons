@@ -1,6 +1,9 @@
 
 import * as express from 'express'
+import * as expressSession from 'express-session'
 import * as bodyParser from 'body-parser'
+import * as cookieParser from 'cookie-parser'
+import * as connectMongo from 'connect-mongo'
 import {Express} from 'express-serve-static-core'
 import * as morgan from 'morgan'
 import config from '../config'
@@ -12,7 +15,9 @@ import ideaMock from '../mocks/idea'
 import {unescape} from 'querystring';
 
 const connected = chalk.cyan;
-const AUTH_SECRET = 'Nothing Secret';
+const AUTH_SECRET = 'Nothing Secret'; // TODO: забирать из переменной среды
+
+const MongoStore = require('connect-mongo')(expressSession);
 
 // TODO: CORS на POST
 
@@ -36,7 +41,28 @@ export default class Server {
 	initMiddlewares () {
 		const app = this.app;
 
+		app.disable('x-powered-by');
+
 		app.use(morgan(config.logging.morganFormat));
+
+		const sessionTTL = 1000 * 60 * 60 * 24 * 365 * 20; // 20 лет
+		app.use(expressSession({
+			secret: AUTH_SECRET,
+			name: 'session',
+			cookie: {
+				path: '/',
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				maxAge: sessionTTL,
+			},
+			saveUninitialized: true,
+			resave: false,
+			store: new MongoStore({
+				mongooseConnection: this.orm.connection,
+				ttl: sessionTTL,
+			}),
+		}));
+		app.use('/api', bodyParser.json());
 	}
 
 	initTechRoutes () {
@@ -55,18 +81,18 @@ export default class Server {
     	const app = this.app;
 
 		app.get('/api/auth/vk_app_sign', this.auth.vk_app_sign, async (req, res) => {
-			const session = await ORM.Session.createNew((req as any).realm, req.user._id, '', 'vk_app_sign', req.ip);
-
-			const cookieSettings = {
-				maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 лет
-				httpOnly: true,
-			};
-			res.cookie('uid', req.user._id, cookieSettings);
-			res.cookie('session', session.name, cookieSettings);
-			res.redirect('../..');
-        });
-
-		app.use('/api', bodyParser.json());
+			// 	const session = await ORM.Session.createNew((req as any).realm, req.user._id, '', 'vk_app_sign', req.ip);
+	
+			// 	const cookieSettings = {
+			// 		maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 лет
+			// 		httpOnly: true,
+			// 	};
+			// 	res.cookie('uid', req.user._id, cookieSettings);
+			// 	res.cookie('session', session.name, cookieSettings);
+			(req as any).session.userId = req.user._id;
+			res.json((req as any).session);
+			// res.redirect('../..');
+		});
 
 		app.get('/api/ideas', this.auth.vk_app_sign, async (req, res) => {
 			const {limit, skip, type, parentId} = req.query;
