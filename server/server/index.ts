@@ -12,6 +12,7 @@ import ideaMock from '../mocks/idea'
 import {unescape} from 'querystring';
 
 const connected = chalk.cyan;
+const AUTH_SECRET = 'Nothing Secret';
 
 // TODO: CORS на POST
 
@@ -52,6 +53,18 @@ export default class Server {
 
 	initAppRoutes () {
     	const app = this.app;
+
+		app.get('/api/auth/vk_app_sign', this.auth.vk_app_sign, async (req, res) => {
+			const session = await ORM.Session.createNew((req as any).realm, req.user._id, '', 'vk_app_sign', req.ip);
+
+			const cookieSettings = {
+				maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 лет
+				httpOnly: true,
+			};
+			res.cookie('uid', req.user._id, cookieSettings);
+			res.cookie('session', session.name, cookieSettings);
+			res.redirect('../..');
+        });
 
 		app.use('/api', bodyParser.json());
 

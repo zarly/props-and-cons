@@ -3,6 +3,7 @@ import * as mongoose from 'mongoose'
 import UserModel, {User} from './user'
 import GroupModel, {Group} from './group'
 import IdeaModel, {Idea} from './idea'
+import SessionModel, {Session} from './session'
 import {RootIdeaType, IdeaType, VoteType} from './_enums'
 import chalk from 'chalk'
 
@@ -19,6 +20,7 @@ export default class ORM {
 	private credentials: string;
 	private verbose: boolean;
 	private reconnect: boolean;
+	static Session = SessionModel;
 	static User = UserModel;
 	static Group = GroupModel;
 	static Idea = IdeaModel;
