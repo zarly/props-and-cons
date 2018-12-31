@@ -112,7 +112,7 @@ describe('method readWithChildren', () => {
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.plus, parentIdea: rootIdea._id});
 
 		const data = await Idea.readWithChildren(user._id, rootIdea._id);
-		expect(data.ideasPlus[0]).toBeInstanceOf(ObjectId);
+		expect(data.ideasPlusCount).toBe(1);
 	});
 
 	test('resolve minus', async () => {
@@ -122,7 +122,7 @@ describe('method readWithChildren', () => {
 		await Idea.createAndRegister({title: 'Child idea 1', type: ORM.IdeaType.minus, parentIdea: rootIdea._id});
 
 		const data = await Idea.readWithChildren(user._id, rootIdea._id);
-		expect(data.ideasMinus[0]).toBeInstanceOf(ObjectId);
+		expect(data.ideasMinusCount).toBe(1);
 	});
 });
 
