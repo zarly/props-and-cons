@@ -7,6 +7,7 @@ import {sendParams} from '../modules/stats'
 Vue.use(Router);
 
 const router = new Router({
+	mode: 'history',
 	routes: [
 		{
 			path: '/',
@@ -17,6 +18,12 @@ const router = new Router({
 			path: '/ideas',
 			name: 'ideas',
 			component: Ideas
+		},
+		{
+			path: '/realm/:platform/:application/:communty',
+			name: 'ideas',
+			component: Ideas,
+			props: true
 		},
 		{
 			path: '/idea/:id',

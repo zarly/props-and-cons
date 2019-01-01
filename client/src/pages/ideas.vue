@@ -26,10 +26,12 @@
 	import IdeaItem from '@/parts/idea_item.vue';
 
 	export default {
+		props: ['platform', 'application', 'communty'],
 		components: {
 			IdeaItem,
 		},
 		data () {
+			console.log('Ideas', this.platform, this.application, this.communty);
 			return {
 				initPromise: this.fetch(),
 				ideas: [],
