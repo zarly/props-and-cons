@@ -80,18 +80,9 @@ export default class Server {
 	initAppRoutes () {
     	const app = this.app;
 
-		app.get('/api/auth/vk_app_sign', this.auth.vk_app_sign, async (req, res) => {
-			// 	const session = await ORM.Session.createNew((req as any).realm, req.user._id, '', 'vk_app_sign', req.ip);
-	
-			// 	const cookieSettings = {
-			// 		maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 лет
-			// 		httpOnly: true,
-			// 	};
-			// 	res.cookie('uid', req.user._id, cookieSettings);
-			// 	res.cookie('session', session.name, cookieSettings);
+		app.get('/api/auth/vk_app', this.auth.vk_app, async (req, res) => {
 			(req as any).session.userId = req.user._id;
 			res.json((req as any).session);
-			// res.redirect('../..');
 		});
 
 		app.get('/api/ideas', this.auth.vk_app_sign, async (req, res) => {
