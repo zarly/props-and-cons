@@ -17,9 +17,23 @@ import {unescape} from 'querystring';
 const connected = chalk.cyan;
 const AUTH_SECRET = 'Nothing Secret'; // TODO: забирать из переменной среды
 
-const MongoStore = require('connect-mongo')(expressSession);
+const MongoStore = connectMongo(expressSession);
 
 // TODO: CORS на POST
+
+interface Request extends Express.Request {
+	user?: any;
+	body?: any;
+	query?: any;
+	params?: any;
+}
+
+interface Response extends Express.Response {
+	send: Function;
+	json: Function;
+	status: Function;
+	redirect: Function;
+}
 
 export default class Server {
     app: Express;
@@ -68,11 +82,11 @@ export default class Server {
 	initTechRoutes () {
 		const app = this.app;
 
-		app.get('/telemetry/healthcheck', (req, res) => {
+		app.get('/telemetry/healthcheck', (req: Request, res: Response) => {
 			res.send({healthy: true});
 		});
 
-		app.get('/api/ping', (req, res) => {
+		app.get('/api/ping', (req: Request, res: Response) => {
 			res.send({pong: true});
 		});
 	}
@@ -80,12 +94,30 @@ export default class Server {
 	initAppRoutes () {
     	const app = this.app;
 
-		app.get('/api/auth/vk_app', this.auth.vk_app, async (req, res) => {
+		app.get('/api/auth/vk_app', this.auth.vk_app, async (req: Request, res: Response) => {
 			(req as any).session.userId = req.user._id;
-			res.json((req as any).session);
+			const vkParams: any = (req as any).vkParams || {};
+
+			const referrer: string = vkParams.referrer;
+			const referrerMatch = referrer.match(new RegExp('^idea_([0-9a-z]+)'));
+			if (referrerMatch) {
+				const ideaId = referrerMatch[1];
+				res.redirect(`/idea/${ideaId}`);
+			}
+
+			const realmApp = (vkParams.api_id && `a${vkParams.api_id}`) || 'common';
+			const realmOwner = (vkParams.group_id && `g${vkParams.group_id}`) || (vkParams.user_id && `u${vkParams.user_id}`) || 'common';
+			res.redirect(`/realm/vk/${realmApp}/${realmOwner}`);
 		});
 
-		app.get('/api/ideas', this.auth.vk_app_sign, async (req, res) => {
+		app.get('/api/auth/status', this.auth.userAuth, async (req: Request, res: Response) => { // TODO: remove after auth complete
+			res.json({
+				session: (req as any).session,
+				user: (req as any).user,
+			});
+		});
+
+		app.get('/api/ideas', this.auth.vk_app_sign, async (req: Request, res: Response) => {
 			const {limit, skip, type, parentId} = req.query;
 			const ideas = await this.logic.getIdeasList(
 				(req as any).realm, // TODO: расширить req в стратегии паспорта
@@ -98,7 +130,7 @@ export default class Server {
 			res.send(ideas);
         });
 
-		app.get('/api/ideas/children', this.auth.vk_app_sign, async (req, res) => {
+		app.get('/api/ideas/children', this.auth.vk_app_sign, async (req: Request, res: Response) => {
 			const {limit, skip, type, parentId} = req.query;
 			const ideas = await this.logic.getIdeaChildren(
 				(req as any).realm, // TODO: расширить req в стратегии паспорта
@@ -111,40 +143,40 @@ export default class Server {
 			res.send(ideas);
         });
         
-		app.get('/api/ideas/:id', this.auth.vk_app_sign, async (req, res) => {
+		app.get('/api/ideas/:id', this.auth.vk_app_sign, async (req: Request, res: Response) => {
             const result = await this.logic.getIdeaById((req as any).realm, req.user, req.params.id);
             res.send(result);
         });
         
-		app.post('/api/ideas', this.auth.vk_app_sign, async (req, res) => {
+		app.post('/api/ideas', this.auth.vk_app_sign, async (req: Request, res: Response) => {
             const result = await this.logic.publishIdea((req as any).realm, req.user, req.body);
 			res.send(result);
 		});
         
-		app.patch('/api/ideas/:id', this.auth.vk_app_sign, async (req, res) => {
+		app.patch('/api/ideas/:id', this.auth.vk_app_sign, async (req: Request, res: Response) => {
 			res.send({result: 'Idea edited'});
 		});
         
-		app.delete('/api/ideas/:id', this.auth.vk_app_sign, async (req, res) => {
+		app.delete('/api/ideas/:id', this.auth.vk_app_sign, async (req: Request, res: Response) => {
 			const status = await this.logic.deleteIdeaWithCheckAccess(req.user, req.params.id);
 			res.status(status || 500).json({success: status === 200});
 		});
 
-		app.post('/api/vote', this.auth.vk_app_sign, async (req, res) => { // OPTIMIZATION: использовать лёгкий vote а не тяжёлый reVote в реализации, отслеживая логику на клиенте
+		app.post('/api/vote', this.auth.vk_app_sign, async (req: Request, res: Response) => { // OPTIMIZATION: использовать лёгкий vote а не тяжёлый reVote в реализации, отслеживая логику на клиенте
 			const result = await this.logic.voteAndReturnNewValues(req.user._id, req.body.ideaId, req.body.voteType);
 			res.send(result);
 		});
 
-		app.post('/api/revote', this.auth.vk_app_sign, async (req, res) => {
+		app.post('/api/revote', this.auth.vk_app_sign, async (req: Request, res: Response) => {
 			const result = await this.logic.voteAndReturnNewValues(req.user._id, req.body.ideaId, req.body.voteType);
 			res.send(result);
 		});
 
-		app.get('/api/users/me', this.auth.vk_app_sign, async (req, res) => {
+		app.get('/api/users/me', this.auth.vk_app_sign, async (req: Request, res: Response) => {
 			res.send(req.user);
 		});
 
-		app.get('/api/settings', this.auth.vk_app_sign, async (req, res) => {
+		app.get('/api/settings', this.auth.vk_app_sign, async (req: Request, res: Response) => {
 			res.send({
 				me: req.user,
 				realm: (req as any).realmEnt,

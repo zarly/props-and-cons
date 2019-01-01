@@ -46,6 +46,7 @@ export default class Auth {
     app: Express;
 	vk_app_sign: any;
 	vk_app: any;
+	userAuth: any;
 
     constructor (app: Express) {
 		this.app = app;
@@ -91,5 +92,13 @@ export default class Auth {
 
 		this.vk_app_sign = passport.authenticate('vk_app_sign', { session: false });
 		this.vk_app = passport.authenticate('vk_app', { session: false });
+
+		this.userAuth = async function (req: Express.Request, res: Express.Response, next: Function) {
+			const userId = req.session && req.session.userId;
+			if (userId) {
+				req.user = await ORM.User.findById(userId);
+			}
+			next();
+		};
     }
 }
