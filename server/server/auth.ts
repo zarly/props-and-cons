@@ -3,7 +3,6 @@ import './declarations'
 import config from '../config'
 import {Express} from 'express-serve-static-core'
 import * as passport from 'passport'
-import * as vkAppStrategy from '../logic/passport-vk-app-sign'
 import {Strategy as VkAppSignStrategy} from 'passport-vk-app-sign'
 import ORM from '../orm'
 
@@ -31,6 +30,14 @@ interface IApiResult {
 	];
 }
 
+declare global {
+	namespace Express {
+		interface Request {
+			vkParams: any;
+		}
+	}
+}
+
 function parseVkApiResult (apiResult: string) : {userInfo?: IUser, groupInfo?: IGroup} {
 	try {
 		const obj: IApiResult = JSON.parse(apiResult);
@@ -44,8 +51,7 @@ function parseVkApiResult (apiResult: string) : {userInfo?: IUser, groupInfo?: I
 
 export default class Auth {
     app: Express;
-	vk_app_sign: any;
-	vk_app: any;
+	vkAppSign: any;
 	userAuth: any;
 
     constructor (app: Express) {
@@ -54,16 +60,7 @@ export default class Auth {
 		app.use(passport.initialize());
 		app.use(passport.session());
 
-		passport.use('vk_app_sign', new vkAppStrategy.Strategy({
-			secret: config.auth.vkapp.secret,
-			disableVerification: config.auth.vkapp.disableVerification,
-		}, async (uid: string, rid: string, userInfo: any, done: Function) => {
-			const user = await ORM.User.loginOrRegisterVk(uid, userInfo);
-			const realm = await ORM.Group.findOrCreate(rid);
-			done(null, user, realm);
-		}));
-
-		passport.use('vk_app', new VkAppSignStrategy({
+		passport.use('vk_app_sign', new VkAppSignStrategy({
 			secret: config.auth.vkapp.secret,
 			disableVerification: config.auth.vkapp.disableVerification,
 		}, async (params: any, req: Express.Request, done: Function) => {
@@ -87,11 +84,13 @@ export default class Auth {
 
 			const user = await ORM.User.loginOrRegisterVk(`${viewer_id}`, userInfo);
 			await ORM.Group.findOrCreate(realmName);
+
+			req.vkParams = params;
+
 			done(null, user);
 		}));
 
-		this.vk_app_sign = passport.authenticate('vk_app_sign', { session: false });
-		this.vk_app = passport.authenticate('vk_app', { session: false });
+		this.vkAppSign = passport.authenticate('vk_app_sign', { session: false });
 
 		this.userAuth = async function (req: Express.Request, res: Express.Response, next: Function) {
 			const userId = req.session && req.session.userId;

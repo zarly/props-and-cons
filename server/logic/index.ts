@@ -47,9 +47,9 @@ export default class Logic {
 		limit = Math.min(limit, 100);
 
 		const filter : any = {
-			realm: realm,
 			parentIdea: parentId ? ObjectId(parentId) : null,
 		};
+		if (realm) filter.realm = realm;
 		if (type) filter.type = type;
 
 		const count = await ORM.Idea.countDocuments(filter);

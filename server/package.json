@@ -33,7 +33,7 @@
     "passport": "^0.4.0",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
-    "passport-vk-app-sign": "^0.1.0",
+    "passport-vk-app-sign": "^0.1.1",
     "typegoose": "^5.4.1",
     "yargs": "^12.0.2"
   },
